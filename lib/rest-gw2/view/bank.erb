@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-TW">
+  <head profile="http://www.w3.org/2005/10/profile">
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+    <meta name="description" content="godfat.org"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>GW2 Bank</title>
+  </head>
+  <body>
+    <ul>
+      <% @items.each do |item| %>
+        <li>
+          <% if item %>
+            <img src="<%= item['icon'] %>" style="width:64px; height:64px"
+                 title="<%= item_title(item) %>"/>
+            (<%= item['count'] %>) <%= item['name'] %>
+          <% else %>
+            N/A
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </body>
+</html>
