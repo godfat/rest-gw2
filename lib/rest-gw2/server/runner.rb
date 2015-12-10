@@ -25,7 +25,7 @@ module RestGW2::Runner
   def run argv=ARGV
     unused, host, port, server = parse(argv)
     warn("Unused arguments: #{unused.inspect}") unless unused.empty?
-    require 'rack'
+    load_rack
     Rack::Handler.get(server).run(Rack::Builder.new{
       eval(File.read(RestGW2::Runner.config_ru_path))
     }.to_app, :Host => host, :Port => port, :config => root)
@@ -74,6 +74,14 @@ module RestGW2::Runner
 
   def missing_arg arg
     warn("Missing argument: #{arg}")
+    exit(1)
+  end
+
+  def load_rack
+    require 'rack'
+  rescue LoadError => e
+    warn(e)
+    puts "Maybe you should install rack by running: gem install rack"
     exit(1)
   end
 
