@@ -7,7 +7,8 @@ rescue LoadError
 end
 
 Gemgem.init(dir) do |s|
+  require 'rest-gw2/version'
   s.name    = 'rest-gw2'
-  s.version = '0.1.0'
+  s.version = RestGW2::VERSION
   %w[rest-core].each{ |g| s.add_runtime_dependency(g) }
 end

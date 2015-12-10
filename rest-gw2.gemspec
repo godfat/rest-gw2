@@ -8,18 +8,23 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2015-11-14"
+  s.date = "2015-12-10"
   s.description = "A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)\nclient built with [rest-core](https://github.com/godfat/rest-core).\n\nThere's also a bundled web application showing your items, serving as an\nexample using the client."
   s.email = ["godfat (XD) godfat.org"]
+  s.executables = ["rest-gw2"]
   s.files = [
   ".gitignore",
   ".gitmodules",
+  "LICENSE",
   "README.md",
   "Rakefile",
+  "bin/rest-gw2",
   "config.ru",
   "lib/rest-gw2.rb",
   "lib/rest-gw2/client.rb",
   "lib/rest-gw2/server.rb",
+  "lib/rest-gw2/server/runner.rb",
+  "lib/rest-gw2/version.rb",
   "lib/rest-gw2/view/bank.erb",
   "rest-gw2.gemspec",
   "task/README.md",
