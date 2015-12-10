@@ -22,7 +22,7 @@ module RestGW2
       items = get(path, query)
       ids   = items.map{ |i| i && i['id'] }
 
-      detail = ids.compact.each_slice(5).map do |slice|
+      detail = ids.compact.each_slice(100).map do |slice|
         get('items', :ids => slice.join(','))
       end.flatten.group_by{ |i| i['id'] }
 
