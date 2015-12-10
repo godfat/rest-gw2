@@ -1,5 +1,6 @@
 
-require 'dalli'
+require 'rest-gw2/server/cache'
+
 require 'jellyfish'
 
 require 'erb'
@@ -34,11 +35,7 @@ module RestGW2
   end
 
   def self.cache
-    @cache ||= begin
-      client = Dalli::Client.new
-      client.extend(DalliExtension)
-      client
-    end
+    @cache ||= Cache.pick
   end
 
   class ServerCore
