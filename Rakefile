@@ -11,4 +11,5 @@ Gemgem.init(dir) do |s|
   s.name    = 'rest-gw2'
   s.version = RestGW2::VERSION
   %w[rest-core].each{ |g| s.add_runtime_dependency(g) }
+  %w[rack].each{ |g| s.add_development_dependency(g) }
 end
