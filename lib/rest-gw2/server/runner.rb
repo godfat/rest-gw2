@@ -26,13 +26,15 @@ module RestGW2::Runner
     unused, host, port, server = parse(argv)
     warn("Unused arguments: #{unused.inspect}") unless unused.empty?
     load_rack
-    Rack::Handler.get(server).run(Rack::Builder.new{
+    load_rack_handlers
+    handler = server && Rack::Handler.get(server) || Rack::Handler.default
+    handler.run(Rack::Builder.new{
       eval(File.read(RestGW2::Runner.config_ru_path))
     }.to_app, :Host => host, :Port => port, :config => root)
   end
 
   def parse argv
-    unused, host, port, server = [], '0.0.0.0', 8080, 'webrick'
+    unused, host, port, server = [], '0.0.0.0', 8080, nil
     until argv.empty?
       case arg = argv.shift
       when /^-o=?(.+)?/, /^--host=?(.+)?/
@@ -83,6 +85,11 @@ module RestGW2::Runner
     warn(e)
     puts "Maybe you should install rack by running: gem install rack"
     exit(1)
+  end
+
+  def load_rack_handlers
+    require 'rack-handlers'
+  rescue LoadError
   end
 
   def help
