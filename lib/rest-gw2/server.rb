@@ -34,8 +34,8 @@ module RestGW2
     end
   end
 
-  def self.cache
-    @cache ||= Cache.pick
+  def self.cache logger
+    @cache ||= Cache.pick(logger)
   end
 
   class ServerCore
@@ -55,10 +55,17 @@ module RestGW2
         t && t.unpack('U*').map{ |c| "&##{c};" }.join
       end
 
+      def logger env
+        env['rack.logger'] || begin
+          require 'logger'
+          Logger.new(env['rack.errors'])
+        end
+      end
+
       def gw2
         Client.new(:access_token => ENV['ACCESS_TOKEN'],
-                   :log_method => env['rack.errors'].method(:puts),
-                   :cache => RestGW2.cache)
+                   :log_method => logger(env).method(:info),
+                   :cache => RestGW2.cache(logger(env)))
       end
     }
 
