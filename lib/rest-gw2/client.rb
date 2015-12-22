@@ -8,13 +8,50 @@ module RestGW2
     use RC::Oauth2Header  , 'Bearer', nil
 
     use RC::Timeout       , 10
-    use RC::ErrorHandler  ,
-      lambda{ |env| RuntimeError.new(env[RC::RESPONSE_BODY]) }
+    use RC::ErrorHandler  , lambda{ |env| RestGW2::Error.call(env) }
     use RC::ErrorDetectorHttp
 
     use RC::JsonResponse  , true
     use RC::CommonLogger  , nil
     use RC::Cache         , nil, 600
+  end
+
+  class Error < RestCore::Error
+    include RestCore
+
+    class ServerError         < Error; end
+    class ClientError         < Error; end
+
+    class BadRequest          < ClientError; end
+    class Unauthorized        < ClientError; end
+    class Forbidden           < ClientError; end
+    class NotFound            < ClientError; end
+
+    class InternalServerError < ServerError; end
+    class BadGateway          < ServerError; end
+    class ServiceUnavailable  < ServerError; end
+
+    attr_reader :error, :code, :url
+    def initialize error, code, url=''
+      @error, @code, @url = error, code, url
+      super("[#{code}] #{error.inspect} from #{url}")
+    end
+
+    def self.call env
+      error, code, url = env[RESPONSE_BODY], env[RESPONSE_STATUS],
+                         env[REQUEST_URI]
+      return new(error, code, url) unless error.kind_of?(Hash)
+      case code
+        when 400; BadRequest
+        when 401; Unauthorized
+        when 403; Forbidden
+        when 404; NotFound
+        when 500; InternalServerError
+        when 502; BadGateway
+        when 503; ServiceUnavailable
+        else    ; self
+      end.new(error, code, url)
+    end
   end
 
   Client.include(Module.new{
