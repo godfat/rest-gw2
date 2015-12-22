@@ -59,13 +59,8 @@ module RestGW2
     def account_with_detail
       me = get('v2/account')
       worlds = get('v2/worlds', :ids => me['world'])
-      guilds = me['guilds'].map do |gid|
-        get('v1/guild_details', :guild_id => gid)
-      end.map do |guild|
-        "#{guild['guild_name']} (#{guild['tag']})"
-      end
-      me.merge('world' => world_detail(worlds.first),
-               'guilds' => guilds)
+      guilds = guilds_detail(me['guilds'])
+      me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/items
@@ -104,6 +99,15 @@ module RestGW2
                  "Unknown (#{r})"
                end
       "#{world['name']} (#{world['population']}) / #{region} (#{lang})"
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:1/guild_details
+    def guilds_detail guilds
+      guilds.map do |gid|
+        get('v1/guild_details', :guild_id => gid)
+      end.map do |guild|
+        "#{guild['guild_name']} (#{guild['tag']})"
+      end
     end
   })
 end
