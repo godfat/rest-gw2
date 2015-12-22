@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2015-12-12"
+  s.date = "2015-12-23"
   s.description = "A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)\nclient built with [rest-core](https://github.com/godfat/rest-core).\n\nThere's also a bundled web application showing your items, serving as an\nexample using the client."
   s.email = ["godfat (XD) godfat.org"]
   s.executables = ["rest-gw2"]
@@ -26,13 +26,18 @@ Gem::Specification.new do |s|
   "lib/rest-gw2/server/cache.rb",
   "lib/rest-gw2/server/runner.rb",
   "lib/rest-gw2/version.rb",
+  "lib/rest-gw2/view/account.erb",
   "lib/rest-gw2/view/bank.erb",
+  "lib/rest-gw2/view/error.erb",
+  "lib/rest-gw2/view/index.erb",
+  "lib/rest-gw2/view/layout.erb",
+  "lib/rest-gw2/view/menu.erb",
   "rest-gw2.gemspec",
   "task/README.md",
   "task/gemgem.rb"]
   s.homepage = "https://github.com/godfat/rest-gw2"
   s.licenses = ["Apache License 2.0"]
-  s.rubygems_version = "2.5.0"
+  s.rubygems_version = "2.5.1"
   s.summary = "A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)"
 
   if s.respond_to? :specification_version then

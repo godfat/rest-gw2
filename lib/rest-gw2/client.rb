@@ -55,6 +55,20 @@ module RestGW2
   end
 
   Client.include(Module.new{
+    # https://wiki.guildwars2.com/wiki/API:2/account
+    def account_with_detail
+      me = get('v2/account')
+      worlds = get('v2/worlds', :ids => me['world'])
+      guilds = me['guilds'].map do |gid|
+        get('v1/guild_details', :guild_id => gid)
+      end.map do |guild|
+        "#{guild['guild_name']} (#{guild['tag']})"
+      end
+      me.merge('world' => world_detail(worlds.first),
+               'guilds' => guilds)
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/items
     def with_item_detail path, query={}
       items = get(path, query)
       ids   = items.map{ |i| i && i['id'] }
@@ -64,6 +78,32 @@ module RestGW2
       end.flatten.group_by{ |i| i['id'] }
 
       items.map{ |i| i && detail[i['id']].first.merge('count' => i['count']) }
+    end
+
+    private
+    # https://wiki.guildwars2.com/wiki/API:2/worlds
+    def world_detail world
+      region = case r = world['id'] / 1000
+               when 1
+                 'North America'
+               when 2
+                 'Europe'
+               else
+                 "Unknown (#{r})"
+               end
+      lang   = case r = (world['id'] % 1000) / 100
+               when 0
+                 'English'
+               when 1
+                 'French'
+               when 2
+                 'German'
+               when 3
+                 'Spanish'
+               else
+                 "Unknown (#{r})"
+               end
+      "#{world['name']} (#{world['population']}) / #{region} (#{lang})"
     end
   })
 end

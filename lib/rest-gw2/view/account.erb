@@ -1,0 +1,17 @@
+<table>
+<% @account.each do |key, value| %>
+  <% if value.kind_of?(Array) %>
+    <% value.each.with_index do |v, i| %>
+  <tr>
+    <th><%= key %> (<%= i + 1 %>)</th>
+    <td><%= v %></td>
+  </tr>
+    <% end %>
+  <% else %>
+  <tr>
+    <th><%= key %></th>
+    <td><%= value %></td>
+  </tr>
+  <% end %>
+<% end %>
+</table>

@@ -136,6 +136,11 @@ module RestGW2
       render :index
     end
 
+    get '/account' do
+      @account, @error = gw2_call(:account_with_detail)
+      render :account
+    end
+
     get '/bank' do
       @items, @error = gw2_call(:with_item_detail, 'v2/account/bank')
       if @items
