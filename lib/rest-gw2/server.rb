@@ -137,7 +137,7 @@ module RestGW2
     end
 
     get '/bank' do
-      @items, @error = gw2_call(:with_item_detail, 'account/bank')
+      @items, @error = gw2_call(:with_item_detail, 'v2/account/bank')
       if @items
         render :bank
       elsif @error

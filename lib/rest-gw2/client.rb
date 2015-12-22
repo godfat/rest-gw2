@@ -3,7 +3,7 @@ require 'rest-core'
 
 module RestGW2
   Client = RC::Builder.client do
-    use RC::DefaultSite   , 'https://api.guildwars2.com/v2/'
+    use RC::DefaultSite   , 'https://api.guildwars2.com/'
     use RC::DefaultHeaders, {'Accept' => 'application/json'}
     use RC::Oauth2Header  , 'Bearer', nil
 
@@ -60,7 +60,7 @@ module RestGW2
       ids   = items.map{ |i| i && i['id'] }
 
       detail = ids.compact.each_slice(100).map do |slice|
-        get('items', :ids => slice.join(','))
+        get('v2/items', :ids => slice.join(','))
       end.flatten.group_by{ |i| i['id'] }
 
       items.map{ |i| i && detail[i['id']].first.merge('count' => i['count']) }
