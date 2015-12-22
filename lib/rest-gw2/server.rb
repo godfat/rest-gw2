@@ -1,8 +1,8 @@
 
 require 'rest-gw2/server/cache'
-
 require 'jellyfish'
 
+require 'openssl'
 require 'erb'
 
 module RestGW2
@@ -40,6 +40,7 @@ module RestGW2
 
   class ServerCore
     include Jellyfish
+    SECRET = ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2
     controller_include Module.new{
       def render path
         erb(:layout){ erb(path) }
@@ -54,6 +55,16 @@ module RestGW2
         [gw2.public_send(msg, *args).itself, nil]
       rescue RestGW2::Error => e
         [nil, e.error['text']]
+      end
+
+      def access_token
+        if t = request.GET['t']
+          decrypt(t)
+        else
+          ENV['RESTGW2_ACCESS_TOKEN']
+        end
+      rescue ArgumentError, OpenSSL::Cipher::CipherError => e
+        raise RestGW2::Error.new({'text' => e.message}, 0)
       end
 
       private
@@ -74,9 +85,37 @@ module RestGW2
       end
 
       def gw2
-        Client.new(:access_token => ENV['RESTGW2_ACCESS_TOKEN'],
+        Client.new(:access_token => access_token,
                    :log_method => logger(env).method(:info),
                    :cache => RestGW2.cache(logger(env)))
+      end
+
+      def encrypt data
+        cipher = OpenSSL::Cipher.new('aes-128-gcm')
+        cipher.encrypt
+        cipher.key = SECRET
+        iv = cipher.random_iv
+        encrypted = cipher.update(data) + cipher.final
+        tag = cipher.auth_tag
+        encode_base64(iv, encrypted, tag)
+      end
+
+      def decrypt data
+        iv, encrypted, tag = decode_base64(data)
+        decipher = OpenSSL::Cipher.new('aes-128-gcm')
+        decipher.decrypt
+        decipher.key = SECRET
+        decipher.iv = iv
+        decipher.auth_tag = tag
+        decipher.update(encrypted) + decipher.final
+      end
+
+      def encode_base64 *data
+        data.map{ |d| [d].pack('m0') }.join('.').tr('+/=', '-_~')
+      end
+
+      def decode_base64 str
+        str.split('.').map{ |d| d.tr('-_~', '+/=').unpack('m0').first }
       end
     }
 
