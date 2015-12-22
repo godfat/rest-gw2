@@ -50,7 +50,7 @@ gw2.get('account/bank') # => list of items in your bank
 
 If you would like to try it, run with:
 
-    env ACCESS_TOKEN=... rest-gw2
+    env RESTGW2_ACCESS_TOKEN=... rest-gw2
 
 Or you could put your access token in a config file and point it with:
 
@@ -58,7 +58,7 @@ Or you could put your access token in a config file and point it with:
 
 The format for the config file would be like:
 
-    ACCESS_TOKEN=...
+    RESTGW2_ACCESS_TOKEN=...
 
 ## CONTRIBUTORS:
 
