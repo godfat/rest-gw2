@@ -36,7 +36,12 @@ example using the client.
 ## INSTALLATION:
 
     gem install rest-gw2
-    gem install rack jellyfish # (if you need the web application)
+
+## INSTALLATION: (if you need the web application)
+
+    gem install rest-gw2 rack jellyfish
+    gem install dalli     # if you have memcached
+    gem install lru_redux # if you don't have memcached
 
 ## SYNOPSIS:
 
@@ -46,7 +51,7 @@ gw2 = RestGW2::Client.new(:access_token => '...')
 gw2.get('account/bank') # => list of items in your bank
 ```
 
-## Bundled Web Application:
+## SYNOPSIS: (if you need the web application)
 
 If you would like to try it, run with:
 
@@ -64,6 +69,7 @@ Or you could put your secret in a config file and point it with:
 The format for the config file would be like:
 
     RESTGW2_SECRET=...
+    RESTGW2_PREFIX=...
 
 ## CONTRIBUTORS:
 
