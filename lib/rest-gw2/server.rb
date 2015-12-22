@@ -132,6 +132,10 @@ module RestGW2
       found "#{u}?t=#{t}"
     end
 
+    get '/' do
+      render :index
+    end
+
     get '/bank' do
       @items, @error = gw2_call(:with_item_detail, 'account/bank')
       if @items
