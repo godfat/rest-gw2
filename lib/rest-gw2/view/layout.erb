@@ -9,8 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="icon" type="image/x-icon" href="https://wiki.guildwars2.com/favicon.ico"/>
     <title>GW2 Account Browser</title>
+    <style type="text/css">
+      #menu ul li{ display: inline-block; }
+    </style>
   </head>
   <body>
+    <div id="menu">
+      <%= erb :menu %>
+    </div>
     <div id="access_token">
       <form method="post" enctype="application/x-www-form-urlencoded"
             action="<%= path('/access_token') %>">
