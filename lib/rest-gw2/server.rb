@@ -168,6 +168,13 @@ module RestGW2
         render :bank
       end
     end
+
+    get '/materials' do
+      gw2_call(:with_item_detail, 'v2/account/materials') do |items|
+        @items = items
+        render :bank
+      end
+    end
   end
 
   Server = Jellyfish::Builder.app do
