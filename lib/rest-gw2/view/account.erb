@@ -3,7 +3,7 @@
   <% if value.kind_of?(Array) %>
     <% value.each.with_index do |v, i| %>
   <tr>
-    <th><%= key %> (<%= i + 1 %>)</th>
+    <th><%= key %> (<%= i %>)</th>
     <td><%= v %></td>
   </tr>
     <% end %>
