@@ -106,7 +106,7 @@ module RestGW2
       guilds.map do |gid|
         get('v1/guild_details', :guild_id => gid)
       end.map do |guild|
-        "#{guild['guild_name']} (#{guild['tag']})"
+        "#{guild['guild_name']} [#{guild['tag']}]"
       end
     end
   })
