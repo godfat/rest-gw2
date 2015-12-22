@@ -50,21 +50,20 @@ gw2.get('account/bank') # => list of items in your bank
 
 If you would like to try it, run with:
 
-    env RESTGW2_ACCESS_TOKEN=... rest-gw2
+    env RESTGW2_SECRET=... rest-gw2
 
-Or you could put your access token in a config file and point it with:
+The secret would be used for encrypting the access token. If you don't
+set it then it would just use the default secret, which basically means
+no encrypting at all, because the default secret is hard coded in the
+source, which is publicly available because this is an open source project.
+
+Or you could put your secret in a config file and point it with:
 
     env RESTGW2_CONFIG=... rest-gw2
 
 The format for the config file would be like:
 
-    RESTGW2_ACCESS_TOKEN=...
     RESTGW2_SECRET=...
-
-The secret would be used for encrypting the access token. If you don't
-set it then it would just use the default secret, which basically means
-no encrypting at all, because the default secret is hard coded in the source,
-which is publicly available because this is an open source project.
 
 ## CONTRIBUTORS:
 
