@@ -41,22 +41,29 @@ module RestGW2
   class ServerCore
     include Jellyfish
     controller_include Module.new{
-      def erb path, &block
-        ERB.new(views(path)).result(binding, &block)
-      end
-
       def render path
         erb(:layout){ erb(path) }
-      end
-
-      def views path
-        @views ||= {}
-        @views[path] ||= File.read("#{__dir__}/view/#{path}.erb")
       end
 
       def item_title item
         t = item['description']
         t && t.unpack('U*').map{ |c| "&##{c};" }.join
+      end
+
+      def gw2_call msg, *args
+        [gw2.public_send(msg, *args).itself, nil]
+      rescue RestGW2::Error => e
+        [nil, e.error['text']]
+      end
+
+      private
+      def erb path, &block
+        ERB.new(views(path)).result(binding, &block)
+      end
+
+      def views path
+        @views ||= {}
+        @views[path] ||= File.read("#{__dir__}/view/#{path}.erb")
       end
 
       def logger env
@@ -74,8 +81,14 @@ module RestGW2
     }
 
     get '/bank' do
-      @items = gw2.with_item_detail('account/bank')
-      render :bank
+      @items, @error = gw2_call(:with_item_detail, 'account/bank')
+      if @items
+        render :bank
+      elsif @error
+        render :error
+      else
+        raise "Impossible"
+      end
     end
   end
 
