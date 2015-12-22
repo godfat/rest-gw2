@@ -41,8 +41,12 @@ module RestGW2
   class ServerCore
     include Jellyfish
     controller_include Module.new{
+      def erb path, &block
+        ERB.new(views(path)).result(binding, &block)
+      end
+
       def render path
-        ERB.new(views(path)).result(binding)
+        erb(:layout){ erb(path) }
       end
 
       def views path
@@ -71,7 +75,7 @@ module RestGW2
 
     get '/bank' do
       @items = gw2.with_item_detail('account/bank')
-      render 'bank'
+      render :bank
     end
   end
 
