@@ -63,6 +63,10 @@ module RestGW2
         raise RestGW2::Error.new({'text' => e.message}, 0)
       end
 
+      def path str=nil
+        "#{ENV['RESTGW2_PREFIX']}/#{str}"
+      end
+
       def decrypted_access_token
         if t = request.GET['t']
           decrypt(t)
@@ -123,7 +127,9 @@ module RestGW2
 
     post '/access_token' do
       t = encrypt(request.POST['access_token'])
-      found "#{request.POST['referrer']}?t=#{t}"
+      r = request.POST['referrer']
+      u = if r == path then path('bank') else r end
+      found "#{u}?t=#{t}"
     end
 
     get '/bank' do
