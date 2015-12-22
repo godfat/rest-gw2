@@ -42,41 +42,17 @@ module RestGW2
     include Jellyfish
     SECRET = ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2
     controller_include Module.new{
+      # VIEW
       def render path
         erb(:layout){ erb(path) }
       end
 
-      def item_title item
-        t = item['description']
-        t && t.unpack('U*').map{ |c| "&##{c};" }.join
-      end
-
-      def gw2_call msg, *args
-        yield(gw2.public_send(msg, *args).itself)
-      rescue RestGW2::Error => e
-        @error = e.error['text']
-        render :error
-      end
-
-      def access_token
-        decrypted_access_token || ENV['RESTGW2_ACCESS_TOKEN']
-      rescue ArgumentError, OpenSSL::Cipher::CipherError => e
-        raise RestGW2::Error.new({'text' => e.message}, 0)
+      def erb path, &block
+        ERB.new(views(path)).result(binding, &block)
       end
 
       def path str
         "#{ENV['RESTGW2_PREFIX']}#{str}"
-      end
-
-      def decrypted_access_token
-        if t = request.GET['t']
-          decrypt(t)
-        end
-      end
-
-      private
-      def erb path, &block
-        ERB.new(views(path)).result(binding, &block)
       end
 
       def views path
@@ -84,11 +60,26 @@ module RestGW2
         @views[path] ||= File.read("#{__dir__}/view/#{path}.erb")
       end
 
-      def logger env
-        env['rack.logger'] || begin
-          require 'logger'
-          Logger.new(env['rack.errors'])
+      def menu item
+        if t
+          path("#{item}?t=#{t}")
+        else
+          path(item)
         end
+      end
+
+      # HELPER
+      def item_title item
+        d = item['description']
+        d && d.unpack('U*').map{ |c| "&##{c};" }.join
+      end
+
+      # CONTROLLER
+      def gw2_call msg, *args
+        yield(gw2.public_send(msg, *args).itself)
+      rescue RestGW2::Error => e
+        @error = e.error['text']
+        render :error
       end
 
       def gw2
@@ -97,6 +88,25 @@ module RestGW2
                    :cache => RestGW2.cache(logger(env)))
       end
 
+      # ACCESS TOKEN
+      def access_token
+        decrypted_access_token || ENV['RESTGW2_ACCESS_TOKEN']
+      rescue ArgumentError, OpenSSL::Cipher::CipherError => e
+        raise RestGW2::Error.new({'text' => e.message}, 0)
+      end
+
+      def decrypted_access_token
+        decrypt(t) if t
+      end
+
+      def t
+        @t ||= begin
+          r = request.GET['t']
+          r if r && !r.strip.empty?
+        end
+      end
+
+      # UTILITIES
       def encrypt data
         cipher = OpenSSL::Cipher.new('aes-128-gcm')
         cipher.encrypt
@@ -123,6 +133,14 @@ module RestGW2
 
       def decode_base64 str
         str.split('.').map{ |d| d.tr('-_~', '+/=').unpack('m0').first }
+      end
+
+      # MISC
+      def logger env
+        env['rack.logger'] || begin
+          require 'logger'
+          Logger.new(env['rack.errors'])
+        end
       end
     }
 
