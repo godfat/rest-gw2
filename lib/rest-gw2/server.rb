@@ -52,9 +52,10 @@ module RestGW2
       end
 
       def gw2_call msg, *args
-        [gw2.public_send(msg, *args).itself, nil]
+        yield(gw2.public_send(msg, *args).itself)
       rescue RestGW2::Error => e
-        [nil, e.error['text']]
+        @error = e.error['text']
+        render :error
       end
 
       def access_token
@@ -137,18 +138,16 @@ module RestGW2
     end
 
     get '/account' do
-      @account, @error = gw2_call(:account_with_detail)
-      render :account
+      gw2_call(:account_with_detail) do |account|
+        @account = account
+        render :account
+      end
     end
 
     get '/bank' do
-      @items, @error = gw2_call(:with_item_detail, 'v2/account/bank')
-      if @items
+      gw2_call(:with_item_detail, 'v2/account/bank') do |items|
+        @items = items
         render :bank
-      elsif @error
-        render :error
-      else
-        raise "Impossible"
       end
     end
   end
