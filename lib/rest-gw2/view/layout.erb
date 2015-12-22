@@ -11,6 +11,19 @@
     <title>GW2 Account Browser</title>
   </head>
   <body>
-    <%= yield %>
+    <div id="access_token">
+      <form method="post" enctype="application/x-www-form-urlencoded"
+            action="/access_token">
+        <input type="hidden" name="referrer" value="<%= request.path %>"/>
+        Access Token:
+        <input type="text" id="access_token_input" name="access_token"
+               size="72" minlength="72" maxlength="72"
+               onclick="this.select()"
+               value="<%= decrypted_access_token %>"/>
+      </form>
+    </div>
+    <div id="content">
+      <%= yield %>
+    </div>
   </body>
 </html>

@@ -58,13 +58,15 @@ module RestGW2
       end
 
       def access_token
-        if t = request.GET['t']
-          decrypt(t)
-        else
-          ENV['RESTGW2_ACCESS_TOKEN']
-        end
+        decrypted_access_token || ENV['RESTGW2_ACCESS_TOKEN']
       rescue ArgumentError, OpenSSL::Cipher::CipherError => e
         raise RestGW2::Error.new({'text' => e.message}, 0)
+      end
+
+      def decrypted_access_token
+        if t = request.GET['t']
+          decrypt(t)
+        end
       end
 
       private
@@ -118,6 +120,11 @@ module RestGW2
         str.split('.').map{ |d| d.tr('-_~', '+/=').unpack('m0').first }
       end
     }
+
+    post '/access_token' do
+      t = encrypt(request.POST['access_token'])
+      found "#{request.POST['referrer']}?t=#{t}"
+    end
 
     get '/bank' do
       @items, @error = gw2_call(:with_item_detail, 'account/bank')
