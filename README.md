@@ -42,6 +42,8 @@ example using the client.
     gem install rest-gw2 rack jellyfish
     gem install dalli     # if you have memcached
     gem install lru_redux # if you don't have memcached
+    gem install puma      # for a faster server which also works for JRuby
+    gem install yahns rack-handlers # slightly faster than puma, CRuby only
 
 ## SYNOPSIS:
 
@@ -70,6 +72,13 @@ The format for the config file would be like:
 
     RESTGW2_SECRET=...
     RESTGW2_PREFIX=...
+
+## DVELOPMENT:
+
+    git clone git@github.com:godfat/rest-gw2.git
+    cd rest-gw2
+    gem install rack jellyfish lru_redux yahns rack-handlers
+    ruby -Ilib -S bin/rest-gw2
 
 ## CONTRIBUTORS:
 
