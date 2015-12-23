@@ -190,14 +190,14 @@ module RestGW2
     get '/bank' do
       gw2_call(:with_item_detail, 'v2/account/bank') do |items|
         @items = items
-        render :bank
+        render :items
       end
     end
 
     get '/materials' do
       gw2_call(:with_item_detail, 'v2/account/materials') do |items|
         @items = items
-        render :bank
+        render :items
       end
     end
   end
