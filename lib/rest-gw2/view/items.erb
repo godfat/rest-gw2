@@ -1,13 +1,12 @@
 <ul>
-  <% @items.each do |item| %>
-    <li>
-      <% if item %>
-        <img src="<%= item['icon'] %>" style="width:64px; height:64px"
-             title="<%= item_title(item) %>"/>
-        (<%= item['count'] %>) <%= item['name'] %> <%= item_price(item) %>
-      <% else %>
-        N/A
-      <% end %>
-    </li>
+<% @items.each do |item| %>
+  <li>
+  <% if item %>
+    <%= item_wiki(item) %>
+    (<%= item['count'] %>) <%= item['name'] %> <%= item_price(item) %>
+  <% else %>
+    N/A
   <% end %>
+  </li>
+<% end %>
 </ul>

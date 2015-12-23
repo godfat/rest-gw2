@@ -74,6 +74,13 @@ module RestGW2
       end
 
       # HELPER
+      def item_wiki item
+        page = item['name'].tr(' ', '_')
+        img = %Q{<img src="#{item['icon']}" style="width:64px; height:64px"} +
+              %Q{ title="#{item_title(item)}"/>}
+        %Q{<a href="http://wiki.guildwars2.com/wiki/#{page}">#{img}</a>}
+      end
+
       def item_title item
         d = item['description']
         d && d.unpack('U*').map{ |c| "&##{c};" }.join
