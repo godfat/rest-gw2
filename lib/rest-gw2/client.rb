@@ -64,15 +64,20 @@ module RestGW2
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/items
+    # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
     def with_item_detail path, query={}
       items = get(path, query)
       ids   = items.map{ |i| i && i['id'] }
 
       detail = ids.compact.each_slice(100).map do |slice|
-        get('v2/items', :ids => slice.join(','))
+        query = {:ids => slice.join(',')}
+        [get('v2/items', query),
+         get('v2/commerce/prices', query)]
       end.flatten.group_by{ |i| i['id'] }
 
-      items.map{ |i| i && detail[i['id']].first.merge('count' => i['count']) }
+      items.map do |i|
+        i && detail[i['id']].inject(&:merge).merge('count' => i['count'])
+      end
     end
 
     private
