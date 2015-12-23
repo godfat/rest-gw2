@@ -199,6 +199,10 @@ module RestGW2
       end
     end
 
+    get '/characters' do
+      render :wip
+    end
+
     get '/bank' do
       gw2_call(:with_item_detail, 'v2/account/bank') do |items|
         @items = items
@@ -211,6 +215,18 @@ module RestGW2
         @items = items
         render :items
       end
+    end
+
+    get '/wallet' do
+      render :wip
+    end
+
+    get '/transactions' do
+      render :wip
+    end
+
+    get '/tokeninfo' do
+      render :wip
     end
   end
 
