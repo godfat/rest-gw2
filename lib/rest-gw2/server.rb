@@ -86,12 +86,17 @@ module RestGW2
         d && d.unpack('U*').map{ |c| "&##{c};" }.join
       end
 
+      def item_count item
+        c = item['count']
+        "(#{c})" if c > 1
+      end
+
       def item_price item
         b = item['buys']
         s = item['sells']
         bb = b && price(b['unit_price'])
         ss = s && price(s['unit_price'])
-        %Q{(#{bb} / #{ss})} if bb || ss
+        %Q{#{bb} / #{ss}} if bb || ss
       end
 
       def price copper

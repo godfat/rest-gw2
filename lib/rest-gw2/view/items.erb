@@ -3,9 +3,15 @@
   <li>
   <% if item %>
     <%= item_wiki(item) %>
-    (<%= item['count'] %>) <%= item['name'] %> <%= item_price(item) %>
+    <span class="description">
+      <%= item['name'] %>
+      <%= item_count(item) %>
+      <br/>
+      <%= item_price(item) %>
+    </span>
   <% else %>
-    N/A
+    <img class="icon"
+         src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"/>
   <% end %>
   </li>
 <% end %>
