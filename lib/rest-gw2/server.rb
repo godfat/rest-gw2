@@ -42,9 +42,9 @@ module RestGW2
     include Jellyfish
     SECRET = ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2
     COINS  = %w[
-      http://wiki.guildwars2.com/images/d/d1/Gold_coin.png
-      http://wiki.guildwars2.com/images/3/3c/Silver_coin.png
-      http://wiki.guildwars2.com/images/e/eb/Copper_coin.png
+      https://wiki.guildwars2.com/images/d/d1/Gold_coin.png
+      https://wiki.guildwars2.com/images/3/3c/Silver_coin.png
+      https://wiki.guildwars2.com/images/e/eb/Copper_coin.png
     ].freeze
     controller_include Module.new{
       # VIEW
