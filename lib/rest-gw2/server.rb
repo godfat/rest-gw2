@@ -66,7 +66,7 @@ module RestGW2
       end
 
       def path str
-        "#{ENV['RESTGW2_PREFIX']}#{str}"
+        h "#{ENV['RESTGW2_PREFIX']}#{str}"
       end
 
       def views path
