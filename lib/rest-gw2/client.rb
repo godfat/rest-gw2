@@ -58,8 +58,8 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/account
     # https://wiki.guildwars2.com/wiki/API:2/worlds
     # https://wiki.guildwars2.com/wiki/API:1/guild_details
-    def account_with_detail
-      me = get('v2/account')
+    def account_with_detail opts={}
+      me = get('v2/account', {}, opts)
       worlds = get('v2/worlds', :ids => me['world'])
       guilds = guilds_detail(me['guilds'])
       me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
@@ -67,8 +67,8 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/account/wallet
     # https://wiki.guildwars2.com/wiki/API:2/currencies
-    def wallet_with_detail
-      wallet = get('v2/account/wallet')
+    def wallet_with_detail opts={}
+      wallet = get('v2/account/wallet', {}, opts)
       ids = wallet.map{ |w| w['id'] }.join(',')
       currencies = get('v2/currencies', :ids => ids).group_by{ |w| w['id'] }
       wallet.map do |currency|
@@ -78,14 +78,14 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/items
     # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
-    def with_item_detail path, query={}
-      items = get(path, query)
+    def with_item_detail path, query={}, opts={}
+      items = get(path, query, opts)
       ids   = items.map{ |i| i && i['id'] }
 
       detail = ids.compact.each_slice(100).map do |slice|
         query = {:ids => slice.join(',')}
         [get('v2/items', query),
-         get('v2/commerce/prices', query)]
+         get('v2/commerce/prices', query, opts)]
       end.flatten.group_by{ |i| i['id'] }
 
       items.map do |i|

@@ -1,5 +1,7 @@
 
 require 'rest-gw2/server/cache'
+require 'mime/types'
+require 'rest-core'
 require 'jellyfish'
 
 require 'openssl'
@@ -65,20 +67,22 @@ module RestGW2
         CGI.escape(str) if str.kind_of?(String)
       end
 
-      def path str
-        h "#{ENV['RESTGW2_PREFIX']}#{str}"
+      def path str, q={}
+        RC::Middleware.request_uri(
+          RC::REQUEST_PATH => "#{ENV['RESTGW2_PREFIX']}#{str}",
+          RC::REQUEST_QUERY => q)
       end
 
       def views path
         File.read("#{__dir__}/view/#{path}.erb")
       end
 
+      def refresh_path
+        path(request.path, :r => '1', :t => t)
+      end
+
       def menu item
-        if t
-          path("#{item}?t=#{t}")
-        else
-          path(item)
-        end
+        path(item, :t => t)
       end
 
       def menu_trans item
@@ -125,7 +129,8 @@ module RestGW2
 
       # CONTROLLER
       def gw2_call msg, *args
-        yield(gw2.public_send(msg, *args).itself)
+        refresh = !!request.GET['r']
+        yield(gw2.public_send(msg, *args, 'cache.update' => refresh).itself)
       rescue RestGW2::Error => e
         @error = e.error['text']
         render :error
