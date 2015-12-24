@@ -1,16 +1,16 @@
 <table>
-<% @account.each do |key, value| %>
+<% @info.each do |key, value| %>
   <% if value.kind_of?(Array) %>
     <% value.each.with_index do |v, i| %>
   <tr>
-    <th><%= key %> (<%= i %>)</th>
-    <td><%= v %></td>
+    <th><%= h key %> (<%= i %>)</th>
+    <td><%= h v %></td>
   </tr>
     <% end %>
   <% else %>
   <tr>
-    <th><%= key %></th>
-    <td><%= value %></td>
+    <th><%= h key %></th>
+    <td><%= h value %></td>
   </tr>
   <% end %>
 <% end %>

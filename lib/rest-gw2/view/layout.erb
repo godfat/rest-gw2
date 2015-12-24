@@ -27,14 +27,14 @@
     </div>
     <div id="access_token">
       <form method="post" enctype="application/x-www-form-urlencoded"
-            action="<%= path('/access_token') %>">
+            action="<%= h path('/access_token') %>">
         <input type="hidden" name="referrer"
-               value="<%= path(request.path) %>"/>
+               value="<%= h path(request.path) %>"/>
         API Key:
         <input type="text" id="access_token_input" name="access_token"
                size="72" minlength="72" maxlength="72"
                onclick="this.select()"
-               value="<%= decrypted_access_token %>"/>
+               value="<%= h decrypted_access_token %>"/>
       </form>
     </div>
     <div id="content">

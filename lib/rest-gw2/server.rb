@@ -4,6 +4,7 @@ require 'jellyfish'
 
 require 'openssl'
 require 'erb'
+require 'cgi'
 
 module RestGW2
   CONFIG = ENV['RESTGW2_CONFIG'] || File.expand_path("#{__dir__}/../../.env")
@@ -56,6 +57,14 @@ module RestGW2
         ERB.new(views(path)).result(binding, &block)
       end
 
+      def h str
+        CGI.escape_html(str) if str.kind_of?(String)
+      end
+
+      def u str
+        CGI.escape(str) if str.kind_of?(String)
+      end
+
       def path str
         "#{ENV['RESTGW2_PREFIX']}#{str}"
       end
@@ -77,8 +86,8 @@ module RestGW2
       def item_wiki item
         page = item['name'].tr(' ', '_')
         img = %Q{<img class="icon" title="#{item_title(item)}"} +
-              %Q{ src="#{item['icon']}"/>}
-        %Q{<a href="http://wiki.guildwars2.com/wiki/#{page}">#{img}</a>}
+              %Q{ src="#{u item['icon']}"/>}
+        %Q{<a href="http://wiki.guildwars2.com/wiki/#{u page}">#{img}</a>}
       end
 
       def item_title item
@@ -107,7 +116,7 @@ module RestGW2
         n = l.index(&:nonzero?)
         return '-' unless n
         l.zip(COINS).drop(n).map do |(num, (title, src))|
-          %Q{#{num}<img class="price" title="#{title}" src="#{src}"/>}
+          %Q{#{num}<img class="price" title="#{h title}" src="#{u src}"/>}
         end.join(' ')
       end
 
@@ -194,8 +203,8 @@ module RestGW2
 
     get '/account' do
       gw2_call(:account_with_detail) do |account|
-        @account = account
-        render :account
+        @info = account
+        render :info
       end
     end
 
@@ -229,7 +238,10 @@ module RestGW2
     end
 
     get '/tokeninfo' do
-      render :wip
+      gw2_call(:get, 'v2/tokeninfo') do |info|
+        @info = info
+        render :info
+      end
     end
   end
 

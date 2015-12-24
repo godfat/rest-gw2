@@ -4,8 +4,8 @@
   <% if item %>
     <%= item_wiki(item) %>
     <span class="description">
-      <%= item['name'] %>
-      <%= item_count(item) %>
+      <%= h item['name'] %>
+      <%= h item_count(item) %>
       <br/>
       <%= item_price(item) %>
     </span>
