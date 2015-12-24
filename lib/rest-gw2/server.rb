@@ -86,7 +86,7 @@ module RestGW2
       def item_wiki item
         page = item['name'].tr(' ', '_')
         img = %Q{<img class="icon" title="#{item_title(item)}"} +
-              %Q{ src="#{u item['icon']}"/>}
+              %Q{ src="#{h item['icon']}"/>}
         %Q{<a href="http://wiki.guildwars2.com/wiki/#{u page}">#{img}</a>}
       end
 
@@ -116,7 +116,7 @@ module RestGW2
         n = l.index(&:nonzero?)
         return '-' unless n
         l.zip(COINS).drop(n).map do |(num, (title, src))|
-          %Q{#{num}<img class="price" title="#{h title}" src="#{u src}"/>}
+          %Q{#{num}<img class="price" title="#{h title}" src="#{h src}"/>}
         end.join(' ')
       end
 
