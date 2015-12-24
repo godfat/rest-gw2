@@ -82,6 +82,10 @@ module RestGW2
         end
       end
 
+      def menu_trans item
+        menu("/transactions#{item}")
+      end
+
       # HELPER
       def item_wiki item
         page = item['name'].tr(' ', '_')
@@ -234,7 +238,7 @@ module RestGW2
     end
 
     get '/transactions' do
-      render :wip
+      render :transactions
     end
 
     get '/tokeninfo' do
