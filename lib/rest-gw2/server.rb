@@ -76,8 +76,8 @@ module RestGW2
       # HELPER
       def item_wiki item
         page = item['name'].tr(' ', '_')
-        img = %Q{<img class="icon" src="#{item['icon']}"} +
-              %Q{ title="#{item_title(item)}"/>}
+        img = %Q{<img class="icon" title="#{item_title(item)}"} +
+              %Q{ src="#{item['icon']}"/>}
         %Q{<a href="http://wiki.guildwars2.com/wiki/#{page}">#{img}</a>}
       end
 
@@ -107,7 +107,7 @@ module RestGW2
         n = l.index(&:nonzero?)
         return '-' unless n
         l.zip(COINS).drop(n).map do |(num, (title, src))|
-          %Q{#{num}<img title="#{title}" src="#{src}" class="price"/>}
+          %Q{#{num}<img class="price" title="#{title}" src="#{src}"/>}
         end.join(' ')
       end
 
@@ -218,7 +218,10 @@ module RestGW2
     end
 
     get '/wallet' do
-      render :wip
+      gw2_call(:wallet_with_detail) do |wallet|
+        @wallet = wallet
+        render :wallet
+      end
     end
 
     get '/transactions' do

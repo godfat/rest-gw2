@@ -1,0 +1,18 @@
+<ul class="item">
+<% @wallet.each do |currency| %>
+  <li>
+    <img class="icon"
+         title="<%= currency['description'] %>"
+         src="<%= currency['icon'] %>"/>
+    <span class="description">
+      <%= currency['name'] %>
+      <br/>
+      <% if currency['name'] == 'Coin' %>
+      <%= price(currency['value']) %>
+      <% else %>
+      <%= currency['value'].to_s.gsub(/(\d)(?=\d{3}+$)/, '\1,') %>
+      <% end %>
+    </span>
+  </li>
+<% end %>
+</ul>

@@ -65,6 +65,17 @@ module RestGW2
       me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/account/wallet
+    # https://wiki.guildwars2.com/wiki/API:2/currencies
+    def wallet_with_detail
+      wallet = get('v2/account/wallet')
+      ids = wallet.map{ |w| w['id'] }.join(',')
+      currencies = get('v2/currencies', :ids => ids).group_by{ |w| w['id'] }
+      wallet.map do |currency|
+        currency.merge(currencies[currency['id']].first)
+      end.sort_by{ |c| c['order'] }
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/items
     # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
     def with_item_detail path, query={}
