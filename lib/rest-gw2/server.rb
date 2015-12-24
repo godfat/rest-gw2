@@ -41,11 +41,11 @@ module RestGW2
   class ServerCore
     include Jellyfish
     SECRET = ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2
-    COINS  = %w[
+    COINS  = %w[gold silver copper].zip(%w[
       https://wiki.guildwars2.com/images/d/d1/Gold_coin.png
       https://wiki.guildwars2.com/images/3/3c/Silver_coin.png
       https://wiki.guildwars2.com/images/e/eb/Copper_coin.png
-    ].freeze
+    ]).freeze
     controller_include Module.new{
       # VIEW
       def render path
@@ -106,8 +106,8 @@ module RestGW2
         l = [g, s, c]
         n = l.index(&:nonzero?)
         return '-' unless n
-        l.zip(COINS).drop(n).map do |(num, src)|
-          %Q{#{num}<img src="#{src}" class="price"/>}
+        l.zip(COINS).drop(n).map do |(num, (title, src))|
+          %Q{#{num}<img title="#{title}" src="#{src}" class="price"/>}
         end.join(' ')
       end
 
