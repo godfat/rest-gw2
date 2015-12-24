@@ -70,8 +70,7 @@ module RestGW2
       end
 
       def views path
-        @views ||= {}
-        @views[path] ||= File.read("#{__dir__}/view/#{path}.erb")
+        File.read("#{__dir__}/view/#{path}.erb")
       end
 
       def menu item
