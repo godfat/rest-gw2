@@ -132,6 +132,32 @@ module RestGW2
         end.join(' ')
       end
 
+      def abbr_time_ago time, precision=1
+        return unless time
+        ago = time_ago(time)
+        short = ago.take(precision).join(' ')
+        %Q{(<abbr title="#{time}, #{ago.join(' ')} ago">#{short} ago</abbr>)}
+      end
+
+      def time_ago time, precision=1
+        delta = (Time.now - Time.parse(time)).to_i
+        result = []
+
+        [[ 60, :seconds],
+         [ 60, :minutes],
+         [ 24, :hours  ],
+         [365, :days   ],
+         [999, :years  ]].
+          inject(delta) do |length, (divisor, name)|
+            quotient, remainder = length.divmod(divisor)
+            result.unshift("#{remainder} #{name}")
+            break if quotient == 0
+            quotient
+          end
+
+        result
+      end
+
       # CONTROLLER
       def gw2_call msg, *args
         refresh = !!request.GET['r']
@@ -261,14 +287,14 @@ module RestGW2
     end
 
     get '/transactions/bought' do
-      gw2_call(:transactions_with_detail, 'history/buys') do |trans|
+      gw2_call(:transactions_with_detail_compact, 'history/buys') do |trans|
         @trans = trans
         render :transactions
       end
     end
 
     get '/transactions/sold' do
-      gw2_call(:transactions_with_detail, 'history/sells') do |trans|
+      gw2_call(:transactions_with_detail_compact, 'history/sells') do |trans|
         @trans = trans
         render :transactions
       end

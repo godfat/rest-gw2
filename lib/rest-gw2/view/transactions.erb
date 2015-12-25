@@ -13,7 +13,7 @@
     <%= h trans['name'] %>
     <%= h item_count(trans) %>
     <br/>
-    <%= price(trans['price']) %>
+    <%= price(trans['price']) %> <%= abbr_time_ago(trans['purchased']) %>
     <br/>
     <%= item_price(trans) %>
   </span>

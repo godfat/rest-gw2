@@ -104,6 +104,19 @@ module RestGW2
       end
     end
 
+    def transactions_with_detail_compact path, query={}, opts={}
+      transactions_with_detail(path, query, opts).inject([]) do |ret, trans|
+        last = ret.last
+        if last && last['item_id'] == trans['item_id'] &&
+                   last['price']   == trans['price']
+           last['count'] += trans['count']
+        else
+          ret << trans
+        end
+        ret
+      end
+    end
+
     private
     # https://wiki.guildwars2.com/wiki/API:2/worlds
     def world_detail world
