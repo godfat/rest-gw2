@@ -83,7 +83,7 @@ module RestGW2
 
       def menu item, title
         href = path(item, :t => t)
-        if "#{ENV['RESTGW2_PREFIX']}#{request.fullpath}" == href
+        if path(request.path, :t => t) == href
           title
         else
           %Q{<a href="#{href}">#{title}</a>}
