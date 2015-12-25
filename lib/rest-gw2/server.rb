@@ -160,7 +160,7 @@ module RestGW2
 
       def sum_trans trans
         trans.inject(0) do |sum, t|
-          sum + t['price']
+          sum + t['price'] * t['quantity']
         end
       end
 
