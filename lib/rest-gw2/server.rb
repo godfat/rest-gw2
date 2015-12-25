@@ -164,6 +164,17 @@ module RestGW2
         end
       end
 
+      def sum_items items
+        items.inject([0, 0]) do |sum, i|
+          next sum unless i
+          b = i['buys']
+          s = i['sells']
+          sum[0] += b['unit_price'] * i['count'] if b
+          sum[1] += s['unit_price'] * i['count'] if s
+          sum
+        end
+      end
+
       # CONTROLLER
       def gw2_call msg, *args
         refresh = !!request.GET['r']
@@ -260,6 +271,7 @@ module RestGW2
     get '/bank' do
       gw2_call(:with_item_detail, 'v2/account/bank') do |items|
         @items = items
+        @buy, @sell = sum_items(items)
         render :items
       end
     end
@@ -267,6 +279,7 @@ module RestGW2
     get '/materials' do
       gw2_call(:with_item_detail, 'v2/account/materials') do |items|
         @items = items
+        @buy, @sell = sum_items(items)
         render :items
       end
     end
