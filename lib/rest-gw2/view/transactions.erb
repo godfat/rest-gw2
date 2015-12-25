@@ -5,6 +5,7 @@
   <li><%= menu_trans('/sold', 'Sold') %></li>
 </ul>
 
+Total: <%= price(@total) %>
 <ul class="item">
 <% @trans.each do |trans| %>
   <li>

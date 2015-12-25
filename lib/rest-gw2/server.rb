@@ -158,6 +158,12 @@ module RestGW2
         result
       end
 
+      def sum_trans trans
+        trans.inject(0) do |sum, t|
+          sum + t['price']
+        end
+      end
+
       # CONTROLLER
       def gw2_call msg, *args
         refresh = !!request.GET['r']
@@ -275,6 +281,7 @@ module RestGW2
     get '/transactions/buying' do
       gw2_call(:transactions_with_detail, 'current/buys') do |trans|
         @trans = trans
+        @total = sum_trans(trans)
         render :transactions
       end
     end
@@ -282,6 +289,7 @@ module RestGW2
     get '/transactions/selling' do
       gw2_call(:transactions_with_detail, 'current/sells') do |trans|
         @trans = trans
+        @total = sum_trans(trans)
         render :transactions
       end
     end
@@ -289,6 +297,7 @@ module RestGW2
     get '/transactions/bought' do
       gw2_call(:transactions_with_detail_compact, 'history/buys') do |trans|
         @trans = trans
+        @total = sum_trans(trans)
         render :transactions
       end
     end
@@ -296,6 +305,7 @@ module RestGW2
     get '/transactions/sold' do
       gw2_call(:transactions_with_detail_compact, 'history/sells') do |trans|
         @trans = trans
+        @total = sum_trans(trans)
         render :transactions
       end
     end
