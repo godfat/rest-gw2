@@ -81,12 +81,17 @@ module RestGW2
         path(request.path, :r => '1', :t => t)
       end
 
-      def menu item
-        path(item, :t => t)
+      def menu item, title
+        href = path(item, :t => t)
+        if request.fullpath == href
+          title
+        else
+          %Q{<a href="#{href}">#{title}</a>}
+        end
       end
 
-      def menu_trans item
-        menu("/transactions#{item}")
+      def menu_trans item, title
+        menu("/transactions#{item}", title)
       end
 
       # HELPER
@@ -241,8 +246,32 @@ module RestGW2
       end
     end
 
-    get '/transactions' do
-      render :transactions
+    get '/transactions/buying' do
+      gw2_call(:transactions_with_detail, 'current/buys') do |trans|
+        @trans = trans
+        render :transactions
+      end
+    end
+
+    get '/transactions/selling' do
+      gw2_call(:transactions_with_detail, 'current/sells') do |trans|
+        @trans = trans
+        render :transactions
+      end
+    end
+
+    get '/transactions/bought' do
+      gw2_call(:transactions_with_detail, 'history/buys') do |trans|
+        @trans = trans
+        render :transactions
+      end
+    end
+
+    get '/transactions/sold' do
+      gw2_call(:transactions_with_detail, 'history/sells') do |trans|
+        @trans = trans
+        render :transactions
+      end
     end
 
     get '/tokeninfo' do

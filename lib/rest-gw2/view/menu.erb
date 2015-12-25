@@ -1,11 +1,11 @@
 <ul class="menu">
-  <li><a href="<%= menu('/') %>">Home</a></li>
-  <li><a href="<%= menu('/account') %>">Account</a></li>
-  <li><a href="<%= menu('/characters') %>">Characters</a></li>
-  <li><a href="<%= menu('/bank') %>">Bank</a></li>
-  <li><a href="<%= menu('/materials') %>">Materials</a></li>
-  <li><a href="<%= menu('/wallet') %>">Wallet</a></li>
-  <li><a href="<%= menu('/transactions') %>">Transactions</a></li>
-  <li><a href="<%= menu('/tokeninfo') %>">Info</a></li>
+  <li><%= menu('/', 'Home') %></li>
+  <li><%= menu('/account', 'Account') %></li>
+  <li><%= menu('/characters', 'Characters') %></li>
+  <li><%= menu('/bank', 'Bank') %></li>
+  <li><%= menu('/materials', 'Materials') %></li>
+  <li><%= menu('/wallet', 'Wallet') %></li>
+  <li><%= menu_trans('/buying', 'Transactions') %></li>
+  <li><%= menu('/tokeninfo', 'Info') %></li>
   <li><a href="<%= refresh_path %>">Refresh</a></li>
 </ul>

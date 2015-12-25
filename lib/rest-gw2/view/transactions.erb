@@ -1,1 +1,22 @@
-<%= erb :menu_trans %>
+<ul class="menu">
+  <li><%= menu_trans('/buying', 'Buying') %></li>
+  <li><%= menu_trans('/selling', 'Selling') %></li>
+  <li><%= menu_trans('/bought', 'Bought') %></li>
+  <li><%= menu_trans('/sold', 'Sold') %></li>
+</ul>
+
+<ul class="item">
+<% @trans.each do |trans| %>
+  <li>
+  <%= item_wiki(trans) %>
+  <span class="description">
+    <%= h trans['name'] %>
+    <%= h item_count(trans) %>
+    <br/>
+    <%= price(trans['price']) %>
+    <br/>
+    <%= item_price(trans) %>
+  </span>
+  </li>
+<% end %>
+</ul>
