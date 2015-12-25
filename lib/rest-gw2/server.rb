@@ -268,6 +268,22 @@ module RestGW2
       render :wip
     end
 
+    get '/dyes' do
+      render :wip
+    end
+
+    get '/skins' do
+      render :wip
+    end
+
+    get '/minis' do
+      render :wip
+    end
+
+    get '/achievements' do
+      render :wip
+    end
+
     get '/bank' do
       gw2_call(:with_item_detail, 'v2/account/bank') do |items|
         @items = items
