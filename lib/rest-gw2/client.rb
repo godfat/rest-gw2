@@ -13,7 +13,7 @@ module RestGW2
 
     use RC::JsonResponse  , true
     use RC::CommonLogger  , nil
-    use RC::Cache         , nil, 600
+    use RC::Cache         , nil, 86400
   end
 
   class Error < RestCore::Error

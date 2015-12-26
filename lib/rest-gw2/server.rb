@@ -163,7 +163,8 @@ module RestGW2
       # CONTROLLER
       def gw2_call msg, *args
         refresh = !!request.GET['r']
-        yield(gw2.public_send(msg, *args, 'cache.update' => refresh).itself)
+        opts = {'cache.update' => refresh, 'expires_in' => 600}
+        yield(gw2.public_send(msg, *args, opts).itself)
       rescue RestGW2::Error => e
         @error = e.error['text']
         render :error
