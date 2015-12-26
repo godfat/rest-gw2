@@ -7,7 +7,7 @@ module RestGW2
     use RC::DefaultHeaders, {'Accept' => 'application/json'}
     use RC::Oauth2Header  , 'Bearer', nil
 
-    use RC::Timeout       , 10
+    use RC::Timeout       , 30
     use RC::ErrorHandler  , lambda{ |env| RestGW2::Error.call(env) }
     use RC::ErrorDetectorHttp
 
