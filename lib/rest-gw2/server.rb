@@ -3,6 +3,7 @@ require 'rest-gw2/server/cache'
 require 'mime/types'
 require 'rest-core'
 require 'jellyfish'
+require 'rack'
 
 require 'openssl'
 require 'erb'
