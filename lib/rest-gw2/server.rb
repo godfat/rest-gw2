@@ -31,10 +31,6 @@ module RestGW2
     def []= *args
       set(*args)
     end
-
-    def store *args
-      set(*args)
-    end
   end
 
   def self.cache logger
