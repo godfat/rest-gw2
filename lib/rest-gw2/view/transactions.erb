@@ -14,7 +14,8 @@ Total: <%= price(@total) %>
     <%= h trans['name'] %>
     <%= h item_count(trans) %>
     <br/>
-    <%= price(trans['price']) %> <%= abbr_time_ago(trans['purchased']) %>
+    <%= price(trans['price']) %>
+    <%= abbr_time_ago(trans['purchased'] || trans['created']) %>
     <br/>
     <%= item_price(trans) %>
   </span>
