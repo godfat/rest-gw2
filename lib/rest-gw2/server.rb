@@ -178,13 +178,9 @@ module RestGW2
 
       # ACCESS TOKEN
       def access_token
-        decrypted_access_token || ENV['RESTGW2_ACCESS_TOKEN']
+        t && decrypt(t) || ENV['RESTGW2_ACCESS_TOKEN']
       rescue ArgumentError, OpenSSL::Cipher::CipherError => e
         raise RestGW2::Error.new({'text' => e.message}, 0)
-      end
-
-      def decrypted_access_token
-        decrypt(t) if t
       end
 
       def t
