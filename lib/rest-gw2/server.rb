@@ -5,6 +5,7 @@ require 'rest-core'
 require 'jellyfish'
 require 'rack'
 
+require 'timeout'
 require 'openssl'
 require 'erb'
 require 'cgi'
@@ -229,6 +230,11 @@ module RestGW2
         end
       end
     }
+
+    handle Timeout::Error do
+      @error = 'Timeout. Please try again.'
+      render :error
+    end
 
     post '/access_token' do
       t = encrypt(request.POST['access_token'])
