@@ -9,6 +9,10 @@ module RestGW2
       def []= *args
         set(*args)
       end
+
+      def store key, value, *args
+        set(*args)
+      end
     end
 
     module_function
