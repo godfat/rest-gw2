@@ -11,7 +11,7 @@ module RestGW2
       end
 
       def store key, value, *args
-        set(*args)
+        set(key, value, *args)
       end
     end
 
