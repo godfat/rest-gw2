@@ -80,7 +80,8 @@ module RestGW2
       # HELPER
       def item_wiki item
         page = item['name'].tr(' ', '_')
-        img = %Q{<img class="icon" title="#{item_title(item)}"} +
+        missing = if item['count'] == 0 then ' missing' else nil end
+        img = %Q{<img class="icon#{missing}" title="#{item_title(item)}"} +
               %Q{ src="#{h item['icon']}"/>}
         %Q{<a href="http://wiki.guildwars2.com/wiki/#{u page}">#{img}</a>}
       end
