@@ -78,9 +78,9 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/items
     # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
-    def with_item_detail path, query={}, opts={}, &block
+    def with_item_detail path, opts={}, &block
       block ||= :itself.to_proc
-      items = block.call(get(path, query, opts))
+      items = block.call(get(path, {}, opts))
       ids   = items.map{ |i| i && i['id'] }
 
       detail = ids.compact.each_slice(100).map do |slice|
@@ -95,17 +95,16 @@ module RestGW2
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/commerce/transactions
-    def transactions_with_detail path, query={}, opts={}
-      with_item_detail("v2/commerce/transactions/#{path}",
-                       query, opts) do |trans|
+    def transactions_with_detail path, opts={}
+      with_item_detail("v2/commerce/transactions/#{path}", opts) do |trans|
         trans.map do |t|
           t.merge('id' => t['item_id'], 'count' => t['quantity'])
         end
       end
     end
 
-    def transactions_with_detail_compact path, query={}, opts={}
-      transactions_with_detail(path, query, opts).inject([]) do |ret, trans|
+    def transactions_with_detail_compact path, opts={}
+      transactions_with_detail(path, opts).inject([]) do |ret, trans|
         last = ret.last
         if last && last['item_id'] == trans['item_id'] &&
                    last['price']   == trans['price']
