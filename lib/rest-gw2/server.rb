@@ -24,20 +24,6 @@ module RestGW2
     ENV[k] ||= v
   end
 
-  module DalliExtension
-    def [] *args
-      get(*args)
-    end
-
-    def []= *args
-      set(*args)
-    end
-  end
-
-  def self.cache logger
-    @cache ||= Cache.pick(logger)
-  end
-
   class ServerCore
     include Jellyfish
     SECRET = ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2
@@ -184,7 +170,7 @@ module RestGW2
       def gw2
         Client.new(:access_token => access_token,
                    :log_method => logger(env).method(:info),
-                   :cache => RestGW2.cache(logger(env)))
+                   :cache => RestGW2::Cache.default(logger(env)))
       end
 
       # ACCESS TOKEN

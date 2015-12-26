@@ -1,7 +1,21 @@
 
 module RestGW2
   module Cache
+    module DalliExtension
+      def [] *args
+        get(*args)
+      end
+
+      def []= *args
+        set(*args)
+      end
+    end
+
     module_function
+    def default logger
+      @cache ||= Cache.pick(logger)
+    end
+
     def pick logger
       memcache(logger) || lru_cache(logger)
     end
