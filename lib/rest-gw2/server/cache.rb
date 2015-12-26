@@ -10,8 +10,8 @@ module RestGW2
         set(*args)
       end
 
-      def store key, value, *args
-        set(key, value, *args)
+      def store key, value, expires_in: nil
+        set(key, value, expires_in)
       end
     end
 
