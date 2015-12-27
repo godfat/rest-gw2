@@ -5,13 +5,7 @@
   <li><%= menu_trans('/sold', 'Sold') %></li>
 </ul>
 
-<ul class="menu">
-<% if @pages.size > 2 %>
-  <% @pages.each do |p| %>
-    <li><%= page(p) %></li>
-  <% end %>
-<% end %>
-</ul>
+<%= erb :pages %>
 
 Total: <%= price(@total) %>
 <ul class="item">
@@ -30,3 +24,5 @@ Total: <%= price(@total) %>
   </li>
 <% end %>
 </ul>
+
+<%= erb :pages %>

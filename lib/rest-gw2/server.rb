@@ -58,7 +58,8 @@ module RestGW2
       end
 
       def views path
-        File.read("#{__dir__}/view/#{path}.erb")
+        @views ||= {}
+        @views[path] = File.read("#{__dir__}/view/#{path}.erb")
       end
 
       def refresh_path

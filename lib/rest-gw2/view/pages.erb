@@ -1,0 +1,7 @@
+<ul class="menu">
+<% if @pages.size > 2 %>
+  <% @pages.each do |p| %>
+    <li><%= page(p) %></li>
+  <% end %>
+<% end %>
+</ul>
