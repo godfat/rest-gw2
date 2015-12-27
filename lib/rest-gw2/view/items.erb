@@ -5,14 +5,13 @@ Total: <%= price(@buy) %> / <%= price(@sell) %>
   <% if item %>
     <%= item_wiki(item) %>
     <span class="description">
-      <%= h item['name'] %>
+      <%= h item['name'] || "?#{item['id']}?" %>
       <%= h item_count(item) %>
       <br/>
       <%= item_price(item) %>
     </span>
   <% else %>
-    <img class="icon"
-         src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"/>
+    <%= blank_icon %>
   <% end %>
   </li>
 <% end %>

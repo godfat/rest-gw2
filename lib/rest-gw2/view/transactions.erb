@@ -11,7 +11,7 @@ Total: <%= price(@total) %>
   <li>
   <%= item_wiki(trans) %>
   <span class="description">
-    <%= h trans['name'] %>
+    <%= h trans['name'] || "?#{trans['id']}?" %>
     <%= h item_count(trans) %>
     <br/>
     <%= price(trans['price']) %>

@@ -79,12 +79,20 @@ module RestGW2
       end
 
       # HELPER
+      def blank_icon
+        %Q{<img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"/>}
+      end
+
       def item_wiki item
-        page = item['name'].tr(' ', '_')
-        missing = if item['count'] == 0 then ' missing' else nil end
-        img = %Q{<img class="icon#{missing}" title="#{item_title(item)}"} +
-              %Q{ src="#{h item['icon']}"/>}
-        %Q{<a href="http://wiki.guildwars2.com/wiki/#{u page}">#{img}</a>}
+        if item['name']
+          page = item['name'].tr(' ', '_')
+          missing = if item['count'] == 0 then ' missing' else nil end
+          img = %Q{<img class="icon#{missing}" title="#{item_title(item)}"} +
+                %Q{ src="#{h item['icon']}"/>}
+          %Q{<a href="http://wiki.guildwars2.com/wiki/#{u page}">#{img}</a>}
+        else
+          blank_icon
+        end
       end
 
       def item_title item
