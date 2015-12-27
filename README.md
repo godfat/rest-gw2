@@ -78,7 +78,7 @@ The format for the config file would be like:
     git clone git@github.com:godfat/rest-gw2.git
     cd rest-gw2
     gem install rack jellyfish lru_redux yahns rack-handlers
-    ruby -Ilib -S bin/rest-gw2
+    ruby -Ilib:rest-core/lib -S bin/rest-gw2
 
 ## CONTRIBUTORS:
 
