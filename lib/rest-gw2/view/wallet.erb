@@ -1,9 +1,7 @@
 <ul class="item">
 <% @wallet.each do |currency| %>
   <li>
-    <img class="icon"
-         title="<%= h currency['description'] %>"
-         src="<%= h currency['icon'] %>"/>
+    <%= item_wiki(currency) %>
     <span class="description">
       <%= h currency['name'] %>
       <br/>
