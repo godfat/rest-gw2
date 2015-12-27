@@ -170,6 +170,14 @@ module RestGW2
         render :error
       end
 
+      def trans_call msg, path, &block
+        gw2_call(msg, path, :page => request.GET['p'].to_i) do |trans|
+          @trans = trans
+          @total = sum_trans(trans)
+          render :transactions
+        end
+      end
+
       def gw2
         Client.new(:access_token => access_token,
                    :log_method => logger(env).method(:info),
@@ -295,35 +303,19 @@ module RestGW2
     end
 
     get '/transactions/buying' do
-      gw2_call(:transactions_with_detail, 'current/buys') do |trans|
-        @trans = trans
-        @total = sum_trans(trans)
-        render :transactions
-      end
+      trans_call(:transactions_with_detail, 'current/buys')
     end
 
     get '/transactions/selling' do
-      gw2_call(:transactions_with_detail, 'current/sells') do |trans|
-        @trans = trans
-        @total = sum_trans(trans)
-        render :transactions
-      end
+      trans_call(:transactions_with_detail, 'current/sells')
     end
 
     get '/transactions/bought' do
-      gw2_call(:transactions_with_detail_compact, 'history/buys') do |trans|
-        @trans = trans
-        @total = sum_trans(trans)
-        render :transactions
-      end
+      trans_call(:transactions_with_detail_compact, 'history/buys')
     end
 
     get '/transactions/sold' do
-      gw2_call(:transactions_with_detail_compact, 'history/sells') do |trans|
-        @trans = trans
-        @total = sum_trans(trans)
-        render :transactions
-      end
+      trans_call(:transactions_with_detail_compact, 'history/sells')
     end
 
     get '/tokeninfo' do

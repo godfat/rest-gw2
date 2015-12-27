@@ -95,17 +95,17 @@ module RestGW2
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/commerce/transactions
-    def transactions_with_detail path, opts={}
+    def transactions_with_detail path, query={}, opts={}
       with_item_detail("v2/commerce/transactions/#{path}",
-                       {:page_size => 200}, opts) do |trans|
+                       {:page_size => 200}.merge(query), opts) do |trans|
         trans.map do |t|
           t.merge('id' => t['item_id'], 'count' => t['quantity'])
         end
       end
     end
 
-    def transactions_with_detail_compact path, opts={}
-      transactions_with_detail(path, opts).inject([]) do |ret, trans|
+    def transactions_with_detail_compact path, query={}, opts={}
+      transactions_with_detail(path, query, opts).inject([]) do |ret, trans|
         last = ret.last
         if last && last['item_id'] == trans['item_id'] &&
                    last['price']   == trans['price']
