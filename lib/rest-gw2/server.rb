@@ -62,20 +62,31 @@ module RestGW2
       end
 
       def refresh_path
-        path(request.path, :r => '1', :t => t)
+        path(request.path, :p => p, :r => '1', :t => t)
       end
 
-      def menu item, title
-        href = path(item, :t => t)
-        if path(request.path, :t => t) == href
+      # TODO: clean me up
+      def menu item, title, query={}
+        href = path(item, query.merge(:t => t))
+        if path(request.path, :p => p, :t => t) == href
           title
         else
           %Q{<a href="#{href}">#{title}</a>}
         end
       end
 
+      # TODO: clean me up
       def menu_trans item, title
-        menu("/transactions#{item}", title)
+        key = "/transactions#{item}"
+        if path(request.path) == path(key)
+          menu(key, title, :p => p)
+        else
+          menu(key, title)
+        end
+      end
+
+      def page num
+        menu(request.path, num.to_s, :p => zero_is_nil(num))
       end
 
       # HELPER
@@ -179,11 +190,23 @@ module RestGW2
       end
 
       def trans_call msg, path, &block
-        gw2_call(msg, path, :page => request.GET['p'].to_i) do |trans|
+        gw2_call(msg, path, :page => p) do |trans|
+          @pages = calculate_pages("v2/commerce/transactions/#{path}")
           @trans = trans
           @total = sum_trans(trans)
           render :transactions
         end
+      end
+
+      def calculate_pages path
+        link = gw2.get(path, {:page_size => 200},
+                       RC::RESPONSE_KEY => RC::RESPONSE_HEADERS)['LINK']
+        pages = RC::ParseLink.parse_link(link)
+        parse_page(pages['first']['uri'])..parse_page(pages['last']['uri'])
+      end
+
+      def parse_page uri
+        RC::ParseQuery.parse_query(URI.parse(uri).query)['page'].to_i
       end
 
       def gw2
@@ -204,6 +227,15 @@ module RestGW2
           r = request.GET['t']
           r if r && !r.strip.empty?
         end
+      end
+
+      def p
+        @p ||= zero_is_nil(request.GET['p'])
+      end
+
+      def zero_is_nil n
+        r = n.to_i
+        r if r != 0
       end
 
       # UTILITIES

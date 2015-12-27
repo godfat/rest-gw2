@@ -5,6 +5,14 @@
   <li><%= menu_trans('/sold', 'Sold') %></li>
 </ul>
 
+<ul class="menu">
+<% if @pages.size > 2 %>
+  <% @pages.each do |p| %>
+    <li><%= page(p) %></li>
+  <% end %>
+<% end %>
+</ul>
+
 Total: <%= price(@total) %>
 <ul class="item">
 <% @trans.each do |trans| %>
