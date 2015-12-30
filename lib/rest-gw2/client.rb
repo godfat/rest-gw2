@@ -85,6 +85,22 @@ module RestGW2
       end.sort_by{ |c| c['categories'] }
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/skins
+    # https://wiki.guildwars2.com/wiki/API:2/account/skins
+    def skins_with_detail opts={}
+      mine = get('v2/account/skins', {}, opts)
+      get('v2/skins').each_slice(100).map do |slice|
+        get('v2/skins', :ids => slice.join(','))
+      end.flatten.map do |skin|
+        skin['count'] = if mine.include?(skin['id'])
+                          1
+                        else
+                          0
+                        end
+        skin
+      end
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/minis
     # https://wiki.guildwars2.com/wiki/API:2/account/minis
     def minis_with_detail opts={}

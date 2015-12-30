@@ -325,7 +325,11 @@ module RestGW2
     end
 
     get '/skins' do
-      render :wip
+      gw2_call(:skins_with_detail) do |items|
+        @items = items
+        @buy, @sell = sum_items(items)
+        render :items
+      end
     end
 
     get '/minis' do
