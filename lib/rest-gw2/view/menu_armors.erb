@@ -1,0 +1,5 @@
+<ul class="menu">
+<% jellyfish.class.armors.each do |armor| %>
+  <li><%= menu_skin("/armors/#{armor.downcase}", armor) %></li>
+<% end %>
+</ul>

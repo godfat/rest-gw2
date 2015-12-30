@@ -42,6 +42,10 @@ module RestGW2
          Harpoon Speargun Trident]
     end
 
+    def self.armors
+      %w[Helm Shoulders Coat Gloves Leggings Boots HelmAquatic]
+    end
+
     controller_include Module.new{
       # VIEW
       def render path
@@ -363,8 +367,10 @@ module RestGW2
       end
     end
 
-    get '/skins/armors' do
-      skin_call('Armor')
+    armors.each do |armor|
+      get "/skins/armors/#{armor.downcase}" do
+        skin_call('Armor', armor)
+      end
     end
 
     get '/minis' do
