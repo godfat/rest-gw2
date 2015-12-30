@@ -77,13 +77,21 @@ module RestGW2
       end
 
       # TODO: clean me up
-      def menu_trans item, title
-        key = "/transactions#{item}"
+      def menu_sub prefix, item, title
+        key = "#{prefix}#{item}"
         if path(request.path) == path(key)
           menu(key, title, :p => p)
         else
           menu(key, title)
         end
+      end
+
+      def menu_skin item, title
+        menu_sub('/skins', item, title)
+      end
+
+      def menu_trans item, title
+        menu_sub('/transactions', item, title)
       end
 
       def page num
@@ -202,7 +210,15 @@ module RestGW2
         render :error
       end
 
-      def trans_call msg, path, &block
+      def skin_call kind
+        gw2_call(:skins_with_detail) do |items|
+          @items = items.select{ |i| i['type'] == kind }
+          @buy, @sell = sum_items(items)
+          render :skins
+        end
+      end
+
+      def trans_call msg, path
         gw2_call(msg, path, :page => p) do |trans|
           @pages = calculate_pages("v2/commerce/transactions/#{path}")
           @trans = trans
@@ -324,12 +340,16 @@ module RestGW2
       end
     end
 
-    get '/skins' do
-      gw2_call(:skins_with_detail) do |items|
-        @items = items
-        @buy, @sell = sum_items(items)
-        render :items
-      end
+    get '/skins/backpacks' do
+      skin_call('Back')
+    end
+
+    get '/skins/weapons' do
+      skin_call('Weapon')
+    end
+
+    get '/skins/armors' do
+      skin_call('Armor')
     end
 
     get '/minis' do
