@@ -50,7 +50,7 @@ example using the client.
 ``` ruby
 require 'rest-gw2'
 gw2 = RestGW2::Client.new(:access_token => '...')
-gw2.get('account/bank') # => list of items in your bank
+gw2.get('v2/account/bank') # => list of items in your bank
 ```
 
 ## SYNOPSIS: (if you need the web application)
