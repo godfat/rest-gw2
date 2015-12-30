@@ -313,7 +313,11 @@ module RestGW2
     end
 
     get '/minis' do
-      render :wip
+      gw2_call(:minis_with_detail) do |items|
+        @items = items
+        @buy, @sell = sum_items(items)
+        render :items
+      end
     end
 
     get '/achievements' do

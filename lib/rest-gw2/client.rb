@@ -65,6 +65,24 @@ module RestGW2
       me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
     end
 
+    def minis_with_detail opts={}
+      mine = get('v2/account/minis')
+      get('v2/minis').each_slice(100).map do |slice|
+        slice.join(',')
+      end.map do |ids|
+        with_item_detail('v2/minis', {:ids => ids}, opts) do |mini|
+          mini.map{ |m| m.merge('id' => m['item_id'], 'mini_id' => m['id']) }
+        end
+      end.flatten.map do |mini|
+        mini['count'] = if mine.include?(mini['mini_id'])
+                          1
+                        else
+                          0
+                        end
+        mini
+      end.sort_by{ |m| m['order'] }
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/account/wallet
     # https://wiki.guildwars2.com/wiki/API:2/currencies
     def wallet_with_detail opts={}
@@ -84,13 +102,14 @@ module RestGW2
       ids   = items.map{ |i| i && i['id'] }
 
       detail = ids.compact.each_slice(100).map do |slice|
-        query = {:ids => slice.join(',')}
-        [get('v2/items', query),
-         get('v2/commerce/prices', query, opts)]
+        q = {:ids => slice.join(',')}
+        [get('v2/items', q),
+         get('v2/commerce/prices', q, opts)]
       end.flatten.group_by{ |i| i['id'] }
 
       items.map do |i|
-        i && detail[i['id']].inject(i, &:merge).merge('count' => i['count'])
+        next i unless data = i && detail[i['id']]
+        data && data.inject(i, &:merge).merge('count' => i['count'])
       end
     end
 
