@@ -1,0 +1,16 @@
+Total: <%= price(@buy) %> / <%= price(@sell) %>
+<ul class="item">
+<% @dyes.each do |dye| %>
+  <li class="dye">
+    <%= item_wiki(dye) %>
+    <%= dye_color(dye) %>
+    <br/>
+    <span class="description">
+      <%= h dye['name'] || "?#{dye['id']}?" %>
+      <%= h item_count(dye) %>
+      <br/>
+      <%= item_price(dye) || '(Starter Set)' %>
+    </span>
+  </li>
+<% end %>
+</ul>

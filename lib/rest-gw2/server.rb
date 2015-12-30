@@ -96,7 +96,7 @@ module RestGW2
       end
 
       def item_wiki item
-        if item['name']
+        if item['name'] && item['icon']
           page = item['name'].tr(' ', '_')
           missing = if item['count'] == 0 then ' missing' else nil end
           img = %Q{<img class="icon#{missing}" title="#{item_title(item)}"} +
@@ -135,6 +135,18 @@ module RestGW2
         l.zip(COINS).drop(n).map do |(num, (title, src))|
           %Q{#{num}<img class="price" title="#{h title}" src="#{h src}"/>}
         end.join(' ')
+      end
+
+      def dye_color dye
+        %w[cloth leather metal].map do |kind|
+          rgb = dye[kind]['rgb']
+          rgb && dye_preview(kind, rgb.join(', '))
+        end.join("\n")
+      end
+
+      def dye_preview kind, rgb
+        %Q{<span class="icon" title="#{kind}, rgb(#{rgb})"} +
+             %Q{ style="background-color: rgb(#{rgb})"></span>}
       end
 
       def abbr_time_ago time, precision=1
@@ -305,7 +317,11 @@ module RestGW2
     end
 
     get '/dyes' do
-      render :wip
+      gw2_call(:dyes_with_detail) do |dyes|
+        @dyes = dyes
+        @buy, @sell = sum_items(dyes)
+        render :dyes
+      end
     end
 
     get '/skins' do
