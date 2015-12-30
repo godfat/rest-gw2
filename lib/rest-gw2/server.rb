@@ -46,6 +46,10 @@ module RestGW2
       %w[Helm Shoulders Coat Gloves Leggings Boots HelmAquatic]
     end
 
+    def self.armors_weight
+      %w[Light Medium Heavy Clothing]
+    end
+
     controller_include Module.new{
       # VIEW
       def render path
@@ -223,14 +227,17 @@ module RestGW2
         render :error
       end
 
-      def skin_call type, subtype=nil
+      def skin_call type, subtype=nil, weight=nil
         gw2_call(:skins_with_detail) do |items|
           @items = items.select do |i|
             i['type'] == type &&
-              (subtype.nil? || subtype == i['details']['type'])
+              (subtype.nil? || subtype == i['details']['type']) &&
+              (weight.nil? || weight == i['details']['weight_class'])
           end
           @buy, @sell = sum_items(items)
           @skin_submenu = "menu_#{type.downcase}s" if subtype
+          @subtype = subtype.downcase if subtype
+          @weight = weight.downcase if weight
           render :skins
         end
       end
@@ -368,8 +375,10 @@ module RestGW2
     end
 
     armors.each do |armor|
-      get "/skins/armors/#{armor.downcase}" do
-        skin_call('Armor', armor)
+      armors_weight.each do |weight|
+        get "/skins/armors/#{armor.downcase}/#{weight.downcase}" do
+          skin_call('Armor', armor, weight)
+        end
       end
     end
 

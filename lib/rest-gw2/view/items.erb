@@ -7,6 +7,9 @@ Total: <%= price(@buy) %> / <%= price(@sell) %>
     <span class="description">
       <%= h item['name'] || "?#{item['id']}?" %>
       <%= h item_count(item) %>
+      <% if damage_type = (item['details'] || {})['damage_type'] %>
+      (<%= damage_type %>)
+      <% end %>
       <br/>
       <%= item_price(item) %>
     </span>
