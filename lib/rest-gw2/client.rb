@@ -68,11 +68,11 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/colors
     # https://wiki.guildwars2.com/wiki/API:2/account/dyes
     def dyes_with_detail opts={}
-      mine = get('v2/account/dyes')
+      mine = get('v2/account/dyes', opts)
       get('v2/colors').each_slice(100).map do |slice|
         slice.join(',')
       end.map do |ids|
-        with_item_detail('v2/colors', {:ids => ids}, opts) do |colors|
+        with_item_detail('v2/colors', :ids => ids) do |colors|
           colors.map{ |c| c.merge('id' => c['item'], 'color_id' => c['id']) }
         end
       end.flatten.map do |color|
@@ -88,11 +88,11 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/minis
     # https://wiki.guildwars2.com/wiki/API:2/account/minis
     def minis_with_detail opts={}
-      mine = get('v2/account/minis')
+      mine = get('v2/account/minis', {}, opts)
       get('v2/minis').each_slice(100).map do |slice|
         slice.join(',')
       end.map do |ids|
-        with_item_detail('v2/minis', {:ids => ids}, opts) do |minis|
+        with_item_detail('v2/minis', :ids => ids) do |minis|
           minis.map{ |m| m.merge('id' => m['item_id'], 'mini_id' => m['id']) }
         end
       end.flatten.map do |mini|
