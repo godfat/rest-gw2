@@ -33,6 +33,15 @@ module RestGW2
       https://wiki.guildwars2.com/images/3/3c/Silver_coin.png
       https://wiki.guildwars2.com/images/e/eb/Copper_coin.png
     ]).freeze
+
+    def self.weapons
+      %w[Greatsword Sword Hammer Mace Axe Dagger
+         Staff Scepter
+         LongBow ShortBow Rifle Pistol
+         Shield Torch Focus Warhorn
+         Harpoon Speargun Trident]
+    end
+
     controller_include Module.new{
       # VIEW
       def render path
@@ -210,10 +219,14 @@ module RestGW2
         render :error
       end
 
-      def skin_call kind
+      def skin_call type, subtype=nil
         gw2_call(:skins_with_detail) do |items|
-          @items = items.select{ |i| i['type'] == kind }
+          @items = items.select do |i|
+            i['type'] == type &&
+              (subtype.nil? || subtype == i['details']['type'])
+          end
           @buy, @sell = sum_items(items)
+          @skin_submenu = "menu_#{type.downcase}s" if subtype
           render :skins
         end
       end
@@ -344,8 +357,10 @@ module RestGW2
       skin_call('Back')
     end
 
-    get '/skins/weapons' do
-      skin_call('Weapon')
+    weapons.each do |weapon|
+      get "/skins/weapons/#{weapon.downcase}" do
+        skin_call('Weapon', weapon)
+      end
     end
 
     get '/skins/armors' do

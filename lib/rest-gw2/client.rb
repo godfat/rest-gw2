@@ -98,7 +98,7 @@ module RestGW2
                           0
                         end
         skin
-      end
+      end.sort_by{ |s| s['name'] || '' }
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/minis

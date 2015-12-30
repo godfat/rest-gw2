@@ -1,7 +1,8 @@
 <ul class="menu">
   <li><%= menu_skin('/backpacks', 'Backpacks') %></li>
-  <li><%= menu_skin('/weapons', 'Weapons') %></li>
+  <li><%= menu_skin('/weapons/greatsword', 'Weapons') %></li>
   <li><%= menu_skin('/armors', 'Armors') %></li>
 </ul>
 
+<%= erb @skin_submenu if @skin_submenu %>
 <%= erb :items %>
