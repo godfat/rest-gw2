@@ -1,4 +1,6 @@
+<% if @buy > 0 || @sell > 0 %>
 Total: <%= price(@buy) %> / <%= price(@sell) %>
+<% end %>
 <ul class="item">
 <% @items.each do |item| %>
   <li>

@@ -5,4 +5,10 @@
 </ul>
 
 <%= erb @skin_submenu if @skin_submenu %>
+
+<% if @items.size > 0 %>
+Unlocked: <%= @unlocked %> / <%= @items.size %>
+(<%= ((@unlocked.to_f/@items.size)*100).to_i %>%)
+<% end %>
+<br/>
 <%= erb :items %>

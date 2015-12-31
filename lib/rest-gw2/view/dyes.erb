@@ -1,3 +1,8 @@
+<% if @dyes.size > 0 %>
+Unlocked: <%= @unlocked %> / <%= @dyes.size %>
+(<%= ((@unlocked.to_f/@dyes.size)*100).to_i %>%)
+<% end %>
+<br/>
 Total: <%= price(@buy) %> / <%= price(@sell) %>
 <ul class="item">
 <% @dyes.each do |dye| %>

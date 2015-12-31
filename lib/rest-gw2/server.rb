@@ -238,6 +238,7 @@ module RestGW2
           @skin_submenu = "menu_#{type.downcase}s" if subtype
           @subtype = subtype.downcase if subtype
           @weight = weight.downcase if weight
+          @unlocked = @items.count{ |i| i['count'] > 0 }
           render :skins
         end
       end
@@ -360,6 +361,7 @@ module RestGW2
       gw2_call(:dyes_with_detail) do |dyes|
         @dyes = dyes
         @buy, @sell = sum_items(dyes)
+        @unlocked = dyes.count{ |d| d['count'] > 0 }
         render :dyes
       end
     end
