@@ -50,7 +50,7 @@ module RestGW2
       %w[Light Medium Heavy Clothing]
     end
 
-    controller_include Module.new{
+    controller_include NormalizedPath, Module.new{
       # VIEW
       def render path
         erb(:layout){ erb(path) }
@@ -181,8 +181,11 @@ module RestGW2
         %Q{(<abbr title="#{time}, #{ago.join(' ')} ago">#{short} ago</abbr>)}
       end
 
-      def time_ago time, precision=1
-        delta = (Time.now - Time.parse(time)).to_i
+      def time_ago time
+        duration((Time.now - Time.parse(time)).to_i)
+      end
+
+      def duration delta
         result = []
 
         [[ 60, :seconds],
@@ -354,6 +357,14 @@ module RestGW2
     end
 
     get '/characters' do
+      gw2_call(:characters_with_detail) do |chars|
+        @chars = chars
+        render :characters
+      end
+    end
+
+    get %r{\A/characters/(?<name>[\w ]+)\z} do |m|
+      @message = m[:name]
       render :wip
     end
 

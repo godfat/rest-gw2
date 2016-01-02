@@ -1,0 +1,34 @@
+<ul class="menu">
+<% @chars.each do |c| %>
+  <li>
+    <%= menu("/characters/#{RC::Middleware.escape(c['name'])}", c['name']) %>
+  </li>
+<% end %>
+</ul>
+
+<table id="characters">
+  <tr>
+    <th>Name</th>
+    <th>Race</th>
+    <th>Gender</th>
+    <th>Profession</th>
+    <th>Level</th>
+    <th>Guild</th>
+    <th>Birth</th>
+    <th>Played</th>
+    <th>Death</th>
+  </tr>
+  <% @chars.each do |c| %>
+  <tr>
+    <td><%= h c['name'] %></td>
+    <td><%= h c['race'] %></td>
+    <td><%= h c['gender'] %></td>
+    <td><%= h c['profession'] %></td>
+    <td><%= h c['level'].to_s %></td>
+    <td><%= h c['guild'] %></td>
+    <td><%= h c['created'] %></td>
+    <td><%= duration(c['age']).take(2).join(' ') %></td>
+    <td><%= h c['deaths'].to_s %></td>
+  </tr>
+  <% end %>
+</table>

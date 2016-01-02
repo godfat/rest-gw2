@@ -65,6 +65,27 @@ module RestGW2
       me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/characters
+    def get_character name, opts={}
+      get("v2/characters/#{RC::Middleware.escape(name)}", opts)
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/characters
+    def characters_with_detail opts={}
+      chars = get('v2/characters', opts).map do |name|
+        get_character(name, opts)
+      end
+
+      guilds = chars.map do |c|
+        get_guild(c['guild']) if c['guild']
+      end
+
+      chars.zip(guilds).map do |(c, g)|
+        c['guild'] = show_guild(g) if g
+        c
+      end.sort_by{ |c| -c['age'] }
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/colors
     # https://wiki.guildwars2.com/wiki/API:2/account/dyes
     def dyes_with_detail opts={}
@@ -202,11 +223,15 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:1/guild_details
     def guilds_detail guilds
-      guilds.map do |gid|
-        get('v1/guild_details', :guild_id => gid)
-      end.map do |guild|
-        "#{guild['guild_name']} [#{guild['tag']}]"
-      end
+      guilds.map(&method(:get_guild)).map(&method(:show_guild))
+    end
+
+    def get_guild gid
+      get('v1/guild_details', :guild_id => gid)
+    end
+
+    def show_guild g
+      "#{g['guild_name']} [#{g['tag']}]"
     end
   })
 end
