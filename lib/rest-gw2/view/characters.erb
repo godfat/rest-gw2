@@ -1,3 +1,4 @@
+<h2>Characters</h2>
 <table id="characters">
   <tr>
     <th>Name</th>
@@ -25,4 +26,16 @@
     <td><%= h c['created'] %></td>
   </tr>
   <% end %>
+</table>
+
+<h2>Crafting</h2>
+<table id="crafting">
+<% jellyfish.class.crafting.each do |d| %>
+  <tr>
+    <th><%= d %></th>
+    <% @craftings[d].sort.reverse_each do |(rating, name, active)| %>
+    <td class="active-<%= active %>"><%= "#{name} (#{rating})" %></td>
+    <% end %>
+  </tr>
+<% end %>
 </table>

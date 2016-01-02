@@ -50,6 +50,12 @@ module RestGW2
       %w[Light Medium Heavy Clothing]
     end
 
+    def self.crafting
+      %w[Weaponsmith Huntsman Artificer
+         Armorsmith Leatherworker Tailor
+         Jeweler Chef Scribe]
+    end
+
     controller_include NormalizedPath, Module.new{
       # VIEW
       def render path
@@ -255,6 +261,16 @@ module RestGW2
         end
       end
 
+      def group_by_crafting characters
+        characters.inject({}) do |group, char|
+          char['crafting'].each do |crafting|
+            (group[crafting['discipline']] ||= []) <<
+              [crafting['rating'], char['name'], crafting['active']]
+          end
+          group
+        end
+      end
+
       def calculate_pages path
         link = gw2.get(path, {:page_size => 200},
                        RC::RESPONSE_KEY => RC::RESPONSE_HEADERS)['LINK']
@@ -359,6 +375,7 @@ module RestGW2
     get '/characters' do
       gw2_call(:characters_with_detail) do |chars|
         @chars = chars
+        @craftings = group_by_crafting(chars)
         render :characters
       end
     end
