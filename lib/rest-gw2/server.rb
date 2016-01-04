@@ -375,6 +375,7 @@ module RestGW2
     get '/characters' do
       gw2_call(:characters_with_detail) do |chars|
         @chars = chars
+        @total = chars.inject(0){ |t, c| t + c['age'] }
         @craftings = group_by_crafting(chars)
         render :characters
       end
