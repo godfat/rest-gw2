@@ -62,7 +62,7 @@ module RestGW2
         erb(:layout){ erb(path) }
       end
 
-      def erb path, &block
+      def erb path, arg=nil, &block
         ERB.new(views(path)).result(binding, &block)
       end
 
@@ -107,6 +107,10 @@ module RestGW2
         else
           menu(key, title)
         end
+      end
+
+      def menu_char name
+        menu("/characters/#{RC::Middleware.escape(name)}", name)
       end
 
       def menu_skin item, title
@@ -382,8 +386,17 @@ module RestGW2
     end
 
     get %r{\A/characters/(?<name>[\w ]+)\z} do |m|
-      @message = m[:name]
-      render :wip
+      gw2_call(:characters_with_detail) do |chars|
+        @names = chars.map { |c| c['name'] }
+        name   = m[:name]
+        char   = chars.find{ |c| c['name'] == name }
+        gw2_call(:bags_with_detail, char['bags']) do |bags|
+          @bags = bags
+          @buy, @sell = sum_items(@bags +
+                                  @bags.flat_map{ |c| c['inventory'] })
+          render :profile
+        end
+      end
     end
 
     get '/dyes' do

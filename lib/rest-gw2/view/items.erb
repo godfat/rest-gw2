@@ -5,16 +5,7 @@ Total: <%= price(@buy) %> / <%= price(@sell) %>
 <% @items.each do |item| %>
   <li>
   <% if item %>
-    <%= item_wiki(item) %>
-    <span class="description">
-      <%= h item['name'] || "?#{item['id']}?" %>
-      <%= h item_count(item) %>
-      <% if damage_type = (item['details'] || {})['damage_type'] %>
-      (<%= damage_type %>)
-      <% end %>
-      <br/>
-      <%= item_price(item) %>
-    </span>
+    <%= erb :item_show, item %>
   <% else %>
     <%= blank_icon %>
   <% end %>

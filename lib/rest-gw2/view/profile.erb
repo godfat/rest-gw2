@@ -1,0 +1,27 @@
+<ul class="menu">
+<% @names.each do |name| %>
+  <li><%= menu_char(name) %></li>
+<% end %>
+</ul>
+
+<h2>Bags</h2>
+<% if @buy > 0 || @sell > 0 %>
+Total: <%= price(@buy) %> / <%= price(@sell) %>
+<% end %>
+
+<% @bags.each do |bag| %>
+<p>
+  <%= erb :item_show, bag %>
+  <ul class="item">
+  <% bag['inventory'].each do |item| %>
+    <li>
+    <% if item %>
+      <%= erb :item_show, item %>
+    <% else %>
+      <%= blank_icon %>
+    <% end %>
+    </li>
+  <% end %>
+  </ul>
+</p>
+<% end %>

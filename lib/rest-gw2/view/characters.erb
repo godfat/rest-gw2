@@ -15,10 +15,9 @@ Total Played:
   <% @chars.each do |c| %>
   <tr>
     <td>
-    <%= menu("/characters/#{RC::Middleware.escape(c['name'])}", c['name']) %>
-    (<%= h c['level'].to_s %>)
-    <br/>
-    <%= h c['guild'] %>
+      <%= menu_char(c['name']) %> (<%= h c['level'].to_s %>)
+      <br/>
+      <%= h c['guild'] %>
     </td>
     <td><%= h c['profession'] %></td>
     <td><%= h "#{c['race']} #{c['gender']}" %></td>

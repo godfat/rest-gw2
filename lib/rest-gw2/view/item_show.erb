@@ -1,0 +1,10 @@
+<%= item_wiki(arg) %>
+<span class="description">
+  <%= h arg['name'] || "?#{arg['id']}?" %>
+  <%= h item_count(arg) %>
+  <% if damage_type = (arg['details'] || {})['damage_type'] %>
+  (<%= damage_type %>)
+  <% end %>
+  <br/>
+  <%= item_price(arg) %>
+</span>
