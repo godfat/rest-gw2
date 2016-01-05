@@ -1,4 +1,5 @@
 <%= item_wiki(arg) %>
+<%= item_wiki(arg['skin']) if arg['skin'] %>
 <span class="description">
   <%= h arg['name'] || "?#{arg['id']}?" %>
   <%= h item_count(arg) %>

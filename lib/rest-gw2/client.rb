@@ -114,13 +114,10 @@ module RestGW2
       end.sort_by{ |c| c['categories'] }
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/skins
     # https://wiki.guildwars2.com/wiki/API:2/account/skins
     def skins_with_detail opts={}
       mine = get('v2/account/skins', {}, opts)
-      get('v2/skins').each_slice(100).map do |slice|
-        get('v2/skins', :ids => slice.join(','))
-      end.flatten.map do |skin|
+      all_skins.flatten.map do |skin|
         skin['count'] = if mine.include?(skin['id'])
                           1
                         else
@@ -128,6 +125,13 @@ module RestGW2
                         end
         skin
       end.sort_by{ |s| s['name'] || '' }
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/skins
+    def all_skins
+      get('v2/skins').each_slice(100).map do |slice|
+        get('v2/skins', :ids => slice.join(','))
+      end
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/minis
@@ -194,6 +198,7 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
     def expand_item_detail items, opts={}
       ids = items.map{ |i| i && i['id'] }
+      skins = all_skins
       detail = ids.compact.each_slice(100).map do |slice|
         q = {:ids => slice.join(',')}
         [get('v2/items', q),
@@ -201,9 +206,13 @@ module RestGW2
       end.flat_map(&:itself).map(&:to_a).flatten.group_by{ |i| i['id'] }
       # this is probably a dirty way to workaround converting hashes to arrays
 
+      skins_detail = skins.flatten.group_by{ |s| s['id'] }
       items.map do |i|
         next i unless data = i && detail[i['id']]
-        data && data.inject(i, &:merge).merge('count' => i['count'] || 1)
+        s = i['skin']
+        data && data.inject(i, &:merge).
+                  merge('count' => i['count'] || 1,
+                        'skin' => s && skins_detail[s].first)
       end
     end
 
