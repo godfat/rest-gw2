@@ -87,10 +87,10 @@ module RestGW2
     end
 
     def bags_with_detail bags, opts={}
-      details = expand_item_detail(
+      detail = expand_item_detail(
         bags + bags.flat_map{ |c| c && c['inventory'] })
-      details.shift(bags.size).map do |b|
-        b.merge('inventory' => details.shift(b['size']))
+      detail.shift(bags.size).map do |b|
+        b.merge('inventory' => detail.shift(b['size']))
       end
     end
 
