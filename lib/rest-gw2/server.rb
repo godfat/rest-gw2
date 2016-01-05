@@ -393,7 +393,7 @@ module RestGW2
         gw2_call(:bags_with_detail, char['bags']) do |bags|
           @bags = bags
           @buy, @sell = sum_items(@bags +
-                                  @bags.flat_map{ |c| c['inventory'] })
+                                  @bags.flat_map{ |c| c && c['inventory'] })
           render :profile
         end
       end

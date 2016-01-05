@@ -90,7 +90,7 @@ module RestGW2
       detail = expand_item_detail(
         bags + bags.flat_map{ |c| c && c['inventory'] })
       detail.shift(bags.size).map do |b|
-        b.merge('inventory' => detail.shift(b['size']))
+        b && b.merge('inventory' => detail.shift(b['size']))
       end
     end
 
@@ -197,8 +197,9 @@ module RestGW2
       detail = ids.compact.each_slice(100).map do |slice|
         q = {:ids => slice.join(',')}
         [get('v2/items', q),
-         get('v2/commerce/prices', q, opts)]
-      end.flatten.group_by{ |i| i['id'] }
+         get('v2/commerce/prices', q, {:error_detector => false}.merge(opts))]
+      end.flat_map(&:itself).map(&:to_a).flatten.group_by{ |i| i['id'] }
+      # this is probably a dirty way to workaround converting hashes to arrays
 
       items.map do |i|
         next i unless data = i && detail[i['id']]

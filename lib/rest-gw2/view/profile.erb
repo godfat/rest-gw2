@@ -11,6 +11,7 @@ Total: <%= price(@buy) %> / <%= price(@sell) %>
 
 <% @bags.each do |bag| %>
 <p>
+  <% if bag %>
   <%= erb :item_show, bag %>
   <ul class="item">
   <% bag['inventory'].each do |item| %>
@@ -23,5 +24,8 @@ Total: <%= price(@buy) %> / <%= price(@sell) %>
     </li>
   <% end %>
   </ul>
+  <% else %>
+    <%= blank_icon %>
+  <% end %>
 </p>
 <% end %>
