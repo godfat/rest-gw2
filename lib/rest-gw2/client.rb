@@ -166,22 +166,6 @@ module RestGW2
       expand_item_detail(block.call(get(path, query, opts)), opts)
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/items
-    # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
-    def expand_item_detail items, opts={}
-      ids = items.map{ |i| i && i['id'] }
-      detail = ids.compact.each_slice(100).map do |slice|
-        q = {:ids => slice.join(',')}
-        [get('v2/items', q),
-         get('v2/commerce/prices', q, opts)]
-      end.flatten.group_by{ |i| i['id'] }
-
-      items.map do |i|
-        next i unless data = i && detail[i['id']]
-        data && data.inject(i, &:merge).merge('count' => i['count'] || 1)
-      end
-    end
-
     # https://wiki.guildwars2.com/wiki/API:2/commerce/transactions
     def transactions_with_detail path, query={}, opts={}
       with_item_detail("v2/commerce/transactions/#{path}",
@@ -206,6 +190,22 @@ module RestGW2
     end
 
     private
+    # https://wiki.guildwars2.com/wiki/API:2/items
+    # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
+    def expand_item_detail items, opts={}
+      ids = items.map{ |i| i && i['id'] }
+      detail = ids.compact.each_slice(100).map do |slice|
+        q = {:ids => slice.join(',')}
+        [get('v2/items', q),
+         get('v2/commerce/prices', q, opts)]
+      end.flatten.group_by{ |i| i['id'] }
+
+      items.map do |i|
+        next i unless data = i && detail[i['id']]
+        data && data.inject(i, &:merge).merge('count' => i['count'] || 1)
+      end
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/worlds
     def world_detail world
       region = case r = world['id'] / 1000
