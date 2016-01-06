@@ -197,23 +197,45 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/items
     # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
     def expand_item_detail items, opts={}
-      ids = items.map{ |i| i && i['id'] }
       skins = all_skins
-      detail = ids.compact.each_slice(100).map do |slice|
-        q = {:ids => slice.join(',')}
-        [get('v2/items', q),
-         get('v2/commerce/prices', q, {:error_detector => false}.merge(opts))]
-      end.flat_map(&:itself).map(&:to_a).flatten.group_by{ |i| i['id'] }
-      # this is probably a dirty way to workaround converting hashes to arrays
+      detail = item_detail_group_by_id(items, opts)
+      upgrades = extract_items_in_slots(items, opts, 'upgrades', 'infusions')
 
       skins_detail = skins.flatten.group_by{ |s| s['id'] }
       items.map do |i|
         next i unless data = i && detail[i['id']]
         s = i['skin']
-        data && data.inject(i, &:merge).
-                  merge('count' => i['count'] || 1,
-                        'skin' => s && skins_detail[s].first)
+        u = i['upgrades']
+        f = i['infusions']
+        i.merge(data).merge(
+          'count' => i['count'] || 1,
+          'skin' => s && skins_detail[s].first,
+          'upgrades' => u && u.flat_map(&upgrades.method(:[])),
+          'infusions' => f && f.flat_map(&upgrades.method(:[])))
       end
+    end
+
+    def item_detail_group_by_id items, opts={}
+      items.map{ |i| i && i['id'] }.compact.each_slice(100).map do |slice|
+        q = {:ids => slice.join(',')}
+        [get('v2/items', q),
+         get('v2/commerce/prices', q, {:error_detector => false}.merge(opts))]
+      end.flat_map(&:itself).map(&:to_a).flatten.group_by{ |i| i['id'] }.
+          inject({}){ |r, (id, v)| r[id] = v.inject(&:merge); r }
+      # this is probably a dirty way to workaround converting hashes to arrays
+    end
+
+    def extract_items_in_slots items, opts, *slots
+      upgrades = items.flat_map do |i|
+        if i
+          i.values_at(*slots).flatten.compact.map do |id|
+            {'id' => id}
+          end
+        else
+          []
+        end
+      end
+      item_detail_group_by_id(upgrades, opts)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/worlds

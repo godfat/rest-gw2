@@ -130,6 +130,10 @@ module RestGW2
         %Q{<img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"/>}
       end
 
+      def item_wiki_list items
+        items.map(&method(:item_wiki)).join("\n")
+      end
+
       def item_wiki item
         if item['name'] && item['icon']
           page = item['name'].tr(' ', '_')
