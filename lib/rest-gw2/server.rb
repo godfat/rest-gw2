@@ -390,10 +390,10 @@ module RestGW2
     end
 
     get %r{\A/characters/(?<name>[\w ]+)\z} do |m|
-      gw2_call(:characters_with_detail) do |chars|
-        @names = chars.map { |c| c['name'] }
+      gw2_call(:characters_with_detail) do |characters|
+        @names = characters.map { |c| c['name'] }
         name   = m[:name]
-        char   = chars.find{ |c| c['name'] == name }
+        char   = characters.find{ |c| c['name'] == name }
         gw2_call(:bags_with_detail, char['bags']) do |bags|
           @bags = bags
           @buy, @sell = sum_items(@bags +
