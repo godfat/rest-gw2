@@ -270,9 +270,9 @@ module RestGW2
       end
 
       def group_by_crafting characters
-        characters.inject({}) do |group, char|
+        characters.inject(Hash.new{|h,k|h[k]=[]}) do |group, char|
           char['crafting'].each do |crafting|
-            (group[crafting['discipline']] ||= []) <<
+            group[crafting['discipline']] <<
               [crafting['rating'], char['name'], crafting['active']]
           end
           group
