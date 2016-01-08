@@ -193,7 +193,6 @@ module RestGW2
       end
     end
 
-    private
     # https://wiki.guildwars2.com/wiki/API:2/items
     # https://wiki.guildwars2.com/wiki/API:2/commerce/prices
     def expand_item_detail items, opts={}
@@ -215,6 +214,7 @@ module RestGW2
       end
     end
 
+    private
     def item_detail_group_by_id items, opts={}
       items.map{ |i| i && i['id'] }.compact.each_slice(100).map do |slice|
         q = {:ids => slice.join(',')}

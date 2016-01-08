@@ -405,10 +405,21 @@ module RestGW2
         @names = characters.map { |c| c['name'] }
         name   = m[:name]
         char   = characters.find{ |c| c['name'] == name }
-        gw2_request(:bags_with_detail, char['bags']) do |bags|
+
+        equi = gw2.class.defer do
+          gw2_call(:expand_item_detail, char['equipment'])
+        end
+        bags = gw2.class.defer do
+          gw2_call(:bags_with_detail, char['bags'])
+        end
+
+        protect do
+          @equi = equi
           @bags = bags
-          @buy, @sell = sum_items(@bags +
-                                  @bags.flat_map{ |c| c && c['inventory'] })
+
+          @equi_buy, @equi_sell = sum_items(@equi)
+          @bags_buy, @bags_sell = sum_items(@bags +
+                                    @bags.flat_map{ |c| c && c['inventory'] })
           render :profile
         end
       end
