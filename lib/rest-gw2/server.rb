@@ -235,17 +235,28 @@ module RestGW2
       end
 
       # CONTROLLER
-      def gw2_call msg, *args
+      def gw2_request msg, *args, &block
+        protect do
+          gw2_call(msg, *args, &block)
+        end
+      end
+
+      def gw2_call msg, *args, &block
+        block ||= :itself.to_proc
         refresh = !!request.GET['r']
         opts = {'cache.update' => refresh, 'expires_in' => 600}
-        yield(gw2.public_send(msg, *args, opts).itself)
+        block.call(gw2.public_send(msg, *args, opts).itself)
+      end
+
+      def protect
+        yield
       rescue RestGW2::Error => e
         @error = e.error['text']
         render :error
       end
 
-      def skin_call type, subtype=nil, weight=nil
-        gw2_call(:skins_with_detail) do |items|
+      def skin_request type, subtype=nil, weight=nil
+        gw2_request(:skins_with_detail) do |items|
           @items = items.select do |i|
             i['type'] == type &&
               (subtype.nil? || subtype == i['details']['type']) &&
@@ -260,8 +271,8 @@ module RestGW2
         end
       end
 
-      def trans_call msg, path
-        gw2_call(msg, path, :page => p) do |trans|
+      def trans_request msg, path
+        gw2_request(msg, path, :page => p) do |trans|
           @pages = calculate_pages("v2/commerce/transactions/#{path}")
           @trans = trans
           @total = sum_trans(trans)
@@ -374,14 +385,14 @@ module RestGW2
     end
 
     get '/account' do
-      gw2_call(:account_with_detail) do |account|
+      gw2_request(:account_with_detail) do |account|
         @info = account
         render :info
       end
     end
 
     get '/characters' do
-      gw2_call(:characters_with_detail) do |chars|
+      gw2_request(:characters_with_detail) do |chars|
         @chars = chars
         @total = chars.inject(0){ |t, c| t + c['age'] }
         @craftings = group_by_crafting(chars)
@@ -390,11 +401,11 @@ module RestGW2
     end
 
     get %r{\A/characters/(?<name>[\w ]+)\z} do |m|
-      gw2_call(:characters_with_detail) do |characters|
+      gw2_request(:characters_with_detail) do |characters|
         @names = characters.map { |c| c['name'] }
         name   = m[:name]
         char   = characters.find{ |c| c['name'] == name }
-        gw2_call(:bags_with_detail, char['bags']) do |bags|
+        gw2_request(:bags_with_detail, char['bags']) do |bags|
           @bags = bags
           @buy, @sell = sum_items(@bags +
                                   @bags.flat_map{ |c| c && c['inventory'] })
@@ -404,7 +415,7 @@ module RestGW2
     end
 
     get '/dyes' do
-      gw2_call(:dyes_with_detail) do |dyes|
+      gw2_request(:dyes_with_detail) do |dyes|
         @dyes = dyes
         @buy, @sell = sum_items(dyes)
         @unlocked = dyes.count{ |d| d['count'] > 0 }
@@ -413,25 +424,25 @@ module RestGW2
     end
 
     get '/skins/backpacks' do
-      skin_call('Back')
+      skin_request('Back')
     end
 
     weapons.each do |weapon|
       get "/skins/weapons/#{weapon.downcase}" do
-        skin_call('Weapon', weapon)
+        skin_request('Weapon', weapon)
       end
     end
 
     armors.each do |armor|
       armors_weight.each do |weight|
         get "/skins/armors/#{armor.downcase}/#{weight.downcase}" do
-          skin_call('Armor', armor, weight)
+          skin_request('Armor', armor, weight)
         end
       end
     end
 
     get '/minis' do
-      gw2_call(:minis_with_detail) do |items|
+      gw2_request(:minis_with_detail) do |items|
         @items = items
         @buy, @sell = sum_items(items)
         render :items
@@ -443,7 +454,7 @@ module RestGW2
     end
 
     get '/bank' do
-      gw2_call(:with_item_detail, 'v2/account/bank') do |items|
+      gw2_request(:with_item_detail, 'v2/account/bank') do |items|
         @items = items
         @buy, @sell = sum_items(items)
         render :items
@@ -451,7 +462,7 @@ module RestGW2
     end
 
     get '/materials' do
-      gw2_call(:with_item_detail, 'v2/account/materials') do |items|
+      gw2_request(:with_item_detail, 'v2/account/materials') do |items|
         @items = items
         @buy, @sell = sum_items(items)
         render :items
@@ -459,30 +470,30 @@ module RestGW2
     end
 
     get '/wallet' do
-      gw2_call(:wallet_with_detail) do |wallet|
+      gw2_request(:wallet_with_detail) do |wallet|
         @wallet = wallet
         render :wallet
       end
     end
 
     get '/transactions/buying' do
-      trans_call(:transactions_with_detail, 'current/buys')
+      trans_request(:transactions_with_detail, 'current/buys')
     end
 
     get '/transactions/selling' do
-      trans_call(:transactions_with_detail, 'current/sells')
+      trans_request(:transactions_with_detail, 'current/sells')
     end
 
     get '/transactions/bought' do
-      trans_call(:transactions_with_detail_compact, 'history/buys')
+      trans_request(:transactions_with_detail_compact, 'history/buys')
     end
 
     get '/transactions/sold' do
-      trans_call(:transactions_with_detail_compact, 'history/sells')
+      trans_request(:transactions_with_detail_compact, 'history/sells')
     end
 
     get '/tokeninfo' do
-      gw2_call(:get, 'v2/tokeninfo') do |info|
+      gw2_request(:get, 'v2/tokeninfo') do |info|
         @info = info
         render :info
       end
