@@ -241,6 +241,12 @@ module RestGW2
         end
       end
 
+      def gw2_defer msg, *args, &block
+        gw2.class.defer do
+          gw2_call(msg, *args, &block)
+        end
+      end
+
       def gw2_call msg, *args, &block
         block ||= :itself.to_proc
         refresh = !!request.GET['r']
@@ -406,12 +412,8 @@ module RestGW2
         name   = m[:name]
         char   = characters.find{ |c| c['name'] == name }
 
-        equi = gw2.class.defer do
-          gw2_call(:expand_item_detail, char['equipment'])
-        end
-        bags = gw2.class.defer do
-          gw2_call(:bags_with_detail, char['bags'])
-        end
+        equi = gw2_defer(:expand_item_detail, char['equipment'])
+        bags = gw2_defer(:bags_with_detail  , char['bags'])
 
         protect do
           @equi = equi
