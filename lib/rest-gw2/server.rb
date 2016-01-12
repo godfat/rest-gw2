@@ -147,7 +147,12 @@ module RestGW2
       end
 
       def item_link item
-        menu("/items/#{item['id']}", item_name(item))
+        name = item_name(item)
+        if item['nolink']
+          name
+        else
+          menu("/items/#{item['id']}", name)
+        end
       end
 
       def item_name item

@@ -123,6 +123,7 @@ module RestGW2
                         else
                           0
                         end
+        skin['nolink'] = true
         skin
       end.sort_by{ |s| s['name'] || '' }
     end
