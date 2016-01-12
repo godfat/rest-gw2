@@ -1,14 +1,4 @@
 <% if @buy > 0 || @sell > 0 %>
 Total: <%= price(@buy) %> / <%= price(@sell) %>
 <% end %>
-<ul class="item">
-<% @items.each do |item| %>
-  <li>
-  <% if item %>
-    <%= erb :item_show, item %>
-  <% else %>
-    <%= blank_icon %>
-  <% end %>
-  </li>
-<% end %>
-</ul>
+<%= erb :item_list, @items %>

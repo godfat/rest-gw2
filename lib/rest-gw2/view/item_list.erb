@@ -1,0 +1,11 @@
+<ul class="item">
+<% arg.each do |item| %>
+  <li>
+  <% if item %>
+    <%= erb :item_show, item %>
+  <% else %>
+    <%= blank_icon %>
+  <% end %>
+  </li>
+<% end %>
+</ul>
