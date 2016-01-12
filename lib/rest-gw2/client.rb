@@ -72,7 +72,7 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/characters
     def characters_with_detail opts={}
-      chars = get('v2/characters', opts).map do |name|
+      chars = get('v2/characters', {}, opts).map do |name|
         get_character(name, opts)
       end
 
