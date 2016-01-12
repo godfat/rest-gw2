@@ -2,13 +2,14 @@
   Total: <%= price(@buy) %> / <%= price(@sell) %>
 <% end %>
 
+<div>
 <% if @bank.any? %>
-  <h2>Bank</h2>
+  <h2><%= menu('/bank', 'Bank') %></h2>
   <%= erb :item_list, @bank %>
 <% end %>
 
 <% if @materials.any? %>
-  <h2>Materials</h2>
+  <h2><%= menu('/materials', 'Materials') %></h2>
   <%= erb :item_list, @materials %>
 <% end %>
 
@@ -26,3 +27,4 @@
     <% end %>
   <% end %>
 <% end %>
+</div>
