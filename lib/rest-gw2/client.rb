@@ -185,7 +185,7 @@ module RestGW2
         last = ret.last
         if last && last['item_id'] == trans['item_id'] &&
                    last['price']   == trans['price']
-           last['count'] += trans['count']
+          last['count'] += trans['count']
         else
           ret << trans
         end
