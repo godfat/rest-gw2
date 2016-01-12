@@ -13,7 +13,7 @@ Total: <%= price(@total) %>
   <li>
   <%= item_wiki(trans) %>
   <span class="description">
-    <a href="<%= path("/items/#{trans['id']}") %>"><%= h trans['name'] || "?#{trans['id']}?" %></a>
+    <%= item_link(trans) %>
     <%= h item_count(trans) %>
     <br/>
     <%= price(trans['price']) %>

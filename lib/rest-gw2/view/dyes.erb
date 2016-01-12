@@ -11,7 +11,7 @@ Total: <%= price(@buy) %> / <%= price(@sell) %>
     <%= dye_color(dye) %>
     <br/>
     <span class="description">
-      <%= h dye['name'] || "?#{dye['id']}?" %>
+      <%= h item_name(dye) %>
       <%= h item_count(dye) %>
       <br/>
       <%= item_price(dye) || '(Starter Set)' %>

@@ -146,6 +146,14 @@ module RestGW2
         end
       end
 
+      def item_link item
+        menu("/items/#{item['id']}", item_name(item))
+      end
+
+      def item_name item
+        h(item['name'] || "?#{item['id']}?")
+      end
+
       def item_title item
         d = item['description']
         d && d.unpack('U*').map{ |c| "&##{c};" }.join
