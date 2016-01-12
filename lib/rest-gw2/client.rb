@@ -67,7 +67,7 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/characters
     def get_character name, opts={}
-      get("v2/characters/#{RC::Middleware.escape(name)}", opts)
+      get("v2/characters/#{RC::Middleware.escape(name)}", {}, opts)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/characters

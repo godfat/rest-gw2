@@ -301,6 +301,7 @@ module RestGW2
         block ||= :itself.to_proc
         refresh = !!request.GET['r']
         opts = {'cache.update' => refresh, 'expires_in' => 600}
+        args << {} if msg == :with_item_detail
         block.call(gw2.public_send(msg, *args, opts).itself)
       end
 
