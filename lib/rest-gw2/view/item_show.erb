@@ -3,7 +3,7 @@
 <%= item_wiki_list(arg['upgrades']) if arg['upgrades'] %>
 <%= item_wiki_list(arg['infusions']) if arg['infusions'] %>
 <span class="description">
-  <a href="<%= path("/items/#{arg['id']}") %>"><%= h arg['name'] || "?#{arg['id']}?" %></a>
+  <%= menu("/items/#{arg['id']}", h(arg['name'] || "?#{arg['id']}?")) %>
   <%= h item_count(arg) %>
   <% if damage_type = (arg['details'] || {})['damage_type'] %>
   (<%= damage_type %>)
