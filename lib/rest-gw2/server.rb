@@ -557,11 +557,11 @@ module RestGW2
     end
 
     get '/transactions/buying' do
-      trans_request(:transactions_with_detail, 'current/buys')
+      trans_request(:transactions_with_detail_compact, 'current/buys')
     end
 
     get '/transactions/selling' do
-      trans_request(:transactions_with_detail, 'current/sells')
+      trans_request(:transactions_with_detail_compact, 'current/sells')
     end
 
     get '/transactions/bought' do
