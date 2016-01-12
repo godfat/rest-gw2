@@ -62,8 +62,8 @@ module RestGW2
         erb(:layout){ erb(path) }
       end
 
-      def erb path, arg=nil, &block
-        ERB.new(views(path)).result(binding, &block)
+      def erb name, arg=nil, &block
+        ERB.new(views(name)).result(binding, &block)
       end
 
       def h str
@@ -80,9 +80,9 @@ module RestGW2
           RC::REQUEST_QUERY => q)
       end
 
-      def views path
+      def views name
         @views ||= {}
-        @views[path] = File.read("#{__dir__}/view/#{path}.erb")
+        @views[name] = File.read("#{__dir__}/view/#{name}.erb")
       end
 
       def refresh_path
