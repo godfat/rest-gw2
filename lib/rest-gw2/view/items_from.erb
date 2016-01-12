@@ -1,0 +1,28 @@
+<% if @buy > 0 || @sell > 0 %>
+  Total: <%= price(@buy) %> / <%= price(@sell) %>
+<% end %>
+
+<% if @bank.any? %>
+  <h2>Bank</h2>
+  <%= erb :item_list, @bank %>
+<% end %>
+
+<% if @materials.any? %>
+  <h2>Materials</h2>
+  <%= erb :item_list, @materials %>
+<% end %>
+
+<% @chars.each do |name, (equipments, bags)| %>
+  <% equipments.each do |eq| %>
+    <h2><%= menu_char(name) %> <%= eq['slot'] %></h2>
+    <%= erb :item_show, eq %>
+  <% end %>
+
+  <% if bags.any? %>
+    <h2><%= menu_char(name) %> Bags</h2>
+    <% bags.each do |b| %>
+      <%= erb :item_show, b %>
+      <%= erb :item_list, b['inventory'] %>
+    <% end %>
+  <% end %>
+<% end %>

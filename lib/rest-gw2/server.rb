@@ -234,6 +234,56 @@ module RestGW2
         end
       end
 
+      def all_items
+        bank, mats, chars = all_items_defer
+        flatten_chars = chars.flat_map do |c|
+          c['equipment'] +
+            c['bags'] +
+            c['bags'].flat_map{ |c| c && c['inventory'] }
+        end
+        (bank + mats + flatten_chars).compact.
+          sort_by{ |i| i['name'] }.inject([]) do |r, i|
+            last = r.last
+            if last && last['id'] == i['id'] &&
+               last.values_at('skin', 'upgrades', 'infusions').compact.empty?
+              last['count'] += i['count']
+            else
+              r << i
+            end
+            r
+          end
+      end
+
+      def find_my_item id
+        bank, mats, chars = all_items_defer
+        [select_item(bank.compact, id), select_item(mats.compact, id),
+         chars.inject({}){ |r, c|
+           equi = select_item(c['equipment'].compact, id)
+           bags = c['bags'].reject(&:nil?).map do |b|
+             selected = select_item(b['inventory'].compact, id)
+             b.merge('inventory' => selected) if selected.any? ||
+                                                 b['id'] == id
+           end.compact
+           r[c['name']] = [equi, bags] if equi.any? || bags.any?
+           r
+         }]
+      end
+
+      def select_item items, id
+        items.select{ |i| i['id'] == id }
+      end
+
+      def all_items_defer
+        bank  = gw2_defer(:with_item_detail, 'v2/account/bank')
+        mats  = gw2_defer(:with_item_detail, 'v2/account/materials')
+        chars = gw2_defer(:characters_with_detail).map do |c|
+          c['equipment'] = gw2_defer(:expand_item_detail, c['equipment'])
+          c['bags']      = gw2_defer(:bags_with_detail  , c['bags'])
+          c
+        end
+        [bank, mats, chars]
+      end
+
       # CONTROLLER
       def gw2_request msg, *args, &block
         protect do
@@ -486,6 +536,23 @@ module RestGW2
       gw2_request(:wallet_with_detail) do |wallet|
         @wallet = wallet
         render :wallet
+      end
+    end
+
+    get '/items' do
+      protect do
+        @items = all_items
+        @buy, @sell = sum_items(@items)
+        render :items
+      end
+    end
+
+    get %r{\A/items/(?<id>\d+)\z} do |m|
+      protect do
+        items = find_my_item(m[:id].to_i)
+        @bank, @materials, @chars = items
+        @buy, @sell = sum_items(@bank + @materials + @chars.values.flatten)
+        render :items_from
       end
     end
 
