@@ -255,7 +255,7 @@ module RestGW2
             c['bags'].flat_map{ |c| c && c['inventory'] }
         end
         (bank + mats + flatten_chars).compact.
-          sort_by{ |i| i['name'] }.inject([]) do |r, i|
+          sort_by{ |i| i['name'] || i['id'] }.inject([]) do |r, i|
             last = r.last
             if last && last['id'] == i['id'] &&
                last.values_at('skin', 'upgrades', 'infusions').compact.empty?
