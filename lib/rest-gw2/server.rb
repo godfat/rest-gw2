@@ -402,23 +402,23 @@ module RestGW2
 
       # UTILITIES
       def encrypt data
-        cipher = OpenSSL::Cipher.new('aes-128-gcm')
+        cipher = new_cipher
         cipher.encrypt
         cipher.key = SECRET
         iv = cipher.random_iv
         encrypted = cipher.update(data) + cipher.final
-        tag = cipher.auth_tag
+        tag = auth_tag(cipher)
         encode_base64(iv, encrypted, tag)
       end
 
       def decrypt data
         iv, encrypted, tag = decode_base64(data)
-        decipher = OpenSSL::Cipher.new('aes-128-gcm')
-        decipher.decrypt
-        decipher.key = SECRET
-        decipher.iv = iv
-        decipher.auth_tag = tag
-        decipher.update(encrypted) + decipher.final
+        cipher = new_cipher
+        cipher.decrypt
+        cipher.key = SECRET
+        cipher.iv = iv
+        set_auth_tag(cipher, tag)
+        cipher.update(encrypted) + cipher.final
       end
 
       def encode_base64 *data
@@ -427,6 +427,20 @@ module RestGW2
 
       def decode_base64 str
         str.split('.').map{ |d| d.tr('-_~', '+/=').unpack('m0').first }
+      end
+
+      def new_cipher
+        OpenSSL::Cipher.new('aes-128-gcm')
+      rescue OpenSSL::Cipher::CipherError
+        OpenSSL::Cipher.new('aes-128-cbc')
+      end
+
+      def auth_tag cipher
+        cipher.respond_to?(:auth_tag) && cipher.auth_tag || ''
+      end
+
+      def set_auth_tag cipher, tag
+        cipher.respond_to?(:auth_tag=) && cipher.auth_tag = tag
       end
 
       # MISC
