@@ -430,7 +430,7 @@ module RestGW2
       end
 
       def new_cipher
-        OpenSSL::Cipher.new('aes-128-gcm')
+        OpenSSL::Cipher.new(ENV['CIPHER_ALGO'] || 'aes-128-gcm')
       rescue OpenSSL::Cipher::CipherError
         OpenSSL::Cipher.new('aes-128-cbc')
       end
