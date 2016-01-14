@@ -86,6 +86,7 @@ The format for the config file would be like:
     git clone git@github.com:godfat/rest-gw2.git
     cd rest-gw2
     jruby -S gem install rack jellyfish dalli lru_redux rack-handlers
+    jruby -S gem install jruby-openssl
     jruby -S gem install torquebox-web --pre
     jruby -Ilib:rest-core/lib -S bin/rest-gw2
 
