@@ -1,5 +1,6 @@
 
 require 'rest-gw2/server/cache'
+require 'rest-gw2/client'
 require 'mime/types'
 require 'rest-core'
 require 'jellyfish'
