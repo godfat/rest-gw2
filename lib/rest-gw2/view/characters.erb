@@ -23,7 +23,7 @@ Total Played:
     <td><%= h "#{c['race']} #{c['gender']}" %></td>
     <td><%= duration(c['age']).take(2).join(' ') %></td>
     <td><%= duration((c['age'].to_f / (c['deaths'] + 1)).round).
-          take(2).join(' ') %></td>
+              take(2).join(' ') %></td>
     <td><%= c['deaths'] %></td>
     <td><%= h c['created'] %></td>
   </tr>
