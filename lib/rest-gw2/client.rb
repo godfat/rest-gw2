@@ -81,7 +81,7 @@ module RestGW2
       end
 
       chars.zip(guilds).map do |(c, g)|
-        c['guild'] = show_guild(g) if g
+        c['guild'] = g
         c
       end.sort_by{ |c| -c['age'] }
     end
@@ -266,15 +266,11 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:1/guild_details
     def guilds_detail guilds
-      guilds.map(&method(:get_guild)).map(&method(:show_guild))
+      guilds.map(&method(:get_guild))
     end
 
     def get_guild gid
       get('v1/guild_details', :guild_id => gid)
-    end
-
-    def show_guild g
-      "#{g['guild_name']} [#{g['tag']}]"
     end
   })
 end

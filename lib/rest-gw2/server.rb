@@ -127,6 +127,10 @@ module RestGW2
       end
 
       # HELPER
+      def show_guild g
+        "#{g['guild_name']} [#{g['tag']}]"
+      end
+
       def blank_icon
         %Q{<img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"/>}
       end
@@ -459,6 +463,7 @@ module RestGW2
 
     get '/account' do
       @info = gw2_request(:account_with_detail)
+      @info['guilds'].map!(&method(:show_guild))
       render :info
     end
 
