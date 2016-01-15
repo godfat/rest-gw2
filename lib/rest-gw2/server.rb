@@ -441,11 +441,13 @@ module RestGW2
     }
 
     handle Timeout::Error do
+      status 504
       @error = 'Timeout. Please try again.'
       render :error
     end
 
     handle RestGW2::Error do |e|
+      status 502
       @error = e.error['text']
       render :error
     end
