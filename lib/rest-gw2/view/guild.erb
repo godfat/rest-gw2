@@ -1,0 +1,8 @@
+<ul class="menu">
+<% @guilds.each do |guild| %>
+  <li><%= show_guild(guild) %></li>
+<% end %>
+</ul>
+
+<h2>Treasury</h2>
+<%= erb :items %>

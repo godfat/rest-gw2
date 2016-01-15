@@ -65,6 +65,11 @@ module RestGW2
       me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/guild/:id/treasury
+    def treasury_with_detail gid, opts={}
+      with_item_detail("v2/guild/#{gid}/treasury")
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/characters
     def get_character name, opts={}
       get("v2/characters/#{RC::Middleware.escape(name)}", {}, opts)

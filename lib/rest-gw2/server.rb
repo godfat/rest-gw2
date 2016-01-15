@@ -57,6 +57,8 @@ module RestGW2
          Jeweler Chef Scribe]
     end
 
+    HTML = Class.new(Struct.new(:to_s))
+
     controller_include NormalizedPath, Module.new{
       # VIEW
       def render path
@@ -68,7 +70,12 @@ module RestGW2
       end
 
       def h str
-        CGI.escape_html(str) if str.kind_of?(String)
+        case str
+        when String
+          CGI.escape_html(str)
+        when HTML
+          str.to_s
+        end
       end
 
       def u str
@@ -128,7 +135,8 @@ module RestGW2
 
       # HELPER
       def show_guild g
-        "#{g['guild_name']} [#{g['tag']}]"
+        HTML.new(menu("/guilds/#{g['guild_id']}",
+                      h("#{g['guild_name']} [#{g['tag']}]")))
       end
 
       def blank_icon
@@ -467,6 +475,19 @@ module RestGW2
       @info = gw2_request(:account_with_detail)
       @info['guilds'].map!(&method(:show_guild))
       render :info
+    end
+
+    get %r{\A/guilds/(?<uuid>[^/]+)\z} do |m|
+      gid = m[:uuid]
+      @guilds = gw2_request(:account_with_detail)['guilds']
+      if @guilds.find{ |g| g['guild_id'] == gid }
+        @items = gw2_request(:treasury_with_detail, gid)
+        render :guild
+      else
+        status 404
+        @error = "Cannot find guild id: #{gid}"
+        render :error
+      end
     end
 
     get '/characters' do
