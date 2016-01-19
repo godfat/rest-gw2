@@ -11,4 +11,4 @@ Unlocked: <%= @unlocked %> / <%= @items.size %>
 (<%= ((@unlocked.to_f/@items.size)*100).to_i %>%)
 <% end %>
 <br/>
-<%= erb :items %>
+<%= erb :items, @items %>

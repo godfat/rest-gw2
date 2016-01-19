@@ -61,8 +61,8 @@ module RestGW2
 
     controller_include NormalizedPath, Module.new{
       # VIEW
-      def render path
-        erb(:layout){ erb(path) }
+      def render path, arg=nil
+        erb(:layout){ erb(path, arg) }
       end
 
       def erb name, arg=nil, &block
@@ -480,7 +480,7 @@ module RestGW2
       gid = m[:uuid]
       @guilds = gw2_request(:account_with_detail)['guilds']
       if @guilds.find{ |g| g['guild_id'] == gid }
-        @items = gw2_request(:treasury_with_detail, gid)
+        @treasury = gw2_request(:treasury_with_detail, gid)
         render :guild
       else
         status 404
@@ -540,8 +540,7 @@ module RestGW2
     end
 
     get '/minis' do
-      @items = gw2_request(:minis_with_detail)
-      render :items
+      render :items, gw2_request(:minis_with_detail)
     end
 
     get '/achievements' do
@@ -549,13 +548,11 @@ module RestGW2
     end
 
     get '/bank' do
-      @items = gw2_request(:with_item_detail, 'v2/account/bank')
-      render :items
+      render :items, gw2_request(:with_item_detail, 'v2/account/bank')
     end
 
     get '/materials' do
-      @items = gw2_request(:with_item_detail, 'v2/account/materials')
-      render :items
+      render :items, gw2_request(:with_item_detail, 'v2/account/materials')
     end
 
     get '/wallet' do
@@ -564,8 +561,7 @@ module RestGW2
     end
 
     get '/items' do
-      @items = all_items
-      render :items
+      render :items, all_items
     end
 
     get %r{\A/items/(?<id>\d+)\z} do |m|
