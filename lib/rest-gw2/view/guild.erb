@@ -6,6 +6,7 @@
 
 <% @stash.each do |upgrade| %>
 <h2><%= upgrade['name'] %></h2>
+<%= item_wiki(upgrade) %>
 <%= erb :items, upgrade['inventory'] %>
 <% end %>
 
