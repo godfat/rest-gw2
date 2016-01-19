@@ -480,7 +480,8 @@ module RestGW2
       gid = m[:uuid]
       @guilds = gw2_request(:account_with_detail)['guilds']
       if @guilds.find{ |g| g['guild_id'] == gid }
-        @treasury = gw2_request(:treasury_with_detail, gid)
+        @treasury = gw2_defer(:treasury_with_detail, gid)
+        @stash    = gw2_defer(   :stash_with_detail, gid)
         render :guild
       else
         status 404

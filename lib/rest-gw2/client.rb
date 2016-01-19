@@ -65,6 +65,18 @@ module RestGW2
       me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/guild/:id/stash
+    def stash_with_detail gid, opts={}
+      stash = get("v2/guild/#{gid}/stash")
+      uids = stash.map{ |u| u['upgrade_id'] }.join(',')
+      upgrades = get('v2/guild/upgrades', :ids => uids)
+      bags = bags_with_detail(stash)
+
+      upgrades.zip(bags).map do |(u, b)|
+        u.merge('inventory' => b['inventory'])
+      end
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/guild/:id/treasury
     def treasury_with_detail gid, opts={}
       with_item_detail("v2/guild/#{gid}/treasury") do |items|

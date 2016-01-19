@@ -4,5 +4,10 @@
 <% end %>
 </ul>
 
+<% @stash.each do |upgrade| %>
+<h2><%= upgrade['name'] %></h2>
+<%= erb :items, upgrade['inventory'] %>
+<% end %>
+
 <h2>Treasury</h2>
 <%= erb :items, @treasury %>
