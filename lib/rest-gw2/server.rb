@@ -331,7 +331,6 @@ module RestGW2
             (subtype.nil? || subtype == i['details']['type']) &&
             (weight.nil? || weight == i['details']['weight_class'])
         end
-        @buy, @sell = sum_items(@items)
         @skin_submenu = "menu_#{type.downcase}s" if subtype
         @subtype = subtype.downcase if subtype
         @weight = weight.downcase if weight
@@ -542,7 +541,6 @@ module RestGW2
 
     get '/minis' do
       @items = gw2_request(:minis_with_detail)
-      @buy, @sell = sum_items(@items)
       render :items
     end
 
@@ -552,13 +550,11 @@ module RestGW2
 
     get '/bank' do
       @items = gw2_request(:with_item_detail, 'v2/account/bank')
-      @buy, @sell = sum_items(@items)
       render :items
     end
 
     get '/materials' do
       @items = gw2_request(:with_item_detail, 'v2/account/materials')
-      @buy, @sell = sum_items(@items)
       render :items
     end
 
@@ -569,7 +565,6 @@ module RestGW2
 
     get '/items' do
       @items = all_items
-      @buy, @sell = sum_items(@items)
       render :items
     end
 

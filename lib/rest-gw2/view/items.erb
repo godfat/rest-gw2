@@ -1,4 +1,5 @@
-<% if @buy > 0 || @sell > 0 %>
-Total: <%= price(@buy) %> / <%= price(@sell) %>
+<% buy, sell = sum_items(@items) %>
+<% if buy > 0 || sell > 0 %>
+Total: <%= price(buy) %> / <%= price(sell) %>
 <% end %>
 <%= erb :item_list, @items %>
