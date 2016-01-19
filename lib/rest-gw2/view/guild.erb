@@ -5,7 +5,7 @@
 </ul>
 
 <% @stash.each do |upgrade| %>
-<h2><%= upgrade['name'] %></h2>
+<h2><%= upgrade['name'] %> (<%= price(upgrade['coins'] || 0) %>)</h2>
 <%= item_wiki(upgrade) %>
 <%= erb :items, upgrade['inventory'] %>
 <% end %>
