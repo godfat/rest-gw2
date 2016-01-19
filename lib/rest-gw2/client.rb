@@ -67,7 +67,11 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/guild/:id/treasury
     def treasury_with_detail gid, opts={}
-      with_item_detail("v2/guild/#{gid}/treasury")
+      with_item_detail("v2/guild/#{gid}/treasury") do |items|
+        items.map do |i|
+          i.merge('id' => i['item_id'])
+        end
+      end
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/characters
