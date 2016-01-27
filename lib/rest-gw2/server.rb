@@ -320,9 +320,9 @@ module RestGW2
       end
 
       def gw2_defer msg, *args
-        gw2.class.defer do
+        PromisePool::Promise.new.defer do
           gw2_request(msg, *args)
-        end
+        end.future
       end
 
       def skin_request type, subtype=nil, weight=nil
