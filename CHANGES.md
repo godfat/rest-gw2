@@ -1,5 +1,19 @@
 # CHANGES
 
+## rest-gw2 0.4.0 -- 2016-02-05
+
+* Added `RestGW2::Client#stash_with_detail`
+* Added `RestGW2::Client#treasury_with_detail`
+* Added `RestGW2::Client#get_character`
+* Added `RestGW2::Client#characters_with_detail`
+* Added `RestGW2::Client#bags_with_detail`
+* Added `RestGW2::Client#dyes_with_detail`
+* Added `RestGW2::Client#skins_with_detail`
+* Added `RestGW2::Client#all_skins`
+* Added `RestGW2::Client#minis_with_detail`
+* Added `RestGW2::Client#expand_item_detail`
+* Added a bunch of new pages for the server.
+
 ## rest-gw2 0.2.0 -- 2015-12-18
 
 ### RestGW2::Client
