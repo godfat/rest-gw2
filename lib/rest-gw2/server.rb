@@ -18,7 +18,7 @@ module RestGW2
     return {} unless File.exist?(path)
     Hash[File.read(path).strip.squeeze("\n").each_line.map do |line|
       name, value = line.split('=')
-      [name, value.chomp] if name && value
+      [name, value.chomp] if !line.start_with?('#') && name && value
     end.compact]
   end
 
