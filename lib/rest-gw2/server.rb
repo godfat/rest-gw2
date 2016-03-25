@@ -117,6 +117,10 @@ module RestGW2
         end
       end
 
+      def menu_guild gid, item, title
+        menu("/guilds/#{gid}#{item}", title)
+      end
+
       def menu_char name
         menu("/characters/#{RC::Middleware.escape(name)}", name)
       end
@@ -327,6 +331,18 @@ module RestGW2
         end.future
       end
 
+      def guild_request gid
+        @guilds = gw2_request(:account_with_detail)['guilds']
+        if @guilds.find{ |g| g['guild_id'] == gid }
+          @gid = gid
+          yield
+        else
+          status 404
+          @error = "Cannot find guild id: #{gid}"
+          render :error
+        end
+      end
+
       def skin_request type, subtype=nil, weight=nil
         @items = gw2_request(:skins_with_detail).select do |i|
           i['type'] == type &&
@@ -479,16 +495,17 @@ module RestGW2
     end
 
     get %r{\A/guilds/(?<uuid>[^/]+)\z} do |m|
-      gid = m[:uuid]
-      @guilds = gw2_request(:account_with_detail)['guilds']
-      if @guilds.find{ |g| g['guild_id'] == gid }
-        @treasury = gw2_defer(:treasury_with_detail, gid)
-        @stash    = gw2_defer(   :stash_with_detail, gid)
-        render :guild
-      else
-        status 404
-        @error = "Cannot find guild id: #{gid}"
-        render :error
+      guild_request(m[:uuid]) do
+        @members = gw2_defer(:guild_members, @gid)
+        render :members
+      end
+    end
+
+    get %r{\A/guilds/(?<uuid>[^/]+)/items\z} do |m|
+      guild_request(m[:uuid]) do
+        @stash    = gw2_defer(   :stash_with_detail, @gid)
+        @treasury = gw2_defer(:treasury_with_detail, @gid)
+        render :stash
       end
     end
 

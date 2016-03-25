@@ -1,8 +1,4 @@
-<ul class="menu">
-<% @guilds.each do |guild| %>
-  <li><%= show_guild(guild) %></li>
-<% end %>
-</ul>
+<%= erb :menu_guild %>
 
 <% @stash.each do |upgrade| %>
 <h2><%= upgrade['name'] %> (<%= price(upgrade['coins'] || 0) %>)</h2>

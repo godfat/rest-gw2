@@ -90,6 +90,11 @@ module RestGW2
       end
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/guild/:id/members
+    def guild_members gid, opts={}
+      get("v2/guild/#{gid}/members", {}, opts)
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/characters
     def get_character name, opts={}
       get("v2/characters/#{RC::Middleware.escape(name)}", {}, opts)

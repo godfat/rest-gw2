@@ -1,0 +1,23 @@
+<%= erb :menu_guild %>
+
+<h2>Members</h2>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Rank</th>
+    <th>Joined</th>
+  </tr>
+  <% @members.each do |member| %>
+  <tr>
+    <td><%= h member['name'] %></td>
+    <td><%= h member['rank'] %></td>
+    <td>
+      <% if member['joined'] %>
+        <%= abbr_time_ago(member['joined']) %>
+      <% else %>
+        (unknown)
+      <% end %>
+    </td>
+  </tr>
+  <% end %>
+</table>
