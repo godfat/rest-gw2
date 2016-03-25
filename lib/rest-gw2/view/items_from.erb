@@ -4,17 +4,17 @@
 
 <div>
 <% if @acct.any? %>
-  <h2><%= menu('/account', 'Account') %></h2>
+  <h2><%= menu('/items', 'Account') %></h2>
   <%= erb :item_list, @acct %>
 <% end %>
 
 <% if @bank.any? %>
-  <h2><%= menu('/bank', 'Bank') %></h2>
+  <h2><%= menu('/items/bank', 'Bank') %></h2>
   <%= erb :item_list, @bank %>
 <% end %>
 
 <% if @materials.any? %>
-  <h2><%= menu('/materials', 'Materials') %></h2>
+  <h2><%= menu('/items/materials', 'Materials') %></h2>
   <%= erb :item_list, @materials %>
 <% end %>
 

@@ -3,8 +3,8 @@
 <% @stash.each do |upgrade| %>
 <h2><%= upgrade['name'] %> (<%= price(upgrade['coins'] || 0) %>)</h2>
 <%= item_wiki(upgrade) %>
-<%= erb :items, upgrade['inventory'] %>
+<%= erb :item_section, upgrade['inventory'] %>
 <% end %>
 
 <h2>Treasury</h2>
-<%= erb :items, @treasury %>
+<%= erb :item_section, @treasury %>

@@ -1,5 +1,8 @@
-<% buy, sell = sum_items(arg) %>
-<% if buy > 0 || sell > 0 %>
-Total: <%= price(buy) %> / <%= price(sell) %>
-<% end %>
-<%= erb :item_list, arg %>
+<ul class="menu">
+  <li><%= menu_item('', 'Account') %></li>
+  <li><%= menu_item('/bank', 'Bank') %></li>
+  <li><%= menu_item('/materials', 'Materials') %></li>
+  <li><%= menu_item('/all', 'All (very slow)') %></li>
+</ul>
+
+<%= erb :item_section, arg %>

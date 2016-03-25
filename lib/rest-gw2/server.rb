@@ -125,6 +125,10 @@ module RestGW2
         menu("/characters/#{RC::Middleware.escape(name)}", name)
       end
 
+      def menu_item item, title
+        menu_sub('/items', item, title)
+      end
+
       def menu_skin item, title
         menu_sub('/skins', item, title)
       end
@@ -537,11 +541,32 @@ module RestGW2
       render :profile
     end
 
-    get '/dyes' do
-      @dyes = gw2_request(:dyes_with_detail)
-      @buy, @sell = sum_items(@dyes)
-      @unlocked = @dyes.count{ |d| d['count'] > 0 }
-      render :dyes
+    get '/items' do
+      render :items, gw2_request(:with_item_detail, 'v2/account/inventory')
+    end
+
+    get '/items/bank' do
+      render :items, gw2_request(:with_item_detail, 'v2/account/bank')
+    end
+
+    get '/items/materials' do
+      render :items, gw2_request(:with_item_detail, 'v2/account/materials')
+    end
+
+    get '/items/all' do
+      render :items, all_items
+    end
+
+    get %r{\A/items/(?<id>\d+)\z} do |m|
+      @acct, @bank, @materials, @chars = find_my_item(m[:id].to_i)
+      @buy, @sell = sum_items(@acct + @bank + @materials +
+                              @chars.values.flatten)
+      render :items_from
+    end
+
+    get '/wallet' do
+      @wallet = gw2_request(:wallet_with_detail)
+      render :wallet
     end
 
     get '/skins/backpacks' do
@@ -562,36 +587,19 @@ module RestGW2
       end
     end
 
+    get '/dyes' do
+      @dyes = gw2_request(:dyes_with_detail)
+      @buy, @sell = sum_items(@dyes)
+      @unlocked = @dyes.count{ |d| d['count'] > 0 }
+      render :dyes
+    end
+
     get '/minis' do
       render :items, gw2_request(:minis_with_detail)
     end
 
     get '/achievements' do
       render :wip
-    end
-
-    get '/bank' do
-      render :items, gw2_request(:with_item_detail, 'v2/account/bank')
-    end
-
-    get '/materials' do
-      render :items, gw2_request(:with_item_detail, 'v2/account/materials')
-    end
-
-    get '/wallet' do
-      @wallet = gw2_request(:wallet_with_detail)
-      render :wallet
-    end
-
-    get '/items' do
-      render :items, all_items
-    end
-
-    get %r{\A/items/(?<id>\d+)\z} do |m|
-      @acct, @bank, @materials, @chars = find_my_item(m[:id].to_i)
-      @buy, @sell = sum_items(@acct + @bank + @materials +
-                              @chars.values.flatten)
-      render :items_from
     end
 
     get '/transactions/buying' do
