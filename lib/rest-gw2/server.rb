@@ -140,7 +140,7 @@ module RestGW2
       end
 
       def blank_icon
-        %Q{<img class="icon" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"/>}
+        %Q{<img class="icon" alt="blank" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"/>}
       end
 
       def item_wiki_list items
@@ -151,7 +151,8 @@ module RestGW2
         if item['name'] && item['icon']
           name = item['name'].tr(' ', '_')
           missing = if item['count'] == 0 then ' missing' else nil end
-          img = %Q{<img class="icon#{missing}" title="#{item_title(item)}"} +
+          img = %Q{<img class="icon#{missing}" alt="#{item_name(item)}"} +
+                %Q{ title="#{item_title(item)}"} +
                 %Q{ src="#{h item['icon']}"/>}
           %Q{<a href="http://wiki.guildwars2.com/wiki/#{u name}">#{img}</a>}
         else
@@ -197,8 +198,9 @@ module RestGW2
         l = [g, s, c]
         n = l.index(&:nonzero?)
         return '-' unless n
-        l.zip(COINS).drop(n).map do |(num, (title, src))|
-          %Q{#{num}<img class="price" title="#{h title}" src="#{h src}"/>}
+        l.zip(COINS).drop(n).map do |(num, (name, src))|
+          %Q{#{num}<img class="price"} +
+          %Q{ alt="#{name}" title="#{name}" src="#{src}"/>}
         end.join(' ')
       end
 
