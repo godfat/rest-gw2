@@ -55,13 +55,17 @@ module RestGW2
   end
 
   Client.include(Module.new{
+    def me opts={}
+      get('v2/account', {}, opts)
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/account
     # https://wiki.guildwars2.com/wiki/API:2/worlds
     # https://wiki.guildwars2.com/wiki/API:1/guild_details
     def account_with_detail opts={}
-      me = get('v2/account', {}, opts)
-      worlds = get('v2/worlds', :ids => me['world'])
-      guilds = guilds_detail(me['guilds'])
+      m = me(opts)
+      worlds = get('v2/worlds', :ids => m['world'])
+      guilds = guilds_detail(m['guilds'])
       me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
     end
 
