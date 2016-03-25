@@ -3,6 +3,11 @@
 <% end %>
 
 <div>
+<% if @acct.any? %>
+  <h2><%= menu('/account', 'Account') %></h2>
+  <%= erb :item_list, @acct %>
+<% end %>
+
 <% if @bank.any? %>
   <h2><%= menu('/bank', 'Bank') %></h2>
   <%= erb :item_list, @bank %>

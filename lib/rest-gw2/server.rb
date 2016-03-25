@@ -267,13 +267,13 @@ module RestGW2
       end
 
       def all_items
-        bank, mats, chars = all_items_defer
+        acct, bank, mats, chars = all_items_defer
         flatten_chars = chars.flat_map do |c|
           c['equipment'] +
             c['bags'] +
             c['bags'].flat_map{ |c| c && c['inventory'] }
         end
-        (bank + mats + flatten_chars).compact.
+        (acct + bank + mats + flatten_chars).compact.
           sort_by{ |i| i['name'] || i['id'].to_s }.inject([]) do |r, i|
             last = r.last
             if last && last['id'] == i['id'] &&
@@ -287,8 +287,10 @@ module RestGW2
       end
 
       def find_my_item id
-        bank, mats, chars = all_items_defer
-        [select_item(bank.compact, id), select_item(mats.compact, id),
+        acct, bank, mats, chars = all_items_defer
+        [select_item(acct.compact, id),
+         select_item(bank.compact, id),
+         select_item(mats.compact, id),
          chars.inject({}){ |r, c|
            equi = select_item(c['equipment'].compact, id)
            bags = c['bags'].reject(&:nil?).map do |b|
@@ -306,6 +308,7 @@ module RestGW2
       end
 
       def all_items_defer
+        acct  = gw2_defer(:with_item_detail, 'v2/account/inventory')
         bank  = gw2_defer(:with_item_detail, 'v2/account/bank')
         mats  = gw2_defer(:with_item_detail, 'v2/account/materials')
         chars = gw2_defer(:characters_with_detail).map do |c|
@@ -313,7 +316,7 @@ module RestGW2
           c['bags']      = gw2_defer(:bags_with_detail  , c['bags'])
           c
         end
-        [bank, mats, chars]
+        [acct, bank, mats, chars]
       end
 
       # CONTROLLER
@@ -585,9 +588,9 @@ module RestGW2
     end
 
     get %r{\A/items/(?<id>\d+)\z} do |m|
-      items = find_my_item(m[:id].to_i)
-      @bank, @materials, @chars = items
-      @buy, @sell = sum_items(@bank + @materials + @chars.values.flatten)
+      @acct, @bank, @materials, @chars = find_my_item(m[:id].to_i)
+      @buy, @sell = sum_items(@acct + @bank + @materials +
+                              @chars.values.flatten)
       render :items_from
     end
 
