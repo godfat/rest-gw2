@@ -21,6 +21,7 @@ desc 'Run server'
 task 'server' do
   ARGV.shift
   load 'bin/rest-gw2'
+  Rake.application.top_level_tasks.clear
 end
 
 Gemgem.init(dir) do |s|
