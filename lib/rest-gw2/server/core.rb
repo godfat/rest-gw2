@@ -378,9 +378,13 @@ module RestGW2
       end
 
       def gw2
-        Client.new(:access_token => access_token,
-                   :log_method => logger(env).method(:info),
-                   :cache => RestGW2::Cache.default(logger(env)))
+        @gw2 ||= Client.new(:access_token => access_token,
+                            :log_method => logger(env).method(:info),
+                            :cache => cache)
+      end
+
+      def cache
+        @cache ||= RestGW2::Cache.default(logger(env))
       end
 
       # ACCESS TOKEN
