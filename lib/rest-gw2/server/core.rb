@@ -316,8 +316,7 @@ module RestGW2
         opts = {'cache.update' => refresh, 'expires_in' => Cache::EXPIRES_IN}
         args << {} if msg == :with_item_detail
         cache.fetch(cache_key(msg, args)) do
-          require 'json' # TODO: how do we remove any futures here?
-          JSON.load(JSON.dump(gw2.public_send(msg, *args, opts)))
+          PromisePool::Future.resolve(gw2.public_send(msg, *args, opts))
         end
       end
 
