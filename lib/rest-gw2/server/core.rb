@@ -315,7 +315,9 @@ module RestGW2
         refresh = !!request.GET['r']
         opts = {'cache.update' => refresh, 'expires_in' => Cache::EXPIRES_IN}
         args << {} if msg == :with_item_detail
-        cache.fetch(cache_key(msg, args)) do
+        key = cache_key(msg, args)
+        cache.delete(key) if refresh
+        cache.fetch(key) do
           PromisePool::Future.resolve(gw2.public_send(msg, *args, opts))
         end
       end
