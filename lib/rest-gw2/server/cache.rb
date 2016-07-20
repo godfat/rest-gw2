@@ -2,6 +2,7 @@
 module RestGW2
   module Cache
     EXPIRES_IN = 600
+    LRU_SIZE = 8192
 
     module_function
     def default logger
@@ -30,8 +31,14 @@ module RestGW2
 
     def lru_cache logger
       require 'lru_redux'
-      logger.info("LRU cache size: 100")
-      LruRedux::ThreadSafeCache.new(100)
+      logger.info("LRU cache size: #{LRU_SIZE}")
+      cache = LruRedux::ThreadSafeCache.new(LRU_SIZE)
+      cache.extend(Module.new{
+        def fetch key # original fetch could deadlock
+          self[key] || self[key] = yield
+        end
+      })
+      cache
     rescue LoadError => e
       logger.debug("Skip LRU cache because: #{e}")
       nil

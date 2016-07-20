@@ -315,7 +315,10 @@ module RestGW2
         refresh = !!request.GET['r']
         opts = {'cache.update' => refresh, 'expires_in' => Cache::EXPIRES_IN}
         args << {} if msg == :with_item_detail
-        gw2.public_send(msg, *args, opts)
+        cache.fetch(cache_key(msg, args)) do
+          require 'json' # TODO: how do we remove any futures here?
+          JSON.load(JSON.dump(gw2.public_send(msg, *args, opts)))
+        end
       end
 
       def gw2_defer msg, *args
@@ -385,6 +388,10 @@ module RestGW2
 
       def cache
         @cache ||= RestGW2::Cache.default(logger(env))
+      end
+
+      def cache_key msg, args
+        [msg, *args, access_token].join(':')
       end
 
       # ACCESS TOKEN
