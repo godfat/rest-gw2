@@ -486,8 +486,8 @@ module RestGW2
     end
 
     get '/account' do
-      @info = gw2_request(:account_with_detail)
-      @info['guilds'].map!(&method(:show_guild))
+      @info = gw2_request(:account_with_detail).dup
+      @info['guilds'] = @info['guilds'].map(&method(:show_guild))
       render :info
     end
 
