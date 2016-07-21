@@ -124,24 +124,15 @@ module RestGW2
       end
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/colors
-    # https://wiki.guildwars2.com/wiki/API:2/account/dyes
-    def dyes_with_detail opts={}
-      mine = get('v2/account/dyes', opts)
-      get('v2/colors').each_slice(100).map do |slice|
-        slice.join(',')
-      end.map do |ids|
-        with_item_detail('v2/colors', :ids => ids) do |colors|
-          colors.map{ |c| c.merge('id' => c['item'], 'color_id' => c['id']) }
-        end
-      end.flatten.map do |color|
-        color['count'] = if mine.include?(color['color_id'])
-                           1
-                         else
-                           0
-                         end
-        color
-      end.sort_by{ |c| c['categories'] }
+    # https://wiki.guildwars2.com/wiki/API:2/currencies
+    # https://wiki.guildwars2.com/wiki/API:2/account/wallet
+    def wallet_with_detail opts={}
+      wallet = get('v2/account/wallet', {}, opts)
+      ids = wallet.map{ |w| w['id'] }.join(',')
+      currencies = get('v2/currencies', :ids => ids).group_by{ |w| w['id'] }
+      wallet.map do |currency|
+        currency.merge(currencies[currency['id']].first)
+      end.sort_by{ |c| c['order'] }
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/account/skins
@@ -165,6 +156,26 @@ module RestGW2
       end
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/colors
+    # https://wiki.guildwars2.com/wiki/API:2/account/dyes
+    def dyes_with_detail opts={}
+      mine = get('v2/account/dyes', opts)
+      get('v2/colors').each_slice(100).map do |slice|
+        slice.join(',')
+      end.map do |ids|
+        with_item_detail('v2/colors', :ids => ids) do |colors|
+          colors.map{ |c| c.merge('id' => c['item'], 'color_id' => c['id']) }
+        end
+      end.flatten.map do |color|
+        color['count'] = if mine.include?(color['color_id'])
+                           1
+                         else
+                           0
+                         end
+        color
+      end.sort_by{ |c| c['categories'] }
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/minis
     # https://wiki.guildwars2.com/wiki/API:2/account/minis
     def minis_with_detail opts={}
@@ -185,20 +196,12 @@ module RestGW2
       end.sort_by{ |m| m['order'] }
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/account/wallet
-    # https://wiki.guildwars2.com/wiki/API:2/currencies
-    def wallet_with_detail opts={}
-      wallet = get('v2/account/wallet', {}, opts)
-      ids = wallet.map{ |w| w['id'] }.join(',')
-      currencies = get('v2/currencies', :ids => ids).group_by{ |w| w['id'] }
-      wallet.map do |currency|
-        currency.merge(currencies[currency['id']].first)
-      end.sort_by{ |c| c['order'] }
-    end
-
-    def with_item_detail path, query={}, opts={}, &block
-      block ||= :itself.to_proc
-      expand_item_detail(block.call(get(path, query, opts)), opts)
+    # https://wiki.guildwars2.com/wiki/API:2/titles
+    # https://wiki.guildwars2.com/wiki/API:2/account/titles
+    def titles_with_detail opts={}
+      get('v2/account/titles').each_slice(100).map do |slice|
+        get('v2/titles', :ids => slice.join(','))
+      end.flatten.sort_by{ |t| t['name'] }
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/commerce/transactions
@@ -222,6 +225,11 @@ module RestGW2
         end
         ret
       end
+    end
+
+    def with_item_detail path, query={}, opts={}, &block
+      block ||= :itself.to_proc
+      expand_item_detail(block.call(get(path, query, opts)), opts)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/items

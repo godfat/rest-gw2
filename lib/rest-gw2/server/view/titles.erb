@@ -1,0 +1,9 @@
+<ul class="menu">
+  <li><%= menu('/achievements/titles', 'Titles') %></li>
+</ul>
+
+<ul>
+<% arg.each do |title| %>
+  <li><%= title['name'] %></li>
+<% end %>
+</ul>

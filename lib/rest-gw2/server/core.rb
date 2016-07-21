@@ -596,8 +596,8 @@ module RestGW2
       render :items, gw2_request(:minis_with_detail)
     end
 
-    get '/achievements' do
-      render :wip
+    get '/achievements/titles' do
+      render :titles, gw2_request(:titles_with_detail)
     end
 
     get '/transactions/buying' do
