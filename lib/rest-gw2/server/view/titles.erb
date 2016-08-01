@@ -2,6 +2,8 @@
   <li><%= menu('/achievements/titles', 'Titles') %></li>
 </ul>
 
+<div><%= plural(arg, 'title') %></div>
+
 <ul>
 <% arg.each do |title| %>
   <li><%= title['name'] %></li>

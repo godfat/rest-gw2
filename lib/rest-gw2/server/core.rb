@@ -239,6 +239,15 @@ module RestGW2
         result
       end
 
+      def plural objects, name
+        size = objects.size
+        if size > 1
+          "#{size} #{name}s"
+        else
+          "#{size} #{name}"
+        end
+      end
+
       def sum_trans trans
         trans.inject(0) do |sum, t|
           sum + t['price'] * t['quantity']
