@@ -1,10 +1,10 @@
 <ul class="menu">
-<% @guilds.each do |guild| %>
+<% arg[:guilds].each do |guild| %>
   <li><%= show_guild(guild) %></li>
 <% end %>
 </ul>
 
 <ul class="menu">
-  <li><%= menu_guild(@gid, '', 'Members') %></li>
-  <li><%= menu_guild(@gid, '/items', 'Items') %></li>
+  <li><%= menu_guild(arg[:gid], '', 'Members') %></li>
+  <li><%= menu_guild(arg[:gid], '/items', 'Items') %></li>
 </ul>

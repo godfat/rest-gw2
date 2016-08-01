@@ -4,11 +4,12 @@
   <li><%= menu_skin('/armors/helm/light', 'Armors') %></li>
 </ul>
 
-<%= erb @skin_submenu if @skin_submenu %>
+<%= erb arg[:skin_submenu], :weight => arg[:weight],
+                            :subtype => arg[:subtype] if arg[:skin_submenu] %>
 
-<% if @items.size > 0 %>
-Unlocked: <%= @unlocked %> / <%= @items.size %>
-(<%= ((@unlocked.to_f/@items.size)*100).to_i %>%)
+<% if arg[:items].size > 0 %>
+Unlocked: <%= arg[:unlocked] %> / <%= arg[:items].size %>
+(<%= ((arg[:unlocked].to_f/arg[:items].size)*100).to_i %>%)
 <% end %>
 <br/>
-<%= erb :item_section, @items %>
+<%= erb :item_section, arg[:items] %>

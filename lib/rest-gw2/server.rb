@@ -1,5 +1,6 @@
 
 require 'rest-gw2/server/core'
+
 require 'jellyfish'
 require 'rack'
 

@@ -1,11 +1,13 @@
 <ul class="menu">
-<% jellyfish.class.armors.each do |armor| %>
-  <li><%= menu_skin("/armors/#{armor.downcase}/#{@weight}", armor) %></li>
+<% ServerCore.armors.each do |armor| %>
+  <li><%= menu_skin("/armors/#{armor.downcase}/#{arg[:weight]}", armor) %></li>
 <% end %>
 </ul>
 
 <ul class="menu">
-<% jellyfish.class.armors_weight.each do |weight| %>
-  <li><%= menu_skin("/armors/#{@subtype}/#{weight.downcase}", weight) %></li>
+<% ServerCore.armors_weight.each do |weight| %>
+  <li>
+    <%= menu_skin("/armors/#{arg[:subtype]}/#{weight.downcase}", weight) %>
+  </li>
 <% end %>
 </ul>

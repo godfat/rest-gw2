@@ -5,11 +5,11 @@
   <li><%= menu_trans('/sold', 'Sold') %></li>
 </ul>
 
-<%= erb :pages %>
+<%= erb :pages, arg[:pages] %>
 
-Total: <%= price(@total) %>
+Total: <%= price(arg[:total]) %>
 <ul class="item">
-<% @trans.each do |trans| %>
+<% arg[:trans].each do |trans| %>
   <li>
   <%= item_wiki(trans) %>
   <span class="description">
@@ -25,4 +25,4 @@ Total: <%= price(@total) %>
 <% end %>
 </ul>
 
-<%= erb :pages %>
+<%= erb :pages, arg[:pages] %>

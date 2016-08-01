@@ -1,11 +1,11 @@
-<% if @dyes.size > 0 %>
-Unlocked: <%= @unlocked %> / <%= @dyes.size %>
-(<%= ((@unlocked.to_f/@dyes.size)*100).to_i %>%)
+<% if arg[:dyes].size > 0 %>
+Unlocked: <%= arg[:unlocked] %> / <%= arg[:dyes].size %>
+(<%= ((arg[:unlocked].to_f/arg[:dyes].size)*100).to_i %>%)
 <% end %>
 <br/>
-Total: <%= price(@buy) %> / <%= price(@sell) %>
+Total: <%= price(arg[:buy]) %> / <%= price(arg[:sell]) %>
 <ul class="item">
-<% @dyes.each do |dye| %>
+<% arg[:dyes].each do |dye| %>
   <li class="dye">
     <%= item_wiki(dye) %>
     <%= dye_color(dye) %>

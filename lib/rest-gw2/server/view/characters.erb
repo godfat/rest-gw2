@@ -1,5 +1,5 @@
 Total Played:
-<%= duration(@total).join(' ') %> (<%= @total / 3600 %> hours)
+<%= duration(arg[:total]).join(' ') %> (<%= arg[:total] / 3600 %> hours)
 
 <h2>Characters</h2>
 <table id="characters">
@@ -12,7 +12,7 @@ Total Played:
     <th>Death</th>
     <th>Birth</th>
   </tr>
-  <% @chars.each do |c| %>
+  <% arg[:chars].each do |c| %>
   <tr>
     <td>
       <%= menu_char(c['name']) %> (<%= h c['level'].to_s %>)
@@ -32,10 +32,10 @@ Total Played:
 
 <h2>Crafting</h2>
 <table id="crafting">
-<% jellyfish.class.crafting.each do |d| %>
+<% ServerCore.crafting.each do |d| %>
   <tr>
     <th><%= d %></th>
-    <% @craftings[d].sort.reverse_each do |(rating, name, active)| %>
+    <% arg[:craftings][d].sort.reverse_each do |(rating, name, active)| %>
     <td class="active-<%= active %>"><%= "#{name} (#{rating})" %></td>
     <% end %>
   </tr>

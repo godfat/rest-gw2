@@ -1,14 +1,14 @@
 <ul class="menu">
-<% @names.each do |name| %>
+<% arg[:names].each do |name| %>
   <li><%= menu_char(name) %></li>
 <% end %>
 </ul>
 
 <h2>Equipments</h2>
-<% if @equi_buy > 0 || @equi_sell > 0 %>
-Total: <%= price(@equi_buy) %> / <%= price(@equi_sell) %>
+<% if arg[:equi_buy] > 0 || arg[:equi_sell] > 0 %>
+Total: <%= price(arg[:equi_buy]) %> / <%= price(arg[:equi_sell]) %>
 <% end %>
-<% @equi.each do |item| %>
+<% arg[:equi].each do |item| %>
 <p>
   <h3><%= item['slot'] %></h3>
   <%= erb :item_show, item %>
@@ -16,11 +16,11 @@ Total: <%= price(@equi_buy) %> / <%= price(@equi_sell) %>
 <% end %>
 
 <h2>Bags</h2>
-<% if @bags_buy > 0 || @bags_sell > 0 %>
-Total: <%= price(@bags_buy) %> / <%= price(@bags_sell) %>
+<% if arg[:bags_buy] > 0 || arg[:bags_sell] > 0 %>
+Total: <%= price(arg[:bags_buy]) %> / <%= price(arg[:bags_sell]) %>
 <% end %>
 
-<% @bags.each do |bag| %>
+<% arg[:bags].each do |bag| %>
 <p>
   <% if bag %>
   <%= erb :item_show, bag %>

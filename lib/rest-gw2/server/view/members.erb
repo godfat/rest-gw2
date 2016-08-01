@@ -1,4 +1,4 @@
-<%= erb :menu_guild %>
+<%= erb :menu_guild, arg %>
 
 <h2>Members</h2>
 <table>
@@ -7,7 +7,7 @@
     <th>Rank</th>
     <th>Joined</th>
   </tr>
-  <% @members.each do |member| %>
+  <% arg[:members].each do |member| %>
   <tr>
     <td><%= h member['name'] %></td>
     <td><%= h member['rank'] %></td>

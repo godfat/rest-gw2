@@ -1,25 +1,20 @@
 
 require 'rest-gw2/server/cache'
+require 'rest-gw2/server/view'
 require 'rest-gw2/client'
-require 'mime/types'
+
 require 'rest-core'
 require 'jellyfish'
 
+require 'uri'
 require 'timeout'
 require 'openssl'
-require 'erb'
-require 'cgi'
 
 module RestGW2
   class ServerCore
     include Jellyfish
 
     SECRET = ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2
-    COINS  = %w[gold silver copper].zip(%w[
-      https://wiki.guildwars2.com/images/d/d1/Gold_coin.png
-      https://wiki.guildwars2.com/images/3/3c/Silver_coin.png
-      https://wiki.guildwars2.com/images/e/eb/Copper_coin.png
-    ]).freeze
 
     def self.weapons
       %w[Greatsword Sword Hammer Mace Axe Dagger
@@ -43,226 +38,14 @@ module RestGW2
          Jeweler Chef Scribe]
     end
 
-    HTML = Class.new(Struct.new(:to_s))
-
     controller_include NormalizedPath, Module.new{
       # VIEW
-      def render path, arg=nil
-        erb(:layout){ erb(path, arg) }
+      def view
+        @view ||= View.new(request, query_t)
       end
 
-      def erb name, arg=nil, &block
-        ERB.new(views(name)).result(binding, &block)
-      end
-
-      def h str
-        case str
-        when String
-          CGI.escape_html(str)
-        when HTML
-          str.to_s
-        end
-      end
-
-      def u str
-        CGI.escape(str) if str.kind_of?(String)
-      end
-
-      def path str, q={}
-        RC::Middleware.request_uri(
-          RC::REQUEST_PATH => "#{ENV['RESTGW2_PREFIX']}#{str}",
-          RC::REQUEST_QUERY => q)
-      end
-
-      def views name
-        @views ||= {}
-        @views[name] = File.read("#{__dir__}/view/#{name}.erb")
-      end
-
-      def refresh_path
-        path(request.path, :p => p, :r => '1', :t => t)
-      end
-
-      # TODO: clean me up
-      def menu item, title, query={}
-        href = path(item, query.merge(:t => t))
-        if path(request.path, :p => p, :t => t) == href
-          title
-        else
-          %Q{<a href="#{href}">#{title}</a>}
-        end
-      end
-
-      # TODO: clean me up
-      def menu_sub prefix, item, title
-        key = "#{prefix}#{item}"
-        if path(request.path) == path(key)
-          menu(key, title, :p => p)
-        else
-          menu(key, title)
-        end
-      end
-
-      def menu_guild gid, item, title
-        menu("/guilds/#{gid}#{item}", title)
-      end
-
-      def menu_char name
-        menu("/characters/#{RC::Middleware.escape(name)}", name)
-      end
-
-      def menu_item item, title
-        menu_sub('/items', item, title)
-      end
-
-      def menu_skin item, title
-        menu_sub('/skins', item, title)
-      end
-
-      def menu_trans item, title
-        menu_sub('/transactions', item, title)
-      end
-
-      def page num
-        menu(request.path, num.to_s, :p => zero_is_nil(num))
-      end
-
-      # HELPER
-      def show_guild g
-        HTML.new(menu("/guilds/#{g['guild_id']}",
-                      h("#{g['guild_name']} [#{g['tag']}]")))
-      end
-
-      def blank_icon
-        %Q{<img class="icon" alt="blank" src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Blank.png"/>}
-      end
-
-      def item_wiki_list items
-        items.map(&method(:item_wiki)).join("\n")
-      end
-
-      def item_wiki item
-        if item['name'] && item['icon']
-          name = item['name'].tr(' ', '_')
-          missing = if item['count'] == 0 then ' missing' else nil end
-          img = %Q{<img class="icon#{missing}" alt="#{item_name(item)}"} +
-                %Q{ title="#{item_title(item)}"} +
-                %Q{ src="#{h item['icon']}"/>}
-          %Q{<a href="http://wiki.guildwars2.com/wiki/#{u name}">#{img}</a>}
-        else
-          blank_icon
-        end
-      end
-
-      def item_link item
-        name = item_name(item)
-        if item['nolink']
-          name
-        else
-          menu("/items/#{item['id']}", name)
-        end
-      end
-
-      def item_name item
-        h(item['name'] || "?#{item['id']}?")
-      end
-
-      def item_title item
-        d = item['description']
-        d && d.unpack('U*').map{ |c| "&##{c};" }.join
-      end
-
-      def item_count item
-        c = item['count']
-        "(#{c})" if c > 1
-      end
-
-      def item_price item
-        b = item['buys']
-        s = item['sells']
-        bb = b && price(b['unit_price'])
-        ss = s && price(s['unit_price'])
-        %Q{#{bb} / #{ss}} if bb || ss
-      end
-
-      def price copper
-        g = copper / 100_00
-        s = copper % 100_00 / 100
-        c = copper % 100
-        l = [g, s, c]
-        n = l.index(&:nonzero?)
-        return '-' unless n
-        l.zip(COINS).drop(n).map do |(num, (name, src))|
-          %Q{#{num}<img class="price"} +
-          %Q{ alt="#{name}" title="#{name}" src="#{src}"/>}
-        end.join(' ')
-      end
-
-      def dye_color dye
-        %w[cloth leather metal].map do |kind|
-          rgb = dye[kind]['rgb']
-          rgb && dye_preview(kind, rgb.join(', '))
-        end.join("\n")
-      end
-
-      def dye_preview kind, rgb
-        %Q{<span class="icon" title="#{kind}, rgb(#{rgb})"} +
-             %Q{ style="background-color: rgb(#{rgb})"></span>}
-      end
-
-      def abbr_time_ago time, precision=1
-        return unless time
-        ago = time_ago(time)
-        short = ago.take(precision).join(' ')
-        %Q{(<abbr title="#{time}, #{ago.join(' ')} ago">#{short} ago</abbr>)}
-      end
-
-      def time_ago time
-        duration((Time.now - Time.parse(time)).to_i)
-      end
-
-      def duration delta
-        result = []
-
-        [[ 60, :seconds],
-         [ 60, :minutes],
-         [ 24, :hours  ],
-         [365, :days   ],
-         [999, :years  ]].
-          inject(delta) do |length, (divisor, name)|
-            quotient, remainder = length.divmod(divisor)
-            result.unshift("#{remainder} #{name}")
-            break if quotient == 0
-            quotient
-          end
-
-        result
-      end
-
-      def plural objects, name
-        size = objects.size
-        if size > 1
-          "#{size} #{name}s"
-        else
-          "#{size} #{name}"
-        end
-      end
-
-      def sum_trans trans
-        trans.inject(0) do |sum, t|
-          sum + t['price'] * t['quantity']
-        end
-      end
-
-      def sum_items items
-        items.inject([0, 0]) do |sum, i|
-          next sum unless i
-          b = i['buys']
-          s = i['sells']
-          sum[0] += b['unit_price'] * i['count'] if b
-          sum[1] += s['unit_price'] * i['count'] if s
-          sum
-        end
+      def render *args
+        view.render(*args)
       end
 
       def all_items
@@ -338,35 +121,40 @@ module RestGW2
       end
 
       def guild_request gid
-        @guilds = gw2_request(:account_with_detail)['guilds']
-        if @guilds.find{ |g| g['guild_id'] == gid }
-          @gid = gid
-          yield
+        guilds = gw2_request(:account_with_detail)['guilds']
+        if guilds.find{ |g| g['guild_id'] == gid }
+          yield(:gid => gid, :guilds => guilds)
         else
           status 404
-          @error = "Cannot find guild id: #{gid}"
-          render :error
+          render :error, "Cannot find guild id: #{gid}"
         end
       end
 
       def skin_request type, subtype=nil, weight=nil
-        @items = gw2_request(:skins_with_detail).select do |i|
+        items = gw2_request(:skins_with_detail).select do |i|
           i['type'] == type &&
             (subtype.nil? || subtype == i['details']['type']) &&
             (weight.nil? || weight == i['details']['weight_class'])
         end
-        @skin_submenu = "menu_#{type.downcase}s" if subtype
-        @subtype = subtype.downcase if subtype
-        @weight = weight.downcase if weight
-        @unlocked = @items.count{ |i| i['count'] > 0 }
-        render :skins
+        skin_submenu = "menu_#{type.downcase}s" if subtype
+        subtype = subtype.downcase if subtype
+        weight = weight.downcase if weight
+        unlocked = items.count{ |i| i['count'] > 0 }
+
+        render :skins, :items => items,
+                       :skin_submenu => skin_submenu,
+                       :subtype => subtype,
+                       :weight => weight,
+                       :unlocked => unlocked
       end
 
       def trans_request msg, path
-        @trans = gw2_request(msg, path, :page => p)
-        @pages = calculate_pages("v2/commerce/transactions/#{path}")
-        @total = sum_trans(@trans)
-        render :transactions
+        trans = gw2_request(msg, path, :page => view.query_p)
+        pages = calculate_pages("v2/commerce/transactions/#{path}")
+        total = view.sum_trans(trans)
+
+        render :transactions, :trans => trans, :pages => pages,
+                              :total => total
       end
 
       def group_by_crafting characters
@@ -406,25 +194,16 @@ module RestGW2
 
       # ACCESS TOKEN
       def access_token
-        t && decrypt(t) || ENV['RESTGW2_ACCESS_TOKEN']
+        query_t && decrypt(query_t) || ENV['RESTGW2_ACCESS_TOKEN']
       rescue ArgumentError, OpenSSL::Cipher::CipherError => e
         raise RestGW2::Error.new({'text' => e.message}, 0)
       end
 
-      def t
-        @t ||= begin
+      def query_t
+        @query_t ||= begin
           r = request.GET['t']
           r if r && !r.strip.empty?
         end
-      end
-
-      def p
-        @p ||= zero_is_nil(request.GET['p'])
-      end
-
-      def zero_is_nil n
-        r = n.to_i
-        r if r != 0
       end
 
       # UTILITIES
@@ -481,14 +260,12 @@ module RestGW2
 
     handle Timeout::Error do
       status 504
-      @error = 'Timeout. Please try again.'
-      render :error
+      render :error, 'Timeout. Please try again.'
     end
 
     handle RestGW2::Error do |e|
       status 502
-      @error = e.error['text']
-      render :error
+      render :error, e.error['text']
     end
 
     post '/access_token' do
@@ -503,49 +280,53 @@ module RestGW2
     end
 
     get '/account' do
-      @info = gw2_request(:account_with_detail).dup
-      @info['guilds'] = @info['guilds'].map(&method(:show_guild))
-      render :info
+      info = gw2_request(:account_with_detail).dup
+      info['guilds'] = info['guilds'].map(&view.method(:show_guild))
+
+      render :info, info
     end
 
     get %r{\A/guilds/(?<uuid>[^/]+)\z} do |m|
-      guild_request(m[:uuid]) do
-        @members = gw2_defer(:guild_members, @gid)
-        render :members
+      guild_request(m[:uuid]) do |arg|
+        members = gw2_defer(:guild_members, arg[:gid])
+
+        render :members, arg.merge(:members => members)
       end
     end
 
     get %r{\A/guilds/(?<uuid>[^/]+)/items\z} do |m|
-      guild_request(m[:uuid]) do
-        @stash    = gw2_defer(   :stash_with_detail, @gid)
-        @treasury = gw2_defer(:treasury_with_detail, @gid)
-        render :stash
+      guild_request(m[:uuid]) do |arg|
+        stash    = gw2_defer(   :stash_with_detail, arg[:gid])
+        treasury = gw2_defer(:treasury_with_detail, arg[:gid])
+
+        render :stash, arg.merge(:stash => stash, :treasury => treasury)
       end
     end
 
     get '/characters' do
-      @chars = gw2_request(:characters_with_detail)
-      @total = @chars.inject(0){ |t, c| t + c['age'] }
-      @craftings = group_by_crafting(@chars)
-      render :characters
+      chars = gw2_request(:characters_with_detail)
+      total = chars.inject(0){ |t, c| t + c['age'] }
+      craftings = group_by_crafting(chars)
+
+      render :characters, :chars => chars, :total => total,
+                          :craftings => craftings
     end
 
     get %r{\A/characters/(?<name>[\w ]+)\z} do |m|
       characters = gw2_request(:characters_with_detail)
-      @names = characters.map { |c| c['name'] }
-      name   = m[:name]
-      char   = characters.find{ |c| c['name'] == name }
+      names = characters.map { |c| c['name'] }
+      name  = m[:name]
+      char  = characters.find{ |c| c['name'] == name }
+      equi  = gw2_defer(:expand_item_detail, char['equipment'])
+      bags  = gw2_defer(:bags_with_detail  , char['bags'])
 
-      equi = gw2_defer(:expand_item_detail, char['equipment'])
-      bags = gw2_defer(:bags_with_detail  , char['bags'])
+      equi_buy, equi_sell = view.sum_items(equi)
+      bags_buy, bags_sell = view.sum_items(bags +
+                              bags.flat_map{ |c| c && c['inventory'] })
 
-      @equi = equi
-      @bags = bags
-
-      @equi_buy, @equi_sell = sum_items(@equi)
-      @bags_buy, @bags_sell = sum_items(@bags +
-                                @bags.flat_map{ |c| c && c['inventory'] })
-      render :profile
+      render :profile, :names => names, :equi => equi, :bags => bags,
+                       :equi_buy => equi_buy, :equi_sell => equi_sell,
+                       :bags_buy => bags_buy, :bags_sell => bags_sell
     end
 
     get '/items' do
@@ -565,15 +346,17 @@ module RestGW2
     end
 
     get %r{\A/items/(?<id>\d+)\z} do |m|
-      @acct, @bank, @materials, @chars = find_my_item(m[:id].to_i)
-      @buy, @sell = sum_items(@acct + @bank + @materials +
-                              @chars.values.flatten)
-      render :items_from
+      acct, bank, materials, chars = find_my_item(m[:id].to_i)
+      buy, sell = view.sum_items(acct + bank + materials +
+                                 chars.values.flatten)
+
+      render :items_from, :acct => acct, :bank => bank,
+                          :materials => materials, :chars => chars,
+                          :buy => buy, :sell => sell
     end
 
     get '/wallet' do
-      @wallet = gw2_request(:wallet_with_detail)
-      render :wallet
+      render :wallet, gw2_request(:wallet_with_detail)
     end
 
     get '/skins/backpacks' do
@@ -595,10 +378,13 @@ module RestGW2
     end
 
     get '/dyes' do
-      @dyes = gw2_request(:dyes_with_detail)
-      @buy, @sell = sum_items(@dyes)
-      @unlocked = @dyes.count{ |d| d['count'] > 0 }
-      render :dyes
+      dyes = gw2_request(:dyes_with_detail)
+      buy, sell = view.sum_items(dyes)
+      unlocked = dyes.count{ |d| d['count'] > 0 }
+
+      render :dyes, :dyes => dyes,
+                    :buy => buy, :sell => sell,
+                    :unlocked => unlocked
     end
 
     get '/minis' do
@@ -626,8 +412,7 @@ module RestGW2
     end
 
     get '/tokeninfo' do
-      @info = gw2_request(:get, 'v2/tokeninfo')
-      render :info
+      render :info, gw2_request(:get, 'v2/tokeninfo')
     end
   end
 end
