@@ -136,8 +136,8 @@ module RestGW2
     def item_wiki item
       if item['name'] && item['icon']
         name = item['name'].tr(' ', '_')
-        missing = if item['count'] == 0 then ' missing' else nil end
-        img = %Q{<img class="icon#{missing}" alt="#{item_name(item)}"} +
+        img = %Q{<img class="#{item_class(item)}"} +
+              %Q{ alt="#{item_name(item)}"} +
               %Q{ title="#{item_title(item)}"} +
               %Q{ src="#{h item['icon']}"/>}
         %Q{<a href="http://wiki.guildwars2.com/wiki/#{u name}">#{img}</a>}
@@ -175,6 +175,14 @@ module RestGW2
       bb = b && price(b['unit_price'])
       ss = s && price(s['unit_price'])
       %Q{#{bb} / #{ss}} if bb || ss
+    end
+
+    def item_class item
+      missing = if item['count'] == 0 then ' missing' end
+      rarity = if item['rarity']
+        " rarity rarity-#{item['rarity'].downcase}"
+      end
+      "icon#{rarity}#{missing}"
     end
 
     def price copper
