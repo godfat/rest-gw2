@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RestGW2
-  ItemDetailStruct ||= Struct.new(:client, :raw, :opts)
+  ItemDetailStruct = Struct.new(:client, :raw, :opts)
 
   class ItemDetail < ItemDetailStruct
     attr_reader :detail, :upgrades, :stats, :skins

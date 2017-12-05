@@ -24,7 +24,6 @@
 # Code Clarity
 
 * Use more classes and objects so that the types are more clear
-* Split actions and utility methods
 
 # Performance
 

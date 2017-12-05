@@ -8,7 +8,7 @@ require 'cgi'
 
 module RestGW2
   class View < Struct.new(:request, :query_t)
-    HTML = Class.new(Struct.new(:to_s))
+    HTML = Struct.new(:to_s)
     COINS = %w[gold silver copper].zip(%w[
       https://wiki.guildwars2.com/images/d/d1/Gold_coin.png
       https://wiki.guildwars2.com/images/3/3c/Silver_coin.png
