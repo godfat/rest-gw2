@@ -396,6 +396,13 @@ module RestGW2
       render :titles, gw2_request(:titles_with_detail)
     end
 
+    get '/transactions/delivery' do
+      delivery = gw2_request(:delivery_with_detail, :page => view.query_p)
+      total = delivery.shift['price']
+
+      render :transactions, :trans => delivery, :total => total
+    end
+
     get '/transactions/buying' do
       trans_request(:transactions_with_detail_compact, 'current/buys')
     end

@@ -1,4 +1,5 @@
 <ul class="menu">
+  <li><%= menu_trans('/delivery', 'Delivery') %></li>
   <li><%= menu_trans('/buying', 'Buying') %></li>
   <li><%= menu_trans('/selling', 'Selling') %></li>
   <li><%= menu_trans('/bought', 'Bought') %></li>
@@ -16,9 +17,11 @@ Total: <%= price(arg[:total]) %>
     <%= item_link(trans) %>
     <%= h item_count(trans) %>
     <br/>
-    <%= price(trans['price']) %>
-    <%= abbr_time_ago(trans['purchased'] || trans['created']) %>
-    <br/>
+    <% if trans['price'] %>
+      <%= price(trans['price']) %>
+      <%= abbr_time_ago(trans['purchased'] || trans['created']) %>
+      <br/>
+    <% end %>
     <%= item_price(trans) %>
   </span>
   </li>

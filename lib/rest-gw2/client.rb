@@ -207,6 +207,18 @@ module RestGW2
       end.flatten.sort_by{ |t| t['name'] }
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/commerce/delivery
+    def delivery_with_detail query={}, opts={}
+      items = with_item_detail('v2/commerce/delivery',
+                       {:page_size => 200}.merge(query), opts) do |delivery|
+        ['price' => delivery['coins']] + delivery['items']
+      end
+
+      compact_items(items) do |last, current|
+        last['id'] == current['id']
+      end
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/commerce/transactions
     def transactions_with_detail path, query={}, opts={}
       with_item_detail("v2/commerce/transactions/#{path}",
@@ -218,15 +230,10 @@ module RestGW2
     end
 
     def transactions_with_detail_compact path, query={}, opts={}
-      transactions_with_detail(path, query, opts).inject([]) do |ret, trans|
-        last = ret.last
-        if last && last['item_id'] == trans['item_id'] &&
-                   last['price']   == trans['price']
-          last['count'] += trans['count']
-        else
-          ret << trans
-        end
-        ret
+      items = transactions_with_detail(path, query, opts)
+
+      compact_items(items) do |last, current|
+        last['id'] == current['id'] && last['price'] == current['price']
       end
     end
 
@@ -276,6 +283,20 @@ module RestGW2
 
     def get_guild gid
       get('v1/guild_details', :guild_id => gid)
+    end
+
+    def compact_items items
+      items.inject([]) do |result, item|
+        last = result.last
+
+        if last && yield(last, item)
+          last['count'] += item['count']
+        else
+          result << item
+        end
+
+        result
+      end
     end
   })
 end

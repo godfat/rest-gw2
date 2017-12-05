@@ -1,5 +1,5 @@
 <ul class="menu">
-<% if arg.size > 2 %>
+<% if arg && arg.size > 2 %>
   <% arg.each do |p| %>
     <li><%= page(p) %></li>
   <% end %>
