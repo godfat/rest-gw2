@@ -14,6 +14,7 @@ module RestGW2
       https://wiki.guildwars2.com/images/3/3c/Silver_coin.png
       https://wiki.guildwars2.com/images/e/eb/Copper_coin.png
     ]).freeze
+    GEM = 'https://wiki.guildwars2.com/images/a/aa/Gem.png'
 
     def render name, arg=nil
       erb(:layout){ erb(name, arg) }
@@ -200,9 +201,17 @@ module RestGW2
       n = l.index(&:nonzero?)
       return '-' unless n
       l.zip(COINS).drop(n).map do |(num, (name, src))|
-        %Q{#{num}<img class="price"} +
-        %Q{ alt="#{name}" title="#{name}" src="#{src}"/>}
+        price_tag(num, name, src)
       end.join(' ')
+    end
+
+    def price_gem num
+      price_tag(num, 'gem', GEM)
+    end
+
+    def price_tag num, name, src
+      %Q{#{num}<img class="price"} +
+      %Q{ alt="#{name}" title="#{name}" src="#{src}"/>}
     end
 
     def dye_color dye

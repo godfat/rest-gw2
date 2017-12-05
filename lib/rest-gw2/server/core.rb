@@ -17,6 +17,11 @@ module RestGW2
 
     SECRET = ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2
 
+    GemIcon = 'https://render.guildwars2.com/' \
+      'file/220061640ECA41C0577758030357221B4ECCE62C/502065.png'
+    GoldIcon = 'https://render.guildwars2.com/' \
+      'file/98457F504BA2FAC8457F532C4B30EDC23929ACF9/619316.png'
+
     def self.weapons
       %w[Greatsword Sword Hammer Mace Axe Dagger
          Staff Scepter
@@ -176,6 +181,24 @@ module RestGW2
 
       def parse_page uri
         RC::ParseQuery.parse_query(URI.parse(uri).query)['page'].to_i
+      end
+
+      def stub_gold num
+        {'name' => 'Gold', 'icon' => GoldIcon, 'price' => num,
+         'count' => gw2_request(:get, 'v2/commerce/exchange/gems',
+                                :quantity => num)}
+      end
+
+      def stub_gem num
+        num *= 100_00
+        {'name' => 'Gem', 'icon' => GemIcon, 'price' => num,
+         'count' => gw2_request(:get, 'v2/commerce/exchange/coins',
+                                :quantity => num)}
+      end
+
+      def resolve_count item
+        item['count'] = item['count']['quantity']
+        item
       end
 
       def gw2
@@ -416,6 +439,17 @@ module RestGW2
 
     get '/commerce/sold' do
       trans_request(:transactions_with_detail_compact, 'history/sells')
+    end
+
+    get '/commerce/exchange' do
+      buy_gold = [400, 800, 1200, 1600].map(&method(:stub_gold))
+      buy_gem  = [50, 75, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500].
+                 map(&method(:stub_gem))
+
+      buy_gold.map!(&method(:resolve_count))
+      buy_gem.map!(&method(:resolve_count))
+
+      render :exchange, :buy_gold => buy_gold, :buy_gem => buy_gem
     end
 
     get '/tokeninfo' do

@@ -1,0 +1,31 @@
+<%= erb :menu_commerce %>
+
+<h2>Gem to Gold</h2>
+<ul class="item">
+<% arg[:buy_gold].each do |gold| %>
+  <li>
+    <%= item_wiki(gold) %>
+    <span class="description">
+      <%= h gold['name'] %>
+      (<%= price(gold['count']) %>)
+      <br/>
+      <%= price_gem(gold['price']) %>
+    </span>
+  </li>
+<% end %>
+</ul>
+
+<h2>Gold to Gem</h2>
+<ul class="item">
+<% arg[:buy_gem].each do |gem| %>
+  <li>
+    <%= item_wiki(gem) %>
+    <span class="description">
+      <%= h gem['name'] %>
+      (<%= price_gem(gem['count']) %>)
+      <br/>
+      <%= price(gem['price']) %>
+    </span>
+  </li>
+<% end %>
+</ul>

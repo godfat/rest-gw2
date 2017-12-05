@@ -1,11 +1,4 @@
-<ul class="menu">
-  <li><%= menu_commerce('/delivery', 'Delivery') %></li>
-  <li><%= menu_commerce('/buying', 'Buying') %></li>
-  <li><%= menu_commerce('/selling', 'Selling') %></li>
-  <li><%= menu_commerce('/bought', 'Bought') %></li>
-  <li><%= menu_commerce('/sold', 'Sold') %></li>
-</ul>
-
+<%= erb :menu_commerce %>
 <%= erb :pages, arg[:pages] %>
 
 Total: <%= price(arg[:total]) %>
