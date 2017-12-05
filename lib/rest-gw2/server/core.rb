@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'rest-gw2/server/cache'
 require 'rest-gw2/server/view'

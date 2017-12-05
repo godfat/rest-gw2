@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module RestGW2
   module Cache

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 module RestGW2
   autoload :Client, 'rest-gw2/client'

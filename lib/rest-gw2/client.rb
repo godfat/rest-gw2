@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'rest-core'
 require 'rest-gw2/client/item_detail'

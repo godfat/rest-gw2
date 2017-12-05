@@ -22,3 +22,8 @@
 * https://wiki.guildwars2.com/wiki/API:2/commerce/delivery
 * https://wiki.guildwars2.com/wiki/API:2/commerce/exchange
 * https://wiki.guildwars2.com/wiki/API:2/commerce/listings
+
+# Code Clarity
+
+* Use more classes and objects so that the types are more clear
+* Split actions and utility methods
