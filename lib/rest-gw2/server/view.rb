@@ -185,6 +185,12 @@ module RestGW2
       "icon#{rarity}#{missing}"
     end
 
+    def item_attributes stats
+      stats.map do |name, value|
+        "#{name}: #{value}"
+      end.join(', ')
+    end
+
     def price copper
       g = copper / 100_00
       s = copper % 100_00 / 100
