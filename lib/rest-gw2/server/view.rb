@@ -117,8 +117,8 @@ module RestGW2
       menu_sub('/skins', item, title)
     end
 
-    def menu_trans item, title
-      menu_sub('/transactions', item, title)
+    def menu_commerce item, title
+      menu_sub('/commerce', item, title)
     end
 
     def page num

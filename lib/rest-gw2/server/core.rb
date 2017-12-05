@@ -150,12 +150,11 @@ module RestGW2
       end
 
       def trans_request msg, path
-        trans = gw2_request(msg, path, :page => view.query_p)
+        items = gw2_request(msg, path, :page => view.query_p)
+        total = view.sum_trans(items)
         pages = calculate_pages("v2/commerce/transactions/#{path}")
-        total = view.sum_trans(trans)
 
-        render :transactions, :trans => trans, :pages => pages,
-                              :total => total
+        render :commerce, :items => items, :total => total, :pages => pages
       end
 
       def group_by_crafting characters
@@ -396,26 +395,26 @@ module RestGW2
       render :titles, gw2_request(:titles_with_detail)
     end
 
-    get '/transactions/delivery' do
-      delivery = gw2_request(:delivery_with_detail, :page => view.query_p)
-      total = delivery.shift['price']
+    get '/commerce/delivery' do
+      items = gw2_request(:delivery_with_detail, :page => view.query_p)
+      total = items.shift['price']
 
-      render :transactions, :trans => delivery, :total => total
+      render :commerce, :items => items, :total => total
     end
 
-    get '/transactions/buying' do
+    get '/commerce/buying' do
       trans_request(:transactions_with_detail_compact, 'current/buys')
     end
 
-    get '/transactions/selling' do
+    get '/commerce/selling' do
       trans_request(:transactions_with_detail_compact, 'current/sells')
     end
 
-    get '/transactions/bought' do
+    get '/commerce/bought' do
       trans_request(:transactions_with_detail_compact, 'history/buys')
     end
 
-    get '/transactions/sold' do
+    get '/commerce/sold' do
       trans_request(:transactions_with_detail_compact, 'history/sells')
     end
 

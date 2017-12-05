@@ -1,0 +1,31 @@
+<ul class="menu">
+  <li><%= menu_commerce('/delivery', 'Delivery') %></li>
+  <li><%= menu_commerce('/buying', 'Buying') %></li>
+  <li><%= menu_commerce('/selling', 'Selling') %></li>
+  <li><%= menu_commerce('/bought', 'Bought') %></li>
+  <li><%= menu_commerce('/sold', 'Sold') %></li>
+</ul>
+
+<%= erb :pages, arg[:pages] %>
+
+Total: <%= price(arg[:total]) %>
+<ul class="item">
+<% arg[:items].each do |item| %>
+  <li>
+  <%= item_wiki(item) %>
+  <span class="description">
+    <%= item_link(item) %>
+    <%= h item_count(item) %>
+    <br/>
+    <% if item['price'] %>
+      <%= price(item['price']) %>
+      <%= abbr_time_ago(item['purchased'] || item['created']) %>
+      <br/>
+    <% end %>
+    <%= item_price(item) %>
+  </span>
+  </li>
+<% end %>
+</ul>
+
+<%= erb :pages, arg[:pages] %>
