@@ -130,25 +130,25 @@ module RestGW2
       render :wallet, gw2_request(:wallet_with_detail)
     end
 
-    get '/skins/backpacks' do
+    get '/unlocks/skins/backpacks' do
       skin_request('Back')
     end
 
     weapons.each do |weapon|
-      get "/skins/weapons/#{weapon.downcase}" do
+      get "/unlocks/skins/weapons/#{weapon.downcase}" do
         skin_request('Weapon', weapon)
       end
     end
 
     armors.each do |armor|
       armors_weight.each do |weight|
-        get "/skins/armors/#{armor.downcase}/#{weight.downcase}" do
+        get "/unlocks/skins/armors/#{armor.downcase}/#{weight.downcase}" do
           skin_request('Armor', armor, weight)
         end
       end
     end
 
-    get '/dyes' do
+    get '/unlocks/dyes' do
       dyes = gw2_request(:dyes_with_detail)
       buy, sell = view.sum_items(dyes)
       unlocked = dyes.count{ |d| d['count'] > 0 }
@@ -158,8 +158,8 @@ module RestGW2
                     :unlocked => unlocked
     end
 
-    get '/minis' do
-      render :items, gw2_request(:minis_with_detail)
+    get '/unlocks/minis' do
+      render :minis, gw2_request(:minis_with_detail)
     end
 
     get '/achievements/titles' do

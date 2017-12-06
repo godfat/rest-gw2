@@ -114,8 +114,12 @@ module RestGW2
       menu_sub('/items', item, title)
     end
 
+    def menu_unlock item, title
+      menu_sub('/unlocks', item, title)
+    end
+
     def menu_skin item, title
-      menu_sub('/skins', item, title)
+      menu_unlock("/skins#{item}", title)
     end
 
     def menu_commerce item, title
