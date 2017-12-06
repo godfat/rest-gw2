@@ -9,9 +9,7 @@
 <%= erb arg[:skin_submenu], :weight => arg[:weight],
                             :subtype => arg[:subtype] if arg[:skin_submenu] %>
 
-<% if arg[:items].size > 0 %>
-Unlocked: <%= arg[:unlocked] %> / <%= arg[:items].size %>
-(<%= ((arg[:unlocked].to_f/arg[:items].size)*100).to_i %>%)
-<% end %>
-<br/>
+<%= erb :unlock_percentage,
+  :current => arg[:unlocked], :total => arg[:items].size %>
+
 <%= erb :item_section, arg[:items] %>

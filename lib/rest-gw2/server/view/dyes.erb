@@ -1,11 +1,10 @@
 <%= erb :menu_unlocks %>
 
-<% if arg[:dyes].size > 0 %>
-Unlocked: <%= arg[:unlocked] %> / <%= arg[:dyes].size %>
-(<%= ((arg[:unlocked].to_f/arg[:dyes].size)*100).to_i %>%)
-<% end %>
-<br/>
+<%= erb :unlock_percentage,
+  :current => arg[:unlocked], :total => arg[:dyes].size %>
+
 Total: <%= price(arg[:buy]) %> / <%= price(arg[:sell]) %>
+
 <ul class="item">
 <% arg[:dyes].each do |dye| %>
   <li class="dye">

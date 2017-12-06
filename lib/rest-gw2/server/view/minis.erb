@@ -1,3 +1,6 @@
 <%= erb :menu_unlocks %>
 
+<%= erb :unlock_percentage,
+  :current => arg.count{ |mini| mini['count'] == 1 }, :total => arg.size %>
+
 <%= erb :item_section, arg %>
