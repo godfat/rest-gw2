@@ -189,7 +189,7 @@ module RestGW2
       trans_request(:transactions_with_detail_compact, 'history/sells')
     end
 
-    get '/commerce/exchange' do
+    get '/exchange' do
       buy_gold = [400, 800, 1200, 1600].map(&method(:stub_gold))
       buy_gem  = [50, 75, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500].
                  map(&method(:stub_gem))
