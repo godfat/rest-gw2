@@ -112,8 +112,13 @@ module RestGW2
         get_guild(c['guild']) if c['guild']
       end
 
+      title_ids = chars.map{ |c| c['title'] }.compact
+      titles = get('v2/titles', :ids => title_ids.join(',')).
+        group_by{ |t| t['id'] }
+
       chars.zip(guilds).map do |(c, g)|
         c['guild'] = g
+        c['title'] = titles.dig(c['title'], 0, 'name')
         c
       end.sort_by{ |c| -c['age'] }
     end

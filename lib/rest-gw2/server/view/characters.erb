@@ -16,8 +16,12 @@ Total Played:
   <tr>
     <td>
       <%= menu_char(c['name']) %> (<%= h c['level'].to_s %>)
-      <br/>
-      <%= show_guild(c['guild']) if c['guild'] %>
+      <% if c['guild'] %>
+      <br/><%= show_guild(c['guild']) %>
+      <% end %>
+      <% if c['title'] %>
+      <br/><%= c['title'] %>
+      <% end %>
     </td>
     <td><%= h c['profession'] %></td>
     <td><%= h "#{c['race']} #{c['gender']}" %></td>
