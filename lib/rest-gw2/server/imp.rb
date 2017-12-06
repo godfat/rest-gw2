@@ -158,20 +158,22 @@ module RestGW2
       RC::ParseQuery.parse_query(URI.parse(uri).query)['page'].to_i
     end
 
-    def stub_gold num
-      {'name' => 'Gold', 'icon' => GoldIcon, 'price' => num,
-       'count' => gw2_request(:get, 'v2/commerce/exchange/gems',
-                              :quantity => num)}
+    def stub_gold num, count=nil
+      count ||=
+        gw2_request(:get, 'v2/commerce/exchange/gems', :quantity => num)
+
+      {'name' => 'Gold', 'icon' => GoldIcon, 'price' => num, 'count' => count}
     end
 
-    def stub_gem num
-      num *= 100_00
-      {'name' => 'Gem', 'icon' => GemIcon, 'price' => num,
-       'count' => gw2_request(:get, 'v2/commerce/exchange/coins',
-                              :quantity => num)}
+    def stub_gem num, count=nil
+      count ||=
+        gw2_request(:get, 'v2/commerce/exchange/coins', :quantity => num)
+
+      {'name' => 'Gem', 'icon' => GemIcon, 'price' => num, 'count' => count}
     end
 
     def resolve_count item
+      item['coins_per_gem'] = item['count']['coins_per_gem']
       item['count'] = item['count']['quantity']
       item
     end

@@ -190,12 +190,36 @@ module RestGW2
     end
 
     get '/exchange' do
-      buy_gold = [400, 800, 1200, 1600].map(&method(:stub_gold))
-      buy_gem  = [50, 75, 100, 125, 150, 200, 250, 300, 350, 400, 450, 500].
-                 map(&method(:stub_gem))
+      # We try to spend 800 gems to buy golds as the standard for buying gold,
+      # and try to spend 100 golds to buy gems as the standard for buying gems
+      # Then we try to use those ratios to calculate the prices and match
+      # the information in the game. We also try to include the standard
+      # to the list, sorted it to the proper place.
+      # This is trying to match whatever the game is showing, and also show
+      # the real responses from the API.
+      gold_std, gem_std =
+        [stub_gold(800), stub_gem(100_00_00)].map(&method(:resolve_count))
 
-      buy_gold.map!(&method(:resolve_count))
-      buy_gem.map!(&method(:resolve_count))
+      buy_gold_coins_per_gem = gold_std['coins_per_gem']
+      buy_gold = [gold_std, 1, 10, 50, 100, 250].map do |gold|
+        case gold
+        when Numeric
+          coins = gold * 100_00
+          stub_gold((coins.to_f / buy_gold_coins_per_gem).round, coins)
+        else
+          gold
+        end
+      end.sort_by{ |g| g['count'] }
+
+      buy_gem_coins_per_gem = gem_std['coins_per_gem']
+      buy_gem = [gem_std, 400, 800, 1200, 2000].map do |gem|
+        case gem
+        when Numeric
+          stub_gem(gem * buy_gem_coins_per_gem, gem)
+        else
+          gem
+        end
+      end.sort_by{ |g| g['count'] }
 
       render :exchange, :buy_gold => buy_gold, :buy_gem => buy_gem
     end
