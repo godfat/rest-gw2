@@ -3,7 +3,7 @@
 require 'rest-gw2/server/imp'
 
 module RestGW2
-  class ServerCore
+  class ServerAction
     def self.weapons
       %w[Greatsword Sword Hammer Mace Axe Dagger
          Staff Scepter

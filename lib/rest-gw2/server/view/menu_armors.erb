@@ -1,11 +1,11 @@
 <ul class="menu">
-<% ServerCore.armors.each do |armor| %>
+<% ServerAction.armors.each do |armor| %>
   <li><%= menu_skin("/armors/#{armor.downcase}/#{arg[:weight]}", armor) %></li>
 <% end %>
 </ul>
 
 <ul class="menu">
-<% ServerCore.armors_weight.each do |weight| %>
+<% ServerAction.armors_weight.each do |weight| %>
   <li>
     <%= menu_skin("/armors/#{arg[:subtype]}/#{weight.downcase}", weight) %>
   </li>

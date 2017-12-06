@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rest-gw2/server/core'
+require 'rest-gw2/server/action'
 
 require 'jellyfish'
 require 'rack'
@@ -32,7 +32,7 @@ module RestGW2
     end
 
     map '/' do
-      run ServerCore.new
+      run ServerAction.new
     end
   end
 end

@@ -36,7 +36,7 @@ Total Played:
 
 <h2>Crafting</h2>
 <table id="crafting">
-<% ServerCore.crafting.each do |d| %>
+<% ServerAction.crafting.each do |d| %>
   <tr>
     <th><%= d %></th>
     <% arg[:craftings][d].sort.reverse_each do |(rating, name, active)| %>
