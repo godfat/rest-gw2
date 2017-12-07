@@ -61,6 +61,12 @@ module RestGW2
 
     get %r{\A/guilds/(?<uuid>[^/]+)\z} do |m|
       guild_request(m[:uuid]) do |arg|
+        render :guild_info, arg.merge(:guild => arg.dig(:guilds, arg[:gid]))
+      end
+    end
+
+    get %r{\A/guilds/(?<uuid>[^/]+)/members\z} do |m|
+      guild_request(m[:uuid]) do |arg|
         members = gw2_defer(:guild_members, arg[:gid])
 
         render :members, arg.merge(:members => members)

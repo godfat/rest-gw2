@@ -1,0 +1,37 @@
+<%= erb :menu_guild, arg %>
+
+<h2><%= h "#{arg.dig(:guild, 'name')} [#{arg.dig(:guild, 'tag')}]" %></h2>
+<table>
+  <tr>
+    <th>Level</th>
+    <td><%= arg.dig(:guild, 'level') %></td>
+  </tr>
+  <tr>
+    <th>Members</th>
+    <td>
+      <%= arg.dig(:guild, 'member_count') %>
+      /
+      <%= arg.dig(:guild, 'member_capacity') %>
+    </td>
+  </tr>
+  <tr>
+    <th>Favor</th>
+    <td><%= arg.dig(:guild, 'favor') %></td>
+  </tr>
+  <tr>
+    <th>Aetherium</th>
+    <td><%= arg.dig(:guild, 'aetherium') %></td>
+  </tr>
+  <tr>
+    <th>Message of the day</th>
+    <td><pre><%= h arg.dig(:guild, 'motd') %></pre></td>
+  </tr>
+  <tr>
+    <th>Influence (legacy)</th>
+    <td><%= arg.dig(:guild, 'influence') %></td>
+  </tr>
+  <tr>
+    <th>Resonance (legacy)</th>
+    <td><%= arg.dig(:guild, 'resonance') %></td>
+  </tr>
+</table>

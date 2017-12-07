@@ -1,10 +1,11 @@
 <ul class="menu">
-<% arg[:guilds].each do |guild| %>
+<% arg[:guilds].values.sort_by{ |g| g['name'] }.each do |guild| %>
   <li><%= show_guild(guild) %></li>
 <% end %>
 </ul>
 
 <ul class="menu">
-  <li><%= menu_guild(arg[:gid], '', 'Members') %></li>
+  <li><%= menu_guild(arg[:gid], '', 'Info') %></li>
+  <li><%= menu_guild(arg[:gid], '/members', 'Members') %></li>
   <li><%= menu_guild(arg[:gid], '/items', 'Items') %></li>
 </ul>
