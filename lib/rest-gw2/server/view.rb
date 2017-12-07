@@ -41,8 +41,8 @@ module RestGW2
 
     # FIXME: controller shouldn't call this directly
     def show_guild g
-      HTML.new(menu("/guilds/#{g['guild_id']}",
-                    h("#{g['guild_name']} [#{g['tag']}]")))
+      HTML.new(menu("/guilds/#{g['id']}",
+                    h("#{g['name']} [#{g['tag']}]")))
     end
 
     # FIXME: controller shouldn't call this directly

@@ -63,7 +63,7 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/account
     # https://wiki.guildwars2.com/wiki/API:2/worlds
-    # https://wiki.guildwars2.com/wiki/API:1/guild_details
+    # https://wiki.guildwars2.com/wiki/API:2/guild/:id
     def account_with_detail opts={}
       m = me(opts)
       worlds = get('v2/worlds', :ids => m['world'])
@@ -108,16 +108,17 @@ module RestGW2
         get_character(name, opts)
       end
 
-      guilds = chars.map do |c|
-        get_guild(c['guild']) if c['guild']
-      end
+      guild_ids = chars.map{ |c| c['guild'] }.compact.uniq
+      guild_promises = guilds_detail(guild_ids)
 
       title_ids = chars.map{ |c| c['title'] }.compact
       titles = get('v2/titles', :ids => title_ids.join(',')).
         group_by{ |t| t['id'] }
 
-      chars.zip(guilds).map do |(c, g)|
-        c['guild'] = g
+      guilds = guild_promises.group_by{ |g| g['id'] }
+
+      chars.map do |c|
+        c['guild'] = guilds.dig(c['guild'], 0)
         c['title'] = titles.dig(c['title'], 0, 'name')
         c
       end.sort_by{ |c| -c['age'] }
@@ -281,13 +282,13 @@ module RestGW2
       "#{world['name']} (#{world['population']}) / #{region} (#{lang})"
     end
 
-    # https://wiki.guildwars2.com/wiki/API:1/guild_details
     def guilds_detail guilds
       guilds.map(&method(:get_guild))
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/guild/:id
     def get_guild gid
-      get('v1/guild_details', :guild_id => gid)
+      get("v2/guild/#{gid}")
     end
 
     def compact_items items

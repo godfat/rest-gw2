@@ -103,7 +103,7 @@ module RestGW2
 
     def guild_request gid
       guilds = gw2_request(:account_with_detail)['guilds']
-      if guilds.find{ |g| g['guild_id'] == gid }
+      if guilds.find{ |g| g['id'] == gid }
         yield(:gid => gid, :guilds => guilds)
       else
         status 404
