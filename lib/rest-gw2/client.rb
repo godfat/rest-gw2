@@ -68,7 +68,13 @@ module RestGW2
       m = me(opts)
       worlds = get('v2/worlds', :ids => m['world'])
       guilds = guilds_detail(m['guilds'])
-      me.merge('world' => world_detail(worlds.first), 'guilds' => guilds)
+      guild_leader = m['guild_leader'].map do |gid|
+        guilds.find{ |g| g['id'] == gid }
+      end
+      me.merge(
+        'world' => world_detail(worlds.first),
+        'guilds' => guilds,
+        'guild_leader' => guild_leader)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/guild/:id/stash

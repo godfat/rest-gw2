@@ -52,7 +52,9 @@ module RestGW2
 
     get '/account' do
       info = gw2_request(:account_with_detail).dup
-      info['guilds'] = info['guilds'].map(&view.method(:show_guild))
+      %w[guilds guild_leader].each do |guild|
+        info[guild] = info[guild].map(&view.method(:show_guild))
+      end
 
       render :info, info
     end
