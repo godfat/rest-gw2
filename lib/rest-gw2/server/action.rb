@@ -148,12 +148,32 @@ module RestGW2
       end
     end
 
+    get '/unlocks/skins/weapons/other' do
+      subtype = Regexp.new("\\A(?:#{Regexp.union(*ServerAction.weapons)})\\z")
+
+      skin_request('Weapon', 'Other') do |item|
+        item.dig('details', 'type') !~ subtype
+      end
+    end
+
     armors.each do |armor|
       armors_weight.each do |weight|
         get "/unlocks/skins/armors/#{armor.downcase}/#{weight.downcase}" do
           skin_request('Armor', armor, weight)
         end
       end
+    end
+
+    get '/unlocks/skins/armors/other' do
+      subtype = Regexp.new("\\A(?:#{Regexp.union(*ServerAction.armors)})\\z")
+
+      skin_request('Armor', 'Other') do |item|
+        item.dig('details', 'type') !~ subtype
+      end
+    end
+
+    get '/unlocks/skins/gathering' do
+      skin_request('Gathering')
     end
 
     get '/unlocks/dyes' do

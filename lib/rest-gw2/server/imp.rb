@@ -113,11 +113,9 @@ module RestGW2
       end
     end
 
-    def skin_request type, subtype=nil, weight=nil
+    def skin_request type, subtype=nil, weight=nil, &block
       items = gw2_request(:skins_with_detail).select do |i|
-        i['type'] == type &&
-          (subtype.nil? || subtype == i['details']['type']) &&
-          (weight.nil? || weight == i['details']['weight_class'])
+        filter_skin(i, type, subtype, weight, &block)
       end
       skin_submenu = "menu_#{type.downcase}s" if subtype
       subtype = subtype.downcase if subtype
@@ -129,6 +127,16 @@ module RestGW2
                      :subtype => subtype,
                      :weight => weight,
                      :unlocked => unlocked
+    end
+
+    def filter_skin item, type, subtype, weight
+      item['type'] == type &&
+        if block_given?
+          yield(item)
+        else
+          (subtype.nil? || subtype == item.dig('details', 'type')) &&
+          (weight.nil? || weight == item.dig('details', 'weight_class'))
+        end
     end
 
     def trans_request msg, path

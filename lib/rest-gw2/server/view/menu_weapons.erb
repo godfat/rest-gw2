@@ -2,4 +2,5 @@
 <% ServerAction.weapons.each do |weapon| %>
   <li><%= menu_skin("/weapons/#{weapon.downcase}", weapon) %></li>
 <% end %>
+  <li><%= menu_skin('/weapons/other', 'Other') %></li>
 </ul>

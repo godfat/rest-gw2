@@ -1,9 +1,12 @@
 <ul class="menu">
+<% weight = arg[:weight] || ServerAction.armors_weight.first.downcase %>
 <% ServerAction.armors.each do |armor| %>
-  <li><%= menu_skin("/armors/#{armor.downcase}/#{arg[:weight]}", armor) %></li>
+  <li><%= menu_skin("/armors/#{armor.downcase}/#{weight}", armor) %></li>
 <% end %>
+  <li><%= menu_skin('/armors/other', 'Other') %></li>
 </ul>
 
+<% if arg[:weight] %>
 <ul class="menu">
 <% ServerAction.armors_weight.each do |weight| %>
   <li>
@@ -11,3 +14,4 @@
   </li>
 <% end %>
 </ul>
+<% end %>
