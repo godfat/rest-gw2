@@ -147,7 +147,11 @@ module RestGW2
               %Q{ alt="#{item_name(item)}"} +
               %Q{ title="#{item_title(item)}"} +
               %Q{ src="#{h item['icon']}"/>}
-        %Q{<a href="http://wiki.guildwars2.com/wiki/#{u name}">#{img}</a>}
+        if name.empty?
+          img
+        else
+          %Q{<a href="http://wiki.guildwars2.com/wiki/#{u name}">#{img}</a>}
+        end
       else
         blank_icon
       end
