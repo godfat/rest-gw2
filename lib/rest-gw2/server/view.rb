@@ -159,15 +159,29 @@ module RestGW2
 
     def item_link item
       name = item_name(item)
+      type = item_type(item)
+      title = %Q{ title="#{type}"} if type
+
       if item['nolink']
-        name
+        %Q{<span#{title}>#{name}</span>}
       else
-        menu("/items/#{item['id']}", name)
+        menu("/items/#{item['id']}", name) do
+          title
+        end
       end
     end
 
     def item_name item
-      h(item['name'] || "?#{item['id']}?")
+      name = item['name'].to_s
+
+      h(!name.empty? && name || "?#{item['id']}?")
+    end
+
+    def item_type item
+      type = [item.dig('details', 'damage_type'),
+              item.dig('details', 'type')].join(' ')
+
+      !type.empty? && type || nil
     end
 
     def item_title item

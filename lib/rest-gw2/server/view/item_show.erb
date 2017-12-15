@@ -11,7 +11,7 @@
   <% end %>
   <%= item_link(arg) %>
   <%= h item_count(arg) %>
-  <% if damage_type = (arg['details'] || {})['damage_type'] %>
+  <% if damage_type = arg.dig('details', 'damage_type') %>
   (<%= damage_type %>)
   <% end %>
   <br/>
