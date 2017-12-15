@@ -7,9 +7,9 @@ module RestGW2
     def self.weapons
       %w[Greatsword Sword Hammer Mace Axe Dagger
          Staff Scepter
-         LongBow ShortBow Rifle Pistol
+         Longbow Shortbow Rifle Pistol
          Shield Torch Focus Warhorn
-         Harpoon Speargun Trident]
+         Spear Speargun Trident]
     end
 
     def self.armors
