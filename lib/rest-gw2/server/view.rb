@@ -82,48 +82,49 @@ module RestGW2
       path(request.path, :p => query_p, :r => '1', :t => query_t)
     end
 
-    # TODO: clean me up
-    def menu item, title, query={}
+    # TODO: clean me up; can we not use block?
+    def menu item, name, query={}
       href = path(item, query.merge(:t => query_t))
       if path(request.path, :p => query_p, :t => query_t) == href
-        title
+        name
       else
-        %Q{<a href="#{href}">#{title}</a>}
+        title = block_given? && yield
+        %Q{<a href="#{href}"#{title}>#{name}</a>}
       end
     end
 
     # TODO: clean me up
-    def menu_sub prefix, item, title
+    def menu_sub prefix, item, name
       key = "#{prefix}#{item}"
       if path(request.path) == path(key)
-        menu(key, title, :p => query_p)
+        menu(key, name, :p => query_p)
       else
-        menu(key, title)
+        menu(key, name)
       end
     end
 
-    def menu_guild gid, item, title
-      menu("/guilds/#{gid}#{item}", title)
+    def menu_guild gid, item, name
+      menu("/guilds/#{gid}#{item}", name)
     end
 
     def menu_char name
       menu("/characters/#{RC::Middleware.escape(name)}", name)
     end
 
-    def menu_item item, title
-      menu_sub('/items', item, title)
+    def menu_item item, name
+      menu_sub('/items', item, name)
     end
 
-    def menu_unlock item, title
-      menu_sub('/unlocks', item, title)
+    def menu_unlock item, name
+      menu_sub('/unlocks', item, name)
     end
 
-    def menu_skin item, title
-      menu_unlock("/skins#{item}", title)
+    def menu_skin item, name
+      menu_unlock("/skins#{item}", name)
     end
 
-    def menu_commerce item, title
-      menu_sub('/commerce', item, title)
+    def menu_commerce item, name
+      menu_sub('/commerce', item, name)
     end
 
     def page num
