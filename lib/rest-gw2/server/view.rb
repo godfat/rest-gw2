@@ -50,6 +50,13 @@ module RestGW2
       @query_p ||= zero_is_nil(request.GET['p'])
     end
 
+    # FIXME: controller shouldn't call this directly
+    def path str, q={}
+      RC::Middleware.request_uri(
+        RC::REQUEST_PATH => "#{ENV['RESTGW2_PREFIX']}#{str}",
+        RC::REQUEST_QUERY => q)
+    end
+
     private
     def erb name, arg=nil, &block
       ERB.new(views(name)).result(binding, &block)
@@ -66,12 +73,6 @@ module RestGW2
 
     def u str
       CGI.escape(str) if str.kind_of?(String)
-    end
-
-    def path str, q={}
-      RC::Middleware.request_uri(
-        RC::REQUEST_PATH => "#{ENV['RESTGW2_PREFIX']}#{str}",
-        RC::REQUEST_QUERY => q)
     end
 
     def views name

@@ -42,7 +42,7 @@ module RestGW2
     post '/access_token' do
       t = encrypt(request.POST['access_token'])
       r = request.POST['referrer']
-      u = if r == path('/') then path('/account') else r end
+      u = if r == view.path('/') then view.path('/account') else r end
       found "#{u}?t=#{t}"
     end
 
