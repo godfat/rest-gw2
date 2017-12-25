@@ -68,7 +68,8 @@ module RestGW2
       m = me(opts)
       worlds = get('v2/worlds', :ids => m['world'])
       guilds = guilds_detail(m['guilds'])
-      guild_leader = m['guild_leader'].map do |gid|
+      # m['guild_leader'] would be nil if there's no guild permission
+      guild_leader = (m['guild_leader'] || []).map do |gid|
         guilds.find{ |g| g['id'] == gid }
       end
       me.merge(
