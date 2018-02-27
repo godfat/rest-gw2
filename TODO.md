@@ -15,7 +15,6 @@
 
 * https://wiki.guildwars2.com/wiki/API:2/account/finishers
 * https://wiki.guildwars2.com/wiki/API:2/account/gliders
-* https://wiki.guildwars2.com/wiki/API:2/account/home/nodes
 * https://wiki.guildwars2.com/wiki/API:2/account/mailcarriers
 * https://wiki.guildwars2.com/wiki/API:2/account/outfits
 * https://wiki.guildwars2.com/wiki/API:2/account/recipes

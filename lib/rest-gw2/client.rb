@@ -2,6 +2,7 @@
 
 require 'rest-core'
 require 'rest-gw2/client/item_detail'
+require 'set'
 
 module RestGW2
   Client = RC::Builder.client do
@@ -224,8 +225,19 @@ module RestGW2
       end
 
       cat_details.map do |cat|
-        cat.merge('unlocked' => !!unlocked[cat['id']])
-      end.sort_by{ |c| c['hint'] }
+        cat.merge('name' => cat['hint'], 'unlocked' => !!unlocked[cat['id']])
+      end.sort_by{ |c| c['name'] }
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/nodes
+    # https://wiki.guildwars2.com/wiki/API:2/account/home/nodes
+    def nodes_with_detail opts={}
+      nodes = get('v2/nodes')
+      unlocked = Set.new(get('v2/account/home/nodes', opts))
+
+      nodes.map do |name|
+        {'name' => name, 'unlocked' => !!unlocked.member?(name)}
+      end.sort_by{ |n| n['name'] }
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/titles

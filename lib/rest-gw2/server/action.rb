@@ -194,7 +194,14 @@ module RestGW2
       cats = gw2_request(:cats_with_detail)
       unlocked = cats.count{ |c| c['unlocked'] }
 
-      render :cats, :cats => cats, :unlocked => unlocked
+      render :unlocks, :unlocks => cats, :unlocked => unlocked
+    end
+
+    get '/unlocks/nodes' do
+      nodes = gw2_request(:nodes_with_detail)
+      unlocked = nodes.count{ |n| n['unlocked'] }
+
+      render :unlocks, :unlocks => nodes, :unlocked => unlocked
     end
 
     get '/achievements/titles' do

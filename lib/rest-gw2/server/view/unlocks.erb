@@ -1,13 +1,13 @@
 <%= erb :menu_unlocks %>
 
 <%= erb :unlock_percentage,
-  :current => arg[:unlocked], :total => arg[:cats].size %>
+  :current => arg[:unlocked], :total => arg[:unlocks].size %>
 
 <ul>
-<% arg[:cats].each do |cat| %>
+<% arg[:unlocks].each do |cat| %>
   <li>
     <%= if cat['unlocked'] then '✅' else '❎' end %>
-    <%= cat['hint'] %>
+    <%= cat['name'] %>
   </li>
 <% end %>
 </ul>
