@@ -176,13 +176,6 @@ module RestGW2
       skin_request('Gathering')
     end
 
-    get '/unlocks/cats' do
-      cats = gw2_request(:cats_with_detail)
-      unlocked = cats.count{ |c| c['unlocked'] }
-
-      render :cats, :cats => cats, :unlocked => unlocked
-    end
-
     get '/unlocks/dyes' do
       dyes = gw2_request(:dyes_with_detail)
       buy, sell = view.sum_items(dyes)
@@ -195,6 +188,13 @@ module RestGW2
 
     get '/unlocks/minis' do
       render :minis, gw2_request(:minis_with_detail)
+    end
+
+    get '/unlocks/cats' do
+      cats = gw2_request(:cats_with_detail)
+      unlocked = cats.count{ |c| c['unlocked'] }
+
+      render :cats, :cats => cats, :unlocked => unlocked
     end
 
     get '/achievements/titles' do

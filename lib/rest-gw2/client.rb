@@ -172,22 +172,6 @@ module RestGW2
       end
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/cats
-    # https://wiki.guildwars2.com/wiki/API:2/account/home/cats
-    def cats_with_detail opts={}
-      unlocked_promise = get('v2/account/home/cats', opts)
-      cat_details = get('v2/cats', :ids => get('v2/cats').join(','))
-
-      unlocked = unlocked_promise.inject({}) do |result, cat|
-        result[cat['id']] = cat
-        result
-      end
-
-      cat_details.map do |cat|
-        cat.merge('unlocked' => !!unlocked[cat['id']])
-      end.sort_by{ |c| c['hint'] }
-    end
-
     # https://wiki.guildwars2.com/wiki/API:2/colors
     # https://wiki.guildwars2.com/wiki/API:2/account/dyes
     def dyes_with_detail opts={}
@@ -226,6 +210,22 @@ module RestGW2
                         end
         mini
       end.sort_by{ |m| m['order'] }
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/cats
+    # https://wiki.guildwars2.com/wiki/API:2/account/home/cats
+    def cats_with_detail opts={}
+      unlocked_promise = get('v2/account/home/cats', opts)
+      cat_details = get('v2/cats', :ids => get('v2/cats').join(','))
+
+      unlocked = unlocked_promise.inject({}) do |result, cat|
+        result[cat['id']] = cat
+        result
+      end
+
+      cat_details.map do |cat|
+        cat.merge('unlocked' => !!unlocked[cat['id']])
+      end.sort_by{ |c| c['hint'] }
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/titles
