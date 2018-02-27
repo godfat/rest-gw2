@@ -4,10 +4,10 @@
   :current => arg[:unlocked], :total => arg[:unlocks].size %>
 
 <ul>
-<% arg[:unlocks].each do |cat| %>
+<% arg[:unlocks].each do |unlock| %>
   <li>
-    <%= if cat['unlocked'] then '✅' else '❎' end %>
-    <%= cat['name'] %>
+    <%= if unlock['unlocked'] then '✅' else '❎' end %>
+    <%= unlock['name'] %>
   </li>
 <% end %>
 </ul>
