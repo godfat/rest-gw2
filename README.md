@@ -102,7 +102,7 @@ The format for the config file would be like:
 
 Apache License 2.0
 
-Copyright (c) 2015-2017, Lin Jen-Shin (godfat)
+Copyright (c) 2015-2018, Lin Jen-Shin (godfat)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
