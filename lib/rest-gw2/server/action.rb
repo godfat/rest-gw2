@@ -138,6 +138,13 @@ module RestGW2
       render :wallet, gw2_request(:wallet_with_detail)
     end
 
+    get '/unlocks/outfits' do
+      outfits = gw2_request(:outfits_with_detail)
+      unlocked = outfits.count{ |mini| mini['count'] == 1 }
+
+      render :unlocks_items, :unlocks => outfits, :unlocked => unlocked
+    end
+
     get '/unlocks/skins/backpacks' do
       skin_request('Back')
     end
@@ -187,21 +194,24 @@ module RestGW2
     end
 
     get '/unlocks/minis' do
-      render :minis, gw2_request(:minis_with_detail)
+      minis = gw2_request(:minis_with_detail)
+      unlocked = minis.count{ |mini| mini['count'] == 1 }
+
+      render :unlocks_items, :unlocks => minis, :unlocked => unlocked
     end
 
     get '/unlocks/cats' do
       cats = gw2_request(:cats_with_detail)
       unlocked = cats.count{ |c| c['unlocked'] }
 
-      render :unlocks, :unlocks => cats, :unlocked => unlocked
+      render :unlocks_list, :unlocks => cats, :unlocked => unlocked
     end
 
     get '/unlocks/nodes' do
       nodes = gw2_request(:nodes_with_detail)
       unlocked = nodes.count{ |n| n['unlocked'] }
 
-      render :unlocks, :unlocks => nodes, :unlocked => unlocked
+      render :unlocks_list, :unlocks => nodes, :unlocked => unlocked
     end
 
     get '/achievements/titles' do

@@ -151,18 +151,44 @@ module RestGW2
       end.sort_by{ |c| c['order'] }
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/account/outfits
+    def outfits_with_detail opts={}
+      all = all_outfits
+      mine = Set.new(get('v2/account/outfits', {}, opts))
+      all.flatten.map do |outfit|
+        outfit['count'] =
+          if mine.member?(outfit['id'])
+            1
+          else
+            0
+          end
+        outfit['nolink'] = true
+        outfit
+      end.sort_by{ |s| s['name'] || '' }
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/account/skins
     def skins_with_detail opts={}
-      mine = get('v2/account/skins', {}, opts)
-      all_skins.flatten.map do |skin|
-        skin['count'] = if mine.include?(skin['id'])
-                          1
-                        else
-                          0
-                        end
+      all = all_skins
+      mine = Set.new(get('v2/account/skins', {}, opts))
+      all.flatten.map do |skin|
+        skin['count'] =
+          if mine.member?(skin['id'])
+            1
+          else
+            0
+          end
         skin['nolink'] = true
         skin
       end.sort_by{ |s| s['name'] || '' }
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/outfits
+    # Returns Array[Promise[Detail]]
+    def all_outfits
+      get('v2/outfits').each_slice(100).map do |slice|
+        get('v2/outfits', :ids => slice.join(','))
+      end
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/skins
