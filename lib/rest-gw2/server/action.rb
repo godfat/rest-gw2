@@ -138,13 +138,6 @@ module RestGW2
       render :wallet, gw2_request(:wallet_with_detail)
     end
 
-    get '/unlocks/outfits' do
-      outfits = gw2_request(:outfits_with_detail)
-      unlocked = outfits.count{ |mini| mini['count'] == 1 }
-
-      render :unlocks_items, :unlocks => outfits, :unlocked => unlocked
-    end
-
     get '/unlocks/skins/backpacks' do
       skin_request('Back')
     end
@@ -183,13 +176,6 @@ module RestGW2
       skin_request('Gathering')
     end
 
-    get '/unlocks/gliders' do
-      gliders = gw2_request(:gliders_with_detail)
-      unlocked = gliders.count{ |m| m['count'] > 0 }
-
-      render :unlocks_items, :unlocks => gliders, :unlocked => unlocked
-    end
-
     get '/unlocks/dyes' do
       dyes = gw2_request(:dyes_with_detail)
       buy, sell = view.sum_items(dyes)
@@ -200,11 +186,25 @@ module RestGW2
                     :unlocked => unlocked
     end
 
+    get '/unlocks/outfits' do
+      outfits = gw2_request(:outfits_with_detail)
+      unlocked = outfits.count{ |mini| mini['count'] == 1 }
+
+      render :unlocks_items, :unlocks => outfits, :unlocked => unlocked
+    end
+
     get '/unlocks/minis' do
       minis = gw2_request(:minis_with_detail)
       unlocked = minis.count{ |m| m['count'] > 0 }
 
       render :unlocks_items, :unlocks => minis, :unlocked => unlocked
+    end
+
+    get '/unlocks/gliders' do
+      gliders = gw2_request(:gliders_with_detail)
+      unlocked = gliders.count{ |m| m['count'] > 0 }
+
+      render :unlocks_items, :unlocks => gliders, :unlocked => unlocked
     end
 
     get '/unlocks/cats' do

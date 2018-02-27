@@ -151,14 +151,14 @@ module RestGW2
       end.sort_by{ |c| c['order'] }
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/account/outfits
-    def outfits_with_detail opts={}
-      unlocks_with_detail(:all_outfits, 'v2/account/outfits', opts)
-    end
-
     # https://wiki.guildwars2.com/wiki/API:2/account/skins
     def skins_with_detail opts={}
       unlocks_with_detail(:all_skins, 'v2/account/skins', opts)
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/account/outfits
+    def outfits_with_detail opts={}
+      unlocks_with_detail(:all_outfits, 'v2/account/outfits', opts)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/account/gliders
@@ -166,19 +166,19 @@ module RestGW2
       unlocks_with_detail(:all_gliders, 'v2/account/gliders', opts)
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/outfits
-    # Returns Array[Promise[Detail]]
-    def all_outfits
-      get('v2/outfits').each_slice(100).map do |slice|
-        get('v2/outfits', :ids => slice.join(','))
-      end
-    end
-
     # https://wiki.guildwars2.com/wiki/API:2/skins
     # Returns Array[Promise[Detail]]
     def all_skins
       get('v2/skins').each_slice(100).map do |slice|
         get('v2/skins', :ids => slice.join(','))
+      end
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/outfits
+    # Returns Array[Promise[Detail]]
+    def all_outfits
+      get('v2/outfits').each_slice(100).map do |slice|
+        get('v2/outfits', :ids => slice.join(','))
       end
     end
 
