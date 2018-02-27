@@ -183,6 +183,13 @@ module RestGW2
       skin_request('Gathering')
     end
 
+    get '/unlocks/gliders' do
+      gliders = gw2_request(:gliders_with_detail)
+      unlocked = gliders.count{ |m| m['count'] > 0 }
+
+      render :unlocks_items, :unlocks => gliders, :unlocked => unlocked
+    end
+
     get '/unlocks/dyes' do
       dyes = gw2_request(:dyes_with_detail)
       buy, sell = view.sum_items(dyes)

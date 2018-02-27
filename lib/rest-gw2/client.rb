@@ -161,6 +161,11 @@ module RestGW2
       unlocks_with_detail(:all_skins, 'v2/account/skins', opts)
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/account/gliders
+    def gliders_with_detail opts={}
+      unlocks_with_detail(:all_gliders, 'v2/account/gliders', opts)
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/outfits
     # Returns Array[Promise[Detail]]
     def all_outfits
@@ -174,6 +179,14 @@ module RestGW2
     def all_skins
       get('v2/skins').each_slice(100).map do |slice|
         get('v2/skins', :ids => slice.join(','))
+      end
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/gliders
+    # Returns Array[Promise[Detail]]
+    def all_gliders
+      get('v2/gliders').each_slice(100).map do |slice|
+        get('v2/gliders', :ids => slice.join(','))
       end
     end
 
@@ -353,7 +366,7 @@ module RestGW2
           end
         unlock['nolink'] = true
         unlock
-      end.sort_by{ |s| s['name'] || '' }
+      end.sort_by{ |u| u['order'] || u['name'] || '' }
     end
 
     def compact_items items
