@@ -6,7 +6,7 @@
 <ul>
 <% arg[:unlocks].each do |unlock| %>
   <li>
-    <%= if unlock['unlocked'] then '✅' else '❎' end %>
+    <%= if unlock['count'] > 0 then '✅' else '❎' end %>
     <%= unlock['name'] %>
   </li>
 <% end %>

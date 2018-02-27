@@ -153,34 +153,12 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/account/outfits
     def outfits_with_detail opts={}
-      all = all_outfits
-      mine = Set.new(get('v2/account/outfits', {}, opts))
-      all.flatten.map do |outfit|
-        outfit['count'] =
-          if mine.member?(outfit['id'])
-            1
-          else
-            0
-          end
-        outfit['nolink'] = true
-        outfit
-      end.sort_by{ |s| s['name'] || '' }
+      unlocks_with_detail(:all_outfits, 'v2/account/outfits', opts)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/account/skins
     def skins_with_detail opts={}
-      all = all_skins
-      mine = Set.new(get('v2/account/skins', {}, opts))
-      all.flatten.map do |skin|
-        skin['count'] =
-          if mine.member?(skin['id'])
-            1
-          else
-            0
-          end
-        skin['nolink'] = true
-        skin
-      end.sort_by{ |s| s['name'] || '' }
+      unlocks_with_detail(:all_skins, 'v2/account/skins', opts)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/outfits
@@ -210,11 +188,12 @@ module RestGW2
           colors.map{ |c| c.merge('id' => c['item'], 'color_id' => c['id']) }
         end
       end.flatten.map do |color|
-        color['count'] = if mine.include?(color['color_id'])
-                           1
-                         else
-                           0
-                         end
+        color['count'] =
+          if mine.include?(color['color_id'])
+            1
+          else
+            0
+          end
         color
       end.sort_by{ |c| c['categories'] }
     end
@@ -230,11 +209,12 @@ module RestGW2
           minis.map{ |m| m.merge('id' => m['item_id'], 'mini_id' => m['id']) }
         end
       end.flatten.map do |mini|
-        mini['count'] = if mine.include?(mini['mini_id'])
-                          1
-                        else
-                          0
-                        end
+        mini['count'] =
+          if mine.include?(mini['mini_id'])
+            1
+          else
+            0
+          end
         mini
       end.sort_by{ |m| m['order'] }
     end
@@ -244,14 +224,17 @@ module RestGW2
     def cats_with_detail opts={}
       unlocked_promise = get('v2/account/home/cats', opts)
       cat_details = get('v2/cats', :ids => get('v2/cats').join(','))
-
-      unlocked = unlocked_promise.inject({}) do |result, cat|
-        result[cat['id']] = cat
-        result
-      end
+      unlocked = Set.new(unlocked_promise.map{ |cat| cat['id'] })
 
       cat_details.map do |cat|
-        cat.merge('name' => cat['hint'], 'unlocked' => !!unlocked[cat['id']])
+        cat['count'] =
+          if unlocked.member?(cat['id'])
+            1
+          else
+            0
+          end
+        cat['name'] = cat['hint']
+        cat
       end.sort_by{ |c| c['name'] }
     end
 
@@ -262,7 +245,13 @@ module RestGW2
       unlocked = Set.new(get('v2/account/home/nodes', opts))
 
       nodes.map do |name|
-        {'name' => name, 'unlocked' => !!unlocked.member?(name)}
+        count =
+          if unlocked.member?(name)
+            1
+          else
+            0
+          end
+        {'name' => name, 'count' => count}
       end.sort_by{ |n| n['name'] }
     end
 
@@ -350,6 +339,21 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/guild/:id
     def get_guild gid
       get("v2/guild/#{gid}")
+    end
+
+    def unlocks_with_detail kind, path, opts
+      all = public_send(kind)
+      mine = Set.new(get(path, {}, opts))
+      all.flatten.map do |unlock|
+        unlock['count'] =
+          if mine.member?(unlock['id'])
+            1
+          else
+            0
+          end
+        unlock['nolink'] = true
+        unlock
+      end.sort_by{ |s| s['name'] || '' }
     end
 
     def compact_items items

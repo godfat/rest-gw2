@@ -195,21 +195,21 @@ module RestGW2
 
     get '/unlocks/minis' do
       minis = gw2_request(:minis_with_detail)
-      unlocked = minis.count{ |mini| mini['count'] == 1 }
+      unlocked = minis.count{ |m| m['count'] > 0 }
 
       render :unlocks_items, :unlocks => minis, :unlocked => unlocked
     end
 
     get '/unlocks/cats' do
       cats = gw2_request(:cats_with_detail)
-      unlocked = cats.count{ |c| c['unlocked'] }
+      unlocked = cats.count{ |c| c['count'] > 0 }
 
       render :unlocks_list, :unlocks => cats, :unlocked => unlocked
     end
 
     get '/unlocks/nodes' do
       nodes = gw2_request(:nodes_with_detail)
-      unlocked = nodes.count{ |n| n['unlocked'] }
+      unlocked = nodes.count{ |n| n['count'] > 0 }
 
       render :unlocks_list, :unlocks => nodes, :unlocked => unlocked
     end
