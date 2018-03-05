@@ -228,6 +228,7 @@ module RestGW2
           else
             0
           end
+        mini['nolink'] = true
         mini
       end.sort_by{ |m| m['order'] }
     end
