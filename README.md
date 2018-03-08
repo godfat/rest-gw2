@@ -14,7 +14,7 @@ A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)
 client built with [rest-core](https://github.com/godfat/rest-core).
 
 There's also a bundled web application showing your items, serving as an
-example using the client.
+example using the client. There's also a [demo site](https://gw2.godfat.org/)
 
 ## FEATURES:
 
