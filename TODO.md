@@ -14,6 +14,7 @@
 # Feature
 
 * https://wiki.guildwars2.com/wiki/API:2/account/recipes
+* https://wiki.guildwars2.com/wiki/API:2/account/masteries
 * https://wiki.guildwars2.com/wiki/API:2/commerce/listings
 
 # Code Clarity
