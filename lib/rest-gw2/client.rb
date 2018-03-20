@@ -161,6 +161,11 @@ module RestGW2
       unlocks_with_detail(:all_outfits, 'v2/account/outfits', opts)
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/account/mailcarriers
+    def mailcarriers_with_detail opts={}
+      unlocks_with_detail(:all_mailcarriers, 'v2/account/mailcarriers', opts)
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/account/gliders
     def gliders_with_detail opts={}
       unlocks_with_detail(:all_gliders, 'v2/account/gliders', opts)
@@ -179,6 +184,14 @@ module RestGW2
     def all_outfits
       get('v2/outfits').each_slice(100).map do |slice|
         get('v2/outfits', :ids => slice.join(','))
+      end
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/mailcarriers
+    # Returns Array[Promise[Detail]]
+    def all_mailcarriers
+      get('v2/mailcarriers').each_slice(100).map do |slice|
+        get('v2/mailcarriers', :ids => slice.join(','))
       end
     end
 
