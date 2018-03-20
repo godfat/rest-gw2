@@ -1,6 +1,5 @@
 <%= erb :menu_unlocks %>
 
-<%= erb :unlock_percentage,
-  :current => arg[:unlocked], :total => arg[:unlocks].size %>
+<%= erb :unlock_percentage, arg %>
 
-<%= erb :item_section, arg[:unlocks] %>
+<%= erb :item_section, arg %>

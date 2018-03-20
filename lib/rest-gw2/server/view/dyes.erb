@@ -1,7 +1,6 @@
 <%= erb :menu_unlocks %>
 
-<%= erb :unlock_percentage,
-  :current => arg[:unlocked], :total => arg[:dyes].size %>
+<%= erb :unlock_percentage, arg[:dyes] %>
 
 Total: <%= price(arg[:buy]) %> / <%= price(arg[:sell]) %>
 

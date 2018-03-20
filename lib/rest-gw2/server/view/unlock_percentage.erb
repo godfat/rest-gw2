@@ -1,6 +1,1 @@
-<% if arg[:total] > 0 %>
-<p>
-  Unlocked: <%= arg[:current] %> / <%= arg[:total] %>
-  (<%= ((arg[:current].to_f/arg[:total])*100).to_i %>%)
-</p>
-<% end %>
+<%= erb :check_percentage, :title => 'Unlocked', :list => arg %>

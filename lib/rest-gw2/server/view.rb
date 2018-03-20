@@ -279,15 +279,6 @@ module RestGW2
       result
     end
 
-    def plural objects, name
-      size = objects.size
-      if size > 1
-        "#{size} #{name}s"
-      else
-        "#{size} #{name}"
-      end
-    end
-
     def zero_is_nil n
       r = n.to_i
       r if r != 0

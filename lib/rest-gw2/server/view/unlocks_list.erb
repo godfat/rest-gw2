@@ -1,13 +1,3 @@
 <%= erb :menu_unlocks %>
 
-<%= erb :unlock_percentage,
-  :current => arg[:unlocked], :total => arg[:unlocks].size %>
-
-<ul>
-<% arg[:unlocks].each do |unlock| %>
-  <li>
-    <%= if unlock['count'] > 0 then '✔️' else '✖️' end %>
-    <%= unlock['name'] %>
-  </li>
-<% end %>
-</ul>
+<%= erb :check_list, :title => 'Unlocked', :list => arg %>

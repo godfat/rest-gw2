@@ -1,0 +1,10 @@
+<%= erb :check_percentage, arg %>
+
+<ul>
+<% arg[:list].each do |l| %>
+  <li>
+    <%= if l['count'] > 0 then '✔️' else '✖️' end %>
+    <%= l['name'] %>
+  </li>
+<% end %>
+</ul>

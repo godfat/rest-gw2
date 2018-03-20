@@ -1,0 +1,9 @@
+<% current = arg[:list].count{ |l| l['count'] > 0 } %>
+<% total = arg[:list].size %>
+
+<% if arg[:list].any? %>
+<p>
+  <%= arg[:title] %>: <%= current %> / <%= total %>
+  (<%= ((current.to_f / total) * 100).round %>%)
+</p>
+<% end %>

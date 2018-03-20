@@ -187,52 +187,31 @@ module RestGW2
     end
 
     get '/unlocks/outfits' do
-      outfits = gw2_request(:outfits_with_detail)
-      unlocked = outfits.count{ |mini| mini['count'] == 1 }
-
-      render :unlocks_items, :unlocks => outfits, :unlocked => unlocked
+      render :unlocks_items, gw2_request(:outfits_with_detail)
     end
 
     get '/unlocks/minis' do
-      minis = gw2_request(:minis_with_detail)
-      unlocked = minis.count{ |m| m['count'] > 0 }
-
-      render :unlocks_items, :unlocks => minis, :unlocked => unlocked
+      render :unlocks_items, gw2_request(:minis_with_detail)
     end
 
     get '/unlocks/finishers' do
-      finishers = gw2_request(:finishers_with_detail)
-      unlocked = finishers.count{ |m| m['count'] > 0 }
-
-      render :unlocks_items, :unlocks => finishers, :unlocked => unlocked
+      render :unlocks_items, gw2_request(:finishers_with_detail)
     end
 
     get '/unlocks/mailcarriers' do
-      mailcarriers = gw2_request(:mailcarriers_with_detail)
-      unlocked = mailcarriers.count{ |m| m['count'] > 0 }
-
-      render :unlocks_items, :unlocks => mailcarriers, :unlocked => unlocked
+      render :unlocks_items, gw2_request(:mailcarriers_with_detail)
     end
 
     get '/unlocks/gliders' do
-      gliders = gw2_request(:gliders_with_detail)
-      unlocked = gliders.count{ |m| m['count'] > 0 }
-
-      render :unlocks_items, :unlocks => gliders, :unlocked => unlocked
+      render :unlocks_items, gw2_request(:gliders_with_detail)
     end
 
     get '/unlocks/cats' do
-      cats = gw2_request(:cats_with_detail)
-      unlocked = cats.count{ |c| c['count'] > 0 }
-
-      render :unlocks_list, :unlocks => cats, :unlocked => unlocked
+      render :unlocks_list, gw2_request(:cats_with_detail)
     end
 
     get '/unlocks/nodes' do
-      nodes = gw2_request(:nodes_with_detail)
-      unlocked = nodes.count{ |n| n['count'] > 0 }
-
-      render :unlocks_list, :unlocks => nodes, :unlocked => unlocked
+      render :unlocks_list, gw2_request(:nodes_with_detail)
     end
 
     get '/achievements/titles' do

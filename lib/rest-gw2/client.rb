@@ -201,6 +201,11 @@ module RestGW2
       all_unlocks('v2/cats')
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/titles
+    def all_titles
+      all_unlocks('v2/titles')
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/colors
     # https://wiki.guildwars2.com/wiki/API:2/account/dyes
     def dyes_with_detail opts={}
@@ -298,12 +303,20 @@ module RestGW2
       end.sort_by{ |n| n['name'] }
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/titles
     # https://wiki.guildwars2.com/wiki/API:2/account/titles
     def titles_with_detail opts={}
-      get('v2/account/titles').each_slice(100).map do |slice|
-        get('v2/titles', :ids => slice.join(','))
-      end.flatten.sort_by{ |t| t['name'] }
+      all = all_titles
+      mine = get('v2/account/titles')
+
+      all.flatten.map do |title|
+        title['count'] =
+          if mine.member?(title['id'])
+            1
+          else
+            0
+          end
+        title
+      end.sort_by{ |t| t['name'] }
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/commerce/delivery
