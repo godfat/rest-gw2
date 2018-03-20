@@ -233,6 +233,32 @@ module RestGW2
       end.sort_by{ |m| m['order'] }
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/finishers
+    # https://wiki.guildwars2.com/wiki/API:2/account/finishers
+    def finishers_with_detail opts={}
+      unlocked_promise = get('v2/account/finishers', {}, opts)
+
+      all = get('v2/finishers').each_slice(100).map do |slice|
+        slice.join(',')
+      end.map do |ids|
+        get('v2/finishers', :ids => ids)
+      end
+
+      mime = unlocked_promise.group_by{ |u| u['id'] }
+
+      all.flatten.map do |finisher|
+        finisher['count'] =
+          if mime.dig(finisher['id'], 0, 'permanent')
+            Float::INFINITY
+          else
+            mime.dig(finisher['id'], 0, 'quantity') || 0
+          end
+        finisher['nolink'] = true
+        finisher['description'] = finisher['unlock_details']
+        finisher
+      end.sort_by{ |m| m['order'] }
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/cats
     # https://wiki.guildwars2.com/wiki/API:2/account/home/cats
     def cats_with_detail opts={}

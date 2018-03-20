@@ -13,7 +13,6 @@
 
 # Feature
 
-* https://wiki.guildwars2.com/wiki/API:2/account/finishers
 * https://wiki.guildwars2.com/wiki/API:2/account/mailcarriers
 * https://wiki.guildwars2.com/wiki/API:2/account/recipes
 * https://wiki.guildwars2.com/wiki/API:2/commerce/listings

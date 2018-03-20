@@ -200,6 +200,13 @@ module RestGW2
       render :unlocks_items, :unlocks => minis, :unlocked => unlocked
     end
 
+    get '/unlocks/finishers' do
+      finishers = gw2_request(:finishers_with_detail)
+      unlocked = finishers.count{ |m| m['count'] > 0 }
+
+      render :unlocks_items, :unlocks => finishers, :unlocked => unlocked
+    end
+
     get '/unlocks/gliders' do
       gliders = gw2_request(:gliders_with_detail)
       unlocked = gliders.count{ |m| m['count'] > 0 }
