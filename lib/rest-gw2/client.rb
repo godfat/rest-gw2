@@ -172,35 +172,23 @@ module RestGW2
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/skins
-    # Returns Array[Promise[Detail]]
     def all_skins
-      get('v2/skins').each_slice(100).map do |slice|
-        get('v2/skins', :ids => slice.join(','))
-      end
+      all_unlocks('v2/skins')
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/outfits
-    # Returns Array[Promise[Detail]]
     def all_outfits
-      get('v2/outfits').each_slice(100).map do |slice|
-        get('v2/outfits', :ids => slice.join(','))
-      end
+      all_unlocks('v2/outfits')
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/mailcarriers
-    # Returns Array[Promise[Detail]]
     def all_mailcarriers
-      get('v2/mailcarriers').each_slice(100).map do |slice|
-        get('v2/mailcarriers', :ids => slice.join(','))
-      end
+      all_unlocks('v2/mailcarriers')
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/gliders
-    # Returns Array[Promise[Detail]]
     def all_gliders
-      get('v2/gliders').each_slice(100).map do |slice|
-        get('v2/gliders', :ids => slice.join(','))
-      end
+      all_unlocks('v2/gliders')
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/colors
@@ -392,6 +380,13 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/guild/:id
     def get_guild gid
       get("v2/guild/#{gid}")
+    end
+
+    # Returns Array[Promise[Detail]]
+    def all_unlocks path
+      get(path).each_slice(100).map do |slice|
+        get(path, :ids => slice.join(','))
+      end
     end
 
     def unlocks_with_detail kind, path, opts
