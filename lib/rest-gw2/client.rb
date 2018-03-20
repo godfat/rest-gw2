@@ -196,15 +196,18 @@ module RestGW2
       all_unlocks('v2/finishers')
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/cats
+    def all_cats
+      all_unlocks('v2/cats')
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/colors
     # https://wiki.guildwars2.com/wiki/API:2/account/dyes
     def dyes_with_detail opts={}
       mine = get('v2/account/dyes', opts)
 
       get('v2/colors').each_slice(100).map do |slice|
-        slice.join(',')
-      end.map do |ids|
-        with_item_detail('v2/colors', :ids => ids) do |colors|
+        with_item_detail('v2/colors', :ids => slice.join(',')) do |colors|
           colors.map{ |c| c.merge('id' => c['item'], 'color_id' => c['id']) }
         end
       end.flatten.map do |color|
@@ -224,9 +227,7 @@ module RestGW2
       mine = get('v2/account/minis', {}, opts)
 
       get('v2/minis').each_slice(100).map do |slice|
-        slice.join(',')
-      end.map do |ids|
-        with_item_detail('v2/minis', :ids => ids) do |minis|
+        with_item_detail('v2/minis', :ids => slice.join(',')) do |minis|
           minis.map{ |m| m.merge('id' => m['item_id'], 'mini_id' => m['id']) }
         end
       end.flatten.map do |mini|
@@ -243,17 +244,17 @@ module RestGW2
 
     # https://wiki.guildwars2.com/wiki/API:2/account/finishers
     def finishers_with_detail opts={}
-      unlocked_promise = get('v2/account/finishers', {}, opts)
+      mine_promise = get('v2/account/finishers', {}, opts)
 
       all = all_fininshers
-      mime = unlocked_promise.group_by{ |u| u['id'] }
+      mine = mine_promise.group_by{ |u| u['id'] }
 
       all.flatten.map do |finisher|
         finisher['count'] =
-          if mime.dig(finisher['id'], 0, 'permanent')
+          if mine.dig(finisher['id'], 0, 'permanent')
             Float::INFINITY
           else
-            mime.dig(finisher['id'], 0, 'quantity') || 0
+            mine.dig(finisher['id'], 0, 'quantity') || 0
           end
         finisher['nolink'] = true
         finisher['description'] = finisher['unlock_details']
@@ -261,16 +262,16 @@ module RestGW2
       end.sort_by{ |m| m['order'] }
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/cats
     # https://wiki.guildwars2.com/wiki/API:2/account/home/cats
     def cats_with_detail opts={}
-      unlocked_promise = get('v2/account/home/cats', opts)
-      cat_details = get('v2/cats', :ids => get('v2/cats').join(','))
-      unlocked = Set.new(unlocked_promise.map{ |cat| cat['id'] })
+      mine_promise = get('v2/account/home/cats', opts)
 
-      cat_details.map do |cat|
+      all = all_cats
+      mine = Set.new(mine_promise.map{ |cat| cat['id'] })
+
+      all.flatten.map do |cat|
         cat['count'] =
-          if unlocked.member?(cat['id'])
+          if mine.member?(cat['id'])
             1
           else
             0
@@ -283,12 +284,12 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/nodes
     # https://wiki.guildwars2.com/wiki/API:2/account/home/nodes
     def nodes_with_detail opts={}
-      nodes = get('v2/nodes')
-      unlocked = Set.new(get('v2/account/home/nodes', opts))
+      all = get('v2/nodes')
+      mine = Set.new(get('v2/account/home/nodes', opts))
 
-      nodes.map do |name|
+      all.map do |name|
         count =
-          if unlocked.member?(name)
+          if mine.member?(name)
             1
           else
             0
