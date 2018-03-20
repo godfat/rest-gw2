@@ -191,10 +191,16 @@ module RestGW2
       all_unlocks('v2/gliders')
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/finishers
+    def all_fininshers
+      all_unlocks('v2/finishers')
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/colors
     # https://wiki.guildwars2.com/wiki/API:2/account/dyes
     def dyes_with_detail opts={}
       mine = get('v2/account/dyes', opts)
+
       get('v2/colors').each_slice(100).map do |slice|
         slice.join(',')
       end.map do |ids|
@@ -216,6 +222,7 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/account/minis
     def minis_with_detail opts={}
       mine = get('v2/account/minis', {}, opts)
+
       get('v2/minis').each_slice(100).map do |slice|
         slice.join(',')
       end.map do |ids|
@@ -234,17 +241,11 @@ module RestGW2
       end.sort_by{ |m| m['order'] }
     end
 
-    # https://wiki.guildwars2.com/wiki/API:2/finishers
     # https://wiki.guildwars2.com/wiki/API:2/account/finishers
     def finishers_with_detail opts={}
       unlocked_promise = get('v2/account/finishers', {}, opts)
 
-      all = get('v2/finishers').each_slice(100).map do |slice|
-        slice.join(',')
-      end.map do |ids|
-        get('v2/finishers', :ids => ids)
-      end
-
+      all = all_fininshers
       mime = unlocked_promise.group_by{ |u| u['id'] }
 
       all.flatten.map do |finisher|
