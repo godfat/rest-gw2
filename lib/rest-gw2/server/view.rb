@@ -5,6 +5,7 @@ require 'rest-core'
 require 'time'
 require 'erb'
 require 'cgi'
+require 'zlib'
 
 module RestGW2
   class View < Struct.new(:request, :query_t)
@@ -15,6 +16,13 @@ module RestGW2
       https://wiki.guildwars2.com/images/e/eb/Copper_coin.png
     ]).freeze
     GEM = 'https://wiki.guildwars2.com/images/a/aa/Gem.png'
+    FAVICONS = %w[
+      https://wiki.guildwars2.com/images/4/42/SAB_1_Bauble_Icon.png
+      https://wiki.guildwars2.com/images/9/96/SAB_5_Bauble_Icon.png
+      https://wiki.guildwars2.com/images/7/70/SAB_10_Bauble_Icon.png
+      https://wiki.guildwars2.com/images/9/93/SAB_20_Bauble_Icon.png
+      https://wiki.guildwars2.com/images/c/cd/SAB_50_Bauble_Icon.png
+    ]
 
     def render name, arg=nil
       erb(:layout){ erb(name, arg) }
@@ -60,6 +68,10 @@ module RestGW2
     private
     def erb name, arg=nil, &block
       ERB.new(views(name)).result(binding, &block)
+    end
+
+    def favicon
+      FAVICONS[Zlib.crc32(query_t.to_s) % FAVICONS.size]
     end
 
     def h str
