@@ -212,7 +212,17 @@ module RestGW2
       s = item['sells']
       bb = b && price(b['unit_price'])
       ss = s && price(s['unit_price'])
-      %Q{#{bb} / #{ss}} if bb || ss
+      %Q{#{bb} / #{ss}#{item_total_price(item, b, s)}} if bb || ss
+    end
+
+    def item_total_price item, b, s
+      count = item['count']
+
+      if count > 1
+        bb = b && price(b['unit_price'] * count)
+        ss = s && price(s['unit_price'] * count)
+        " (#{bb} / #{ss})"
+      end
     end
 
     def item_class item
