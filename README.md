@@ -94,6 +94,10 @@ The format for the config file would be like:
     jruby -S rake server
     jruby -S rake console
 
+## Current production script:
+
+    jruby -Xcompile.invokedynamic=true -J-Xmx1536m -S rake server -- -p PORT -s trinidad
+
 ## CONTRIBUTORS:
 
 * Lin Jen-Shin (@godfat)
