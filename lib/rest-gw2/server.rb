@@ -27,10 +27,6 @@ module RestGW2
     use Rack::Deflater
     use Rack::ContentType, 'text/html; charset=utf-8'
 
-    map '/assets' do
-      run Rack::Directory.new('public')
-    end
-
     map '/' do
       run ServerAction.new
     end
