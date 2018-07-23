@@ -18,16 +18,18 @@ module RestGW2
     end
 
     def fill item
-      return item unless data = (item && detail[item['id']])
+      return item unless item
 
       s = item['skin']
       u = item['upgrades']
       f = item['infusions']
       t = item['stats']
 
-      item.merge(data).merge(
+      # Items might not have details, but they could still have upgrades!
+      # Blame ANet for not populating whitelist for existing items.
+      item.merge(detail[item['id']] || {}).merge(
         'count' => item['count'] || 1,
-        'skin' => s && skins[s].first,
+        'skin' => s && skins.dig(s, 0),
         'upgrades' => u && u.flat_map(&upgrades.method(:[])),
         'infusions' => f && f.flat_map(&upgrades.method(:[])),
         'stats' => t && stats[t['id']].merge(t))
