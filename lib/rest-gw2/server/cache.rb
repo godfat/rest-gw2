@@ -17,7 +17,7 @@ module RestGW2
     def memcache logger
       require 'dalli'
       client = Dalli::Client.new(nil, :expires_in => EXPIRES_IN)
-      File.open(IO::NULL) do |null|
+      File.open(IO::NULL, 'w') do |null|
         Dalli.logger = Logger.new(null)
         client.alive!
         Dalli.logger = logger
