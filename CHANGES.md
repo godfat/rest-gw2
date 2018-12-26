@@ -1,5 +1,35 @@
 # CHANGES
 
+## rest-gw2 0.5.0 -- 2018-12-26
+
+* Bunch of performance improvement.
+* Allow setting `ENV['GW2_POOL_SIZE']` to configure pool size.
+* Added `RestGW2::Client#me`
+* Added `RestGW2::Client#guild_members`
+* Added `RestGW2::Client#outfits_with_detail`
+* Added `RestGW2::Client#mailcarriers_with_detail`
+* Added `RestGW2::Client#gliders_with_detail`
+* Added `RestGW2::Client#all_outfits`
+* Added `RestGW2::Client#all_mailcarriers`
+* Added `RestGW2::Client#all_gliders`
+* Added `RestGW2::Client#all_fininshers`
+* Added `RestGW2::Client#all_cats`
+* Added `RestGW2::Client#all_titles`
+* Added `RestGW2::Client#finishers_with_detail`
+* Added `RestGW2::Client#cats_with_detail`
+* Added `RestGW2::Client#nodes_with_detail`
+* Added `RestGW2::Client#titles_with_detail`
+* Added `RestGW2::Client#delivery_with_detail`
+* Added `RestGW2::Client#all_unlocks`
+* Added `RestGW2::Client#unlocks_with_detail`
+* Added `RestGW2::ItemDetail`
+* Show guild_leader for account_with_detail
+* Added a bunch of different unlocks pages
+* Added exchange rate page
+* Show favicon based on the access token
+* Show rarity border for items
+* Show total prices for a particular item
+
 ## rest-gw2 0.4.0 -- 2016-02-05
 
 * Added `RestGW2::Client#stash_with_detail`
