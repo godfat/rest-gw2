@@ -23,7 +23,7 @@ example using the client. There's also a [demo site](https://gw2.godfat.org/)
 
 ## REQUIREMENTS:
 
-* Tested with MRI (official CRuby), Rubinius and JRuby.
+* Tested with MRI (official CRuby) and JRuby.
 * rest-core
 
 ### REQUIREMENTS: (if you need the web application)
@@ -106,7 +106,7 @@ The format for the config file would be like:
 
 Apache License 2.0
 
-Copyright (c) 2015-2018, Lin Jen-Shin (godfat)
+Copyright (c) 2015-2019, Lin Jen-Shin (godfat)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Lin Jen-Shin (godfat)".freeze]
-  s.date = "2017-12-22"
-  s.description = "A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)\nclient built with [rest-core](https://github.com/godfat/rest-core).\n\nThere's also a bundled web application showing your items, serving as an\nexample using the client.".freeze
+  s.date = "2018-12-26"
+  s.description = "A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)\nclient built with [rest-core](https://github.com/godfat/rest-core).\n\nThere's also a bundled web application showing your items, serving as an\nexample using the client. There's also a [demo site](https://gw2.godfat.org/)".freeze
   s.email = ["godfat (XD) godfat.org".freeze]
   s.executables = ["rest-gw2".freeze]
   s.files = [
@@ -32,6 +32,8 @@ Gem::Specification.new do |s|
   "lib/rest-gw2/server/runner.rb".freeze,
   "lib/rest-gw2/server/view.rb".freeze,
   "lib/rest-gw2/server/view/characters.erb".freeze,
+  "lib/rest-gw2/server/view/check_list.erb".freeze,
+  "lib/rest-gw2/server/view/check_percentage.erb".freeze,
   "lib/rest-gw2/server/view/commerce.erb".freeze,
   "lib/rest-gw2/server/view/dyes.erb".freeze,
   "lib/rest-gw2/server/view/error.erb".freeze,
@@ -52,13 +54,14 @@ Gem::Specification.new do |s|
   "lib/rest-gw2/server/view/menu_guild.erb".freeze,
   "lib/rest-gw2/server/view/menu_unlocks.erb".freeze,
   "lib/rest-gw2/server/view/menu_weapons.erb".freeze,
-  "lib/rest-gw2/server/view/minis.erb".freeze,
   "lib/rest-gw2/server/view/pages.erb".freeze,
   "lib/rest-gw2/server/view/profile.erb".freeze,
   "lib/rest-gw2/server/view/skins.erb".freeze,
   "lib/rest-gw2/server/view/stash.erb".freeze,
   "lib/rest-gw2/server/view/titles.erb".freeze,
   "lib/rest-gw2/server/view/unlock_percentage.erb".freeze,
+  "lib/rest-gw2/server/view/unlocks_items.erb".freeze,
+  "lib/rest-gw2/server/view/unlocks_list.erb".freeze,
   "lib/rest-gw2/server/view/wallet.erb".freeze,
   "lib/rest-gw2/server/view/wip.erb".freeze,
   "lib/rest-gw2/version.rb".freeze,
@@ -67,7 +70,7 @@ Gem::Specification.new do |s|
   "task/gemgem.rb".freeze]
   s.homepage = "https://github.com/godfat/rest-gw2".freeze
   s.licenses = ["Apache License 2.0".freeze]
-  s.rubygems_version = "2.7.3".freeze
+  s.rubygems_version = "3.0.1".freeze
   s.summary = "A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)".freeze
 
   if s.respond_to? :specification_version then
