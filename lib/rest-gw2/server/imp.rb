@@ -13,7 +13,7 @@ require 'openssl'
 
 module RestGW2
   module ServerImp
-    SECRET = ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2
+    SECRET = (ENV['RESTGW2_SECRET'] || 'RESTGW2_SECRET'*2)[0, 16]
 
     GemIcon = 'https://render.guildwars2.com/' \
       'file/220061640ECA41C0577758030357221B4ECCE62C/502065.png'
