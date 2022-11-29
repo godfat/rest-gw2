@@ -59,7 +59,7 @@ module RestGW2
 
   Client.include(Module.new{
     def me opts={}
-      get('v2/account', {}, opts)
+      get('v2/account', {:v => '2022-11-29T00:00:00Z'}, opts)
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/account
