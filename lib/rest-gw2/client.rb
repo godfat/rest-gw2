@@ -171,6 +171,11 @@ module RestGW2
       unlocks_with_detail(:all_gliders, 'v2/account/gliders', opts)
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/account/novelties
+    def novelties_with_detail opts={}
+      unlocks_with_detail(:all_novelties, 'v2/account/novelties', opts)
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/skins
     def all_skins
       all_unlocks('v2/skins')
@@ -189,6 +194,11 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/gliders
     def all_gliders
       all_unlocks('v2/gliders')
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/novelties
+    def all_novelties
+      all_unlocks('v2/novelties')
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/finishers

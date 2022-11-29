@@ -206,6 +206,10 @@ module RestGW2
       render :unlocks_items, gw2_request(:gliders_with_detail)
     end
 
+    get '/unlocks/novelties' do
+      render :unlocks_items, gw2_request(:novelties_with_detail)
+    end
+
     get '/unlocks/cats' do
       render :unlocks_list, gw2_request(:cats_with_detail)
     end
