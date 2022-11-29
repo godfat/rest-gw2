@@ -73,7 +73,7 @@ module RestGW2
       guild_leader = (m['guild_leader'] || []).map do |gid|
         guilds.find{ |g| g['id'] == gid }
       end
-      me.merge(
+      m.merge(
         'world' => world_detail(worlds.first),
         'guilds' => guilds,
         'guild_leader' => guild_leader)
