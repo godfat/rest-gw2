@@ -216,6 +216,11 @@ module RestGW2
       all_unlocks('v2/titles')
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/emotes
+    def all_emotes
+      all_unlocks('v2/emotes')
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/colors
     # https://wiki.guildwars2.com/wiki/API:2/account/dyes
     def dyes_with_detail opts={}
@@ -325,6 +330,23 @@ module RestGW2
           else
             0
           end
+        title
+      end.sort_by{ |t| t['name'] }
+    end
+
+    # https://wiki.guildwars2.com/wiki/API:2/account/emotes
+    def emotes_with_detail opts={}
+      all = all_emotes
+      mine = get('v2/account/emotes')
+
+      all.flatten.map do |title|
+        title['count'] =
+          if mine.member?(title['id'])
+            1
+          else
+            0
+          end
+        title['name'] = title['id']
         title
       end.sort_by{ |t| t['name'] }
     end

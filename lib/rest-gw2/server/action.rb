@@ -219,7 +219,11 @@ module RestGW2
     end
 
     get '/achievements/titles' do
-      render :titles, gw2_request(:titles_with_detail)
+      render :acquired_list, gw2_request(:titles_with_detail)
+    end
+
+    get '/achievements/emotes' do
+      render :acquired_list, gw2_request(:emotes_with_detail)
     end
 
     get '/commerce/delivery' do
