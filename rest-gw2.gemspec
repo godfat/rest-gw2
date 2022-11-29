@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Lin Jen-Shin (godfat)".freeze]
-  s.date = "2018-12-26"
+  s.date = "2022-11-29"
   s.description = "A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)\nclient built with [rest-core](https://github.com/godfat/rest-core).\n\nThere's also a bundled web application showing your items, serving as an\nexample using the client. There's also a [demo site](https://gw2.godfat.org/)".freeze
   s.email = ["godfat (XD) godfat.org".freeze]
   s.executables = ["rest-gw2".freeze]
@@ -70,31 +70,26 @@ Gem::Specification.new do |s|
   "task/gemgem.rb".freeze]
   s.homepage = "https://github.com/godfat/rest-gw2".freeze
   s.licenses = ["Apache License 2.0".freeze]
-  s.rubygems_version = "3.0.1".freeze
+  s.rubygems_version = "3.3.26".freeze
   s.summary = "A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)".freeze
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
+  end
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rest-core>.freeze, [">= 4.0.0"])
-      s.add_development_dependency(%q<jellyfish>.freeze, [">= 0"])
-      s.add_development_dependency(%q<rack>.freeze, [">= 0"])
-      s.add_development_dependency(%q<rack-handlers>.freeze, [">= 0"])
-      s.add_development_dependency(%q<dalli>.freeze, [">= 0"])
-      s.add_development_dependency(%q<lru_redux>.freeze, [">= 0"])
-    else
-      s.add_dependency(%q<rest-core>.freeze, [">= 4.0.0"])
-      s.add_dependency(%q<jellyfish>.freeze, [">= 0"])
-      s.add_dependency(%q<rack>.freeze, [">= 0"])
-      s.add_dependency(%q<rack-handlers>.freeze, [">= 0"])
-      s.add_dependency(%q<dalli>.freeze, [">= 0"])
-      s.add_dependency(%q<lru_redux>.freeze, [">= 0"])
-    end
+  if s.respond_to? :add_runtime_dependency then
+    s.add_runtime_dependency(%q<rest-core>.freeze, [">= 4.0.0"])
+    s.add_development_dependency(%q<jellyfish>.freeze, [">= 0"])
+    s.add_development_dependency(%q<rack>.freeze, [">= 0"])
+    s.add_development_dependency(%q<rackup>.freeze, [">= 0"])
+    s.add_development_dependency(%q<rack-handlers>.freeze, [">= 0"])
+    s.add_development_dependency(%q<dalli>.freeze, [">= 0"])
+    s.add_development_dependency(%q<lru_redux>.freeze, [">= 0"])
   else
     s.add_dependency(%q<rest-core>.freeze, [">= 4.0.0"])
     s.add_dependency(%q<jellyfish>.freeze, [">= 0"])
     s.add_dependency(%q<rack>.freeze, [">= 0"])
+    s.add_dependency(%q<rackup>.freeze, [">= 0"])
     s.add_dependency(%q<rack-handlers>.freeze, [">= 0"])
     s.add_dependency(%q<dalli>.freeze, [">= 0"])
     s.add_dependency(%q<lru_redux>.freeze, [">= 0"])

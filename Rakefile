@@ -29,7 +29,7 @@ Gemgem.init(dir) do |s|
   s.name    = 'rest-gw2'
   s.version = RestGW2::VERSION
   s.add_runtime_dependency('rest-core', '>=4.0.0')
-  %w[jellyfish rack rack-handlers
+  %w[jellyfish rack rackup rack-handlers
      dalli lru_redux].each{ |g| s.add_development_dependency(g) }
 
   # exclude rest-core
