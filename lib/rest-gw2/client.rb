@@ -186,6 +186,11 @@ module RestGW2
       all_unlocks('v2/outfits')
     end
 
+    # https://wiki.guildwars2.com/wiki/API:2/finishers
+    def all_fininshers
+      all_unlocks('v2/finishers')
+    end
+
     # https://wiki.guildwars2.com/wiki/API:2/mailcarriers
     def all_mailcarriers
       all_unlocks('v2/mailcarriers')
@@ -199,11 +204,6 @@ module RestGW2
     # https://wiki.guildwars2.com/wiki/API:2/novelties
     def all_novelties
       all_unlocks('v2/novelties')
-    end
-
-    # https://wiki.guildwars2.com/wiki/API:2/finishers
-    def all_fininshers
-      all_unlocks('v2/finishers')
     end
 
     # https://wiki.guildwars2.com/wiki/API:2/cats
