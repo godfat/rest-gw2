@@ -272,6 +272,12 @@ module RestGW2
            %Q{ style="background-color: rgb(#{rgb})"></span>}
     end
 
+    def group_by_profession chars
+      chars.group_by{ |c| c['profession'] }.transform_values do |chars|
+        chars.inject(0){ |r, c| r + c['age'] }
+      end.sort_by{ |_, age| -age }
+    end
+
     def abbr_time_ago time, precision=1
       return unless time
       ago = time_ago(time)
@@ -281,6 +287,16 @@ module RestGW2
 
     def time_ago time
       duration((Time.now - Time.parse(time)).to_i)
+    end
+
+    def hours seconds
+      result = (seconds / 3600.0)
+
+      if result > 100
+        result.round
+      else
+        result.round(1)
+      end
     end
 
     def duration delta
