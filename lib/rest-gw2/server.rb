@@ -22,7 +22,6 @@ module RestGW2
 
   Server = Jellyfish::Builder.app do
     use Rack::CommonLogger
-    use Rack::Chunked
     use Rack::ContentLength
     use Rack::Deflater
     use Rack::ContentType, 'text/html; charset=utf-8'

@@ -27,8 +27,9 @@ module RestGW2::Runner
     unused, host, port, server = parse(argv)
     warn("Unused arguments: #{unused.inspect}") unless unused.empty?
     load_rack
+    load_rackup
     load_rack_handlers
-    handler = server && Rack::Handler.get(server) || Rack::Handler.default
+    handler = server && Rackup::Handler.get(server) || Rackup::Handler.default
     handler.run(Rack::Builder.new{
       eval(File.read(RestGW2::Runner.config_ru_path))
     }.to_app, :Host => host, :Port => port, :config => root)
@@ -85,6 +86,14 @@ module RestGW2::Runner
   rescue LoadError => e
     warn(e)
     puts "Maybe you should install rack by running: gem install rack"
+    exit(1)
+  end
+
+  def load_rackup
+    require 'rackup'
+  rescue LoadError => e
+    warn(e)
+    puts "Maybe you should install rackup by running: gem install rackup"
     exit(1)
   end
 
