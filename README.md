@@ -10,7 +10,7 @@ by Lin Jen-Shin ([godfat](http://godfat.org))
 
 ## DESCRIPTION:
 
-A very simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)
+A simple [Guild Wars 2 API](https://wiki.guildwars2.com/wiki/API:Main)
 client built with [rest-core](https://github.com/godfat/rest-core).
 
 There's also a bundled web application showing your items, serving as an
